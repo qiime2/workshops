@@ -1,0 +1,15 @@
+{% extends 'payments/default.html' %}
+
+{% block title %}QIIME - Workshops{% endblock %}
+
+{% block header %}Workshops{% endblock %}
+
+{% block content %}
+<h3>Upcoming Workshops</h3>
+<ul>
+{% for workshop in upcoming_workshops %}
+    <li><a href="{% url 'payments:details' workshop.workshop_slug %}">{{ workshop.text }}</a></li>
+{% endfor %}
+</ul>
+See <a href="https://github.com/biocore/qiime/wiki/Official-QIIME-workshops">here</a> for information on hosting or attending an official QIIME workshop.
+{% endblock %}
