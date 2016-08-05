@@ -6,4 +6,9 @@
 
 {% block content %}
     <p>Confirmation page...</p>
+    <ul>
+        {% for key, val in order.items %}
+            <li>{{key}}: {{val}}</li>
+        {% endfor %}
+    </ul>
 {% endblock %}

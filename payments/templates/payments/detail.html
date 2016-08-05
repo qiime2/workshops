@@ -7,7 +7,15 @@
 {% block content %}
     <p>{{ workshop.description }}</p>
     <form method="post">
-        {{ order_form.email }}
+        {% csrf_token %}
+        <ul>
+            {% for field in form %}
+                {% if field.errors %}
+                    <li>{{ field.name }}: {{ field.errors|join:', ' }}</li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+        {{ form.email }}
         <table>
             <thead>
                 <tr>
@@ -17,14 +25,17 @@
                 </tr>
             </thead>
             <tbody>
-                {% for field in order_form %}
+                {% for rate in rates %}
                 {% if field.name != 'email' %}
                     <tr>
                         <td>
-                            {{ field }}
+                            {{ rate.field }}
                         </td>
                         <td>
-                            {{ field.label | safe }}
+                            {{ rate.name }}
+                        </td>
+                        <td>
+                            {{ rate.price }}
                         </td>
                     </tr>
                 {% endif %}
