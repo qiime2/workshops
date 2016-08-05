@@ -9,5 +9,7 @@ urlpatterns = [
     url(r'^(?P<slug>[\w\-]+)/$', views.WorkshopDetail.as_view(),
         name='details'),
     url(r'^(?P<workshop_slug>[\w\-]+)/confirm/$', views.confirm,
-        name='confirm')
+        name='confirm'),
+    url(r'^(?P<workshop_slug>[\w\-]+)/submit/$', views.submit,
+        name='submit')
 ]

@@ -1,8 +1,8 @@
 {% extends 'payments/default.html' %}
 
-{% block title %}{% endblock %}
+{% block title %}QIIME - Order Confirmation Page{% endblock %}
 
-{% block header %}{% endblock %}
+{% block header %}Order Review{% endblock %}
 
 {% block content %}
     <p>Confirmation page...</p>
@@ -11,4 +11,8 @@
             <li>{{key}}: {{val}}</li>
         {% endfor %}
     </ul>
+    <form method="post" action="{% url 'payments:submit' order.workshop %}">
+        {% csrf_token %}
+        <input type="submit" />
+    </form>
 {% endblock %}

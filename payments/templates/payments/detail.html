@@ -5,7 +5,10 @@
 {% block header %}{{ workshop.title }}{% endblock %}
 
 {% block content %}
-    <p>{{ workshop.description }}</p>
+    <small><strong>When:</strong> {{ workshop.start_date }}</small><br/>
+    <small><strong>Where:</strong> {{ workshop.location }}</small><br />
+    <p>{{ workshop.description | linebreaks }}</p>
+    <h3 align="center">Register Now!</h3>
     <form method="post">
         {% csrf_token %}
         <ul>
@@ -42,6 +45,6 @@
                 {% endfor %}
             </tbody>
         </table>
-        <input type="submit" value="Continue">
+        <input type="submit" value="Continue" />
     </form>
 {% endblock %}
