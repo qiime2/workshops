@@ -11,7 +11,7 @@
             <li>{{key}}: {{val}}</li>
         {% endfor %}
     </ul>
-    <form method="post" action="{% url 'payments:submit' order.workshop %}">
+    <form method="post" action="{% url 'payments:submit' %}">
         {% csrf_token %}
         <input type="submit" />
     </form>

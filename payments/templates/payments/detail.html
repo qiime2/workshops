@@ -9,15 +9,19 @@
     <small><strong>Where:</strong> {{ workshop.location }}</small><br />
     <p>{{ workshop.description | linebreaks }}</p>
     <h3 align="center">Register Now!</h3>
-    <form method="post">
-        {% csrf_token %}
-        <ul>
-            {% for field in form %}
-                {% if field.errors %}
-                    <li>{{ field.name }}: {{ field.errors|join:', ' }}</li>
+    <div>
+        {% if form.errors %}
+            {% for name, error in form.errors.items %}
+                {% if name == '__all__' %}
+                    <li>Order: {{ error }}</li>
+                {% else %}
+                    <li>{{ name | capfirst }}: {{ error }}</li>
                 {% endif %}
             {% endfor %}
-        </ul>
+        {% endif %}
+    </div>
+    <form method="post">
+        {% csrf_token %}
         {{ form.email }}
         <table>
             <thead>

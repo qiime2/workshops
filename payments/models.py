@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.exceptions import ValidationError
 
 
 class Workshop(models.Model):
@@ -10,6 +11,16 @@ class Workshop(models.Model):
     url = models.URLField(verbose_name='URL', max_length=2000)
     slug = models.SlugField(help_text='This is the unique identifier for the '
                             'URL (i.e. title-YYYY-MM-DD)')
+
+    class Meta:
+        unique_together = (('title', 'slug'), )
+
+    def clean(self):
+        # Make sure the workshop begins before it can end...
+        if self.start_date > self.end_date:
+            raise ValidationError('A Workshop\'s start date must be before '
+                                  'the end date.')
+        return super().clean()
 
     def __str__(self):
         return self.title

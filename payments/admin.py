@@ -1,17 +1,20 @@
 from django.contrib import admin
 
-from .models import *
+from .models import Workshop, Instructor, Rate, Order, OrderItem
 
 
-class InstructorInline(admin.StackedInline):
+class InstructorInline(admin.TabularInline):
     model = Instructor.workshops.through
-    extra = 3
-    verbose_name = 'Instructor'
-    verbose_name_plural = 'Instructors'
+    extra = 1
+
+
+class RateInline(admin.TabularInline):
+    model = Rate
+    extra = 1
 
 
 class WorkshopAdmin(admin.ModelAdmin):
-    inlines = [InstructorInline]
+    inlines = [InstructorInline, RateInline]
     prepopulated_fields = {'slug': ('title', 'start_date')}
     list_display = ('title', 'start_date', 'end_date', 'url')
 
