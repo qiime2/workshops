@@ -1,9 +1,36 @@
 {% extends 'payments/default.html' %}
 
-{% block title %}QIIME - Workshops{% endblock %}
+{% block title %}QIIME - Workshop: {{ workshop.title }}{% endblock %}
 
-{% block header %}{% endblock %}
+{% block header %}{{ workshop.title }}{% endblock %}
 
 {% block content %}
-    <p>Detail page...</p>
+    <p>{{ workshop.description }}</p>
+    <form method="post">
+        {{ order_form.email }}
+        <table>
+            <thead>
+                <tr>
+                    <th>Quantity</th>
+                    <th>Rate Type</th>
+                    <th>Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for field in order_form %}
+                {% if field.name != 'email' %}
+                    <tr>
+                        <td>
+                            {{ field }}
+                        </td>
+                        <td>
+                            {{ field.label | safe }}
+                        </td>
+                    </tr>
+                {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+        <input type="submit" value="Continue">
+    </form>
 {% endblock %}

@@ -8,7 +8,7 @@
 <h3>Upcoming Workshops</h3>
 <ul>
 {% for workshop in upcoming_workshops %}
-    <li><a href="{% url 'payments:details' workshop.workshop_slug %}">{{ workshop.text }}</a></li>
+    <li><a href="{% url 'payments:details' workshop.slug %}">{{ workshop.title }}</a></li>
 {% endfor %}
 </ul>
 See <a href="https://github.com/biocore/qiime/wiki/Official-QIIME-workshops">here</a> for information on hosting or attending an official QIIME workshop.

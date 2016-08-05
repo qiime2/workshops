@@ -1,19 +1,30 @@
 from django.http import HttpResponse
 from django.shortcuts import render
+from django.utils import timezone
 
-TESTDATA = [{'text': 'Iceland!', 'workshop_slug': 'iceland-2016'}]
+from django.views.generic import ListView, DetailView
+from django.views.generic.edit import FormMixin
 
-
-# Create your views here.
-def index(request):
-    return render(request,
-                  'payments/index.html',
-                  {'upcoming_workshops': TESTDATA})
+from .models import Workshop
+from .forms import OrderForm
 
 
-def details(request, workshop_slug):
-    return render(request,
-                  'payments/detail.html')
+class WorkshopList(ListView):
+    queryset = Workshop.objects.filter(start_date__gte=timezone.now())
+    template_name = 'payments/index.html'
+    context_object_name = 'upcoming_workshops'
+
+
+class WorkshopDetail(DetailView):
+    model = Workshop
+    context_object_name = 'workshop'
+    template_name = 'payments/detail.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['rates'] = self.object.rate_set.order_by('price')
+        context['order_form'] = OrderForm(workshop=self.object)
+        return context
 
 
 def confirm(request, workshop_slug):
