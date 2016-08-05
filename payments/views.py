@@ -1,3 +1,8 @@
+from decimal import Decimal
+
+import requests
+
+from django.http import HttpResponse
 from django.core.urlresolvers import reverse
 from django.shortcuts import render
 from django.utils import timezone
@@ -5,7 +10,7 @@ from django.utils import timezone
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import FormMixin
 
-from .models import Workshop
+from .models import Workshop, Order, OrderItem
 from .forms import OrderForm
 
 
@@ -46,11 +51,15 @@ class WorkshopDetail(FormMixin, DetailView):
             return self.form_invalid(form)
 
     def form_valid(self, form):
-        form_valid = super().form_valid(form)
         order = form.data.copy()
         order['workshop'] = self.object.slug
+        order_total = 0
+        for rate in form.rate_set:
+            order_total += Decimal(form.data[rate.name]) * rate.price
+
+        order['order_total'] = str(order_total)
         self.request.session['order'] = order
-        return form_valid
+        return super().form_valid(form)
 
     def get_success_url(self):
         return reverse('payments:confirm',
@@ -60,11 +69,24 @@ class WorkshopDetail(FormMixin, DetailView):
 def confirm(request, workshop_slug):
     order = request.session['order']
     order.pop('csrfmiddlewaretoken')
-    return render(request,
-                  'payments/confirm.html',
-                  context={'order': order})
+    return render(request, 'payments/confirm.html', context={'order': order})
 
 
-def submit(request, workshop_slug):
-    workshop = Workshop.objects.get(slug=workshop_slug)
-    order = request.session['order']
+def submit(request):
+    order_data = request.session['order']
+    workshop = Workshop.objects.get(slug=order_data['workshop'])
+    order = Order.objects.create(email=order_data['email'],
+                                 order_total=order_data['order_total'])
+    for rate in workshop.rate_set.all():
+        if order_data[rate.name] != 0:
+            OrderItem.objects.create(order=order, rate=rate,
+                                     quantity=order_data[rate.name])
+    payload = {'LMID': 'DUMMY',
+               'unique_id': '%s' % order.pk,
+               'sTotal': order_data['order_total'],
+               'webTitle': 'test',
+               'Trans_Desc': 'abc',
+               'contact_info': 'admin@google.com'}
+    r = requests.post('http://example.com', data=payload,
+                      verify='/Users/Develop/Desktop/Certificates.pem')
+    return HttpResponse(r.text)
