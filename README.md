@@ -1,5 +1,7 @@
 # QIIME Workshops
 
+[![Build Status](https://travis-ci.org/jakereps/qiime-workshops.svg?branch=master)](https://travis-ci.org/jakereps/qiime-workshops)
+
 Django App for QIIME workshop payments
 
 ## Development Setup
