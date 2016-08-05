@@ -47,7 +47,9 @@ class WorkshopDetail(FormMixin, DetailView):
 
     def form_valid(self, form):
         form_valid = super().form_valid(form)
-        self.request.session['order'] = form.data
+        order = form.data.copy()
+        order['workshop'] = self.object.slug
+        self.request.session['order'] = order
         return form_valid
 
     def get_success_url(self):
@@ -61,3 +63,8 @@ def confirm(request, workshop_slug):
     return render(request,
                   'payments/confirm.html',
                   context={'order': order})
+
+
+def submit(request, workshop_slug):
+    workshop = Workshop.objects.get(slug=workshop_slug)
+    order = request.session['order']
