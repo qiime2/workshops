@@ -4,10 +4,9 @@ import requests
 
 from django.http import HttpResponse
 from django.core.urlresolvers import reverse
-from django.shortcuts import render
 from django.utils import timezone
 
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, TemplateView, View
 from django.views.generic.edit import FormMixin
 
 from .models import Workshop, Order, OrderItem
@@ -16,7 +15,6 @@ from .forms import OrderForm
 
 class WorkshopList(ListView):
     queryset = Workshop.objects.filter(start_date__gte=timezone.now())
-    template_name = 'payments/index.html'
     context_object_name = 'upcoming_workshops'
 
 
@@ -24,7 +22,6 @@ class WorkshopDetail(FormMixin, DetailView):
     model = Workshop
     form_class = OrderForm
     context_object_name = 'workshop'
-    template_name = 'payments/detail.html'
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -66,27 +63,35 @@ class WorkshopDetail(FormMixin, DetailView):
                        kwargs={'workshop_slug': self.object.slug})
 
 
-def confirm(request, workshop_slug):
-    order = request.session['order']
-    order.pop('csrfmiddlewaretoken')
-    return render(request, 'payments/confirm.html', context={'order': order})
+class ConfirmOrder(TemplateView):
+    template_name = 'payments/workshop_confirm.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        order = self.request.session['order']
+        order.pop('csrfmiddlewaretoken')
+        context['order'] = order
+        return context
 
 
-def submit(request):
-    order_data = request.session['order']
-    workshop = Workshop.objects.get(slug=order_data['workshop'])
-    order = Order.objects.create(email=order_data['email'],
-                                 order_total=order_data['order_total'])
-    for rate in workshop.rate_set.all():
-        if order_data[rate.name] != 0:
-            OrderItem.objects.create(order=order, rate=rate,
-                                     quantity=order_data[rate.name])
-    payload = {'LMID': 'DUMMY',
-               'unique_id': '%s' % order.pk,
-               'sTotal': order_data['order_total'],
-               'webTitle': 'test',
-               'Trans_Desc': 'abc',
-               'contact_info': 'admin@google.com'}
-    r = requests.post('http://example.com', data=payload,
-                      verify='/Users/Develop/Desktop/Certificates.pem')
-    return HttpResponse(r.text)
+class SubmitOrder(View):
+    http_method_names = ['post']
+
+    def post(self, request, *args, **kwargs):
+        order_data = request.session['order']
+        workshop = Workshop.objects.get(slug=order_data['workshop'])
+        order = Order.objects.create(email=order_data['email'],
+                                     order_total=order_data['order_total'])
+        for rate in workshop.rate_set.all():
+            if order_data[rate.name] != 0:
+                OrderItem.objects.create(order=order, rate=rate,
+                                         quantity=order_data[rate.name])
+        payload = {'LMID': 'DUMMY',
+                   'unique_id': '%s' % order.pk,
+                   'sTotal': order_data['order_total'],
+                   'webTitle': 'test',
+                   'Trans_Desc': 'abc',
+                   'contact_info': 'admin@google.com'}
+        r = requests.post('http://example.com', data=payload,
+                          verify='/Users/Develop/Desktop/Certificates.pem')
+        return HttpResponse(r.text)
