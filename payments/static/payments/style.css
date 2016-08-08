@@ -182,3 +182,12 @@ html[xmlns] .clearfix {
 .description span {
     display: block;
 }
+
+.workshop {
+    border-collapse: collapse;
+    border: 1px solid black;
+}
+
+.workshop td, .workshop th {
+    border: 1px solid black;
+}

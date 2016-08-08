@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.exceptions import ValidationError
+from datetime import date
 
 
 class Workshop(models.Model):
@@ -12,6 +13,10 @@ class Workshop(models.Model):
     url = models.URLField(verbose_name='URL', max_length=2000)
     slug = models.SlugField(help_text='This is the unique identifier for the '
                             'URL (i.e. title-YYYY-MM-DD)')
+
+    @property
+    def is_open(self):
+        return self.closing_date >= date.today()
 
     class Meta:
         unique_together = (('title', 'slug'), )

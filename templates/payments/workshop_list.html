@@ -1,17 +1,59 @@
 {% extends 'payments/default.html' %}
 
 {% block title %}QIIME - Workshops{% endblock %}
-
 {% block header %}Workshops{% endblock %}
-
 {% block content %}
-    <h3>Upcoming Workshops</h3>
-    <ul>
+  <h3>Upcoming Workshops</h3>
+  {% if upcoming_workshops %}
+    <table class="workshop">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Location</th>
+          <th>Dates</th>
+        </tr>
+      </thead>
+      <tbody>
         {% for workshop in upcoming_workshops %}
-            <li><a href="{% url 'payments:details' workshop.slug %}">{{ workshop.title }}</a></li>
+          <tr>
+            <td><a href="{% url 'payments:details' workshop.slug %}">{{ workshop.title }}</a></td>
+            <td>{{ workshop.location }}</td>
+            <td>{{ workshop.start_date }} - {{ workshop.end_date }}</td>
+          </tr>
         {% endfor %}
-    </ul>
-    <div>
-        <p>See <a href="https://github.com/biocore/qiime/wiki/Official-QIIME-workshops">here</a> for information on hosting or attending an official QIIME workshop.</p>
-    </div>
+      </tbody>
+    </table>
+  {% else %}
+    <p>No upcoming workshops</p>
+  {% endif %}
+
+  <h3>Past Workshops</h3>
+  {% if past_workshops %}
+    <table class="workshop">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Location</th>
+          <th>Dates</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for workshop in past_workshops %}
+          <tr>
+            <td><a href="{% url 'payments:details' workshop.slug %}">{{ workshop.title }}</a></td>
+            <td>{{ workshop.location }}</td>
+            <td>{{ workshop.start_date }} - {{ workshop.end_date }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>No upcoming workshops</p>
+  {% endif %}
+  <div>
+    <p>
+      See <a href="https://github.com/biocore/qiime/wiki/Official-QIIME-workshops">here</a>
+      for information on hosting or attending an official QIIME workshop.
+    </p>
+  </div>
 {% endblock %}

@@ -6,16 +6,23 @@ from django.http import HttpResponse
 from django.core.urlresolvers import reverse
 from django.utils import timezone
 
-from django.views.generic import ListView, DetailView, TemplateView, View
+from django.views.generic import DetailView, TemplateView, View
 from django.views.generic.edit import FormMixin
 
 from .models import Workshop, Order, OrderItem
 from .forms import OrderForm
 
 
-class WorkshopList(ListView):
-    queryset = Workshop.objects.filter(closing_date__gte=timezone.now())
-    context_object_name = 'upcoming_workshops'
+class WorkshopList(TemplateView):
+    template_name = 'payments/workshop_list.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['upcoming_workshops'] = Workshop.objects \
+            .filter(closing_date__gte=timezone.now())
+        context['past_workshops'] = Workshop.objects \
+            .filter(closing_date__lt=timezone.now())
+        return context
 
 
 class WorkshopDetail(FormMixin, DetailView):
