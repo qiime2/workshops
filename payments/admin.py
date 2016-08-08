@@ -37,9 +37,9 @@ class OrderItemInline(admin.TabularInline):
 class OrderAdmin(admin.ModelAdmin):
     inlines = [OrderItemInline]
     readonly_fields = ('contact_email', 'order_total', 'billed_total',
-                       'billed_datetime')
+                       'billed_datetime', 'transaction_id')
     list_display = ('contact_email', 'order_total', 'order_datetime',
-                    'billed_total', 'billed_datetime')
+                    'billed_total', 'billed_datetime', 'transaction_id')
 
 
 class OrderItemAdmin(admin.ModelAdmin):

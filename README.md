@@ -35,6 +35,13 @@ Creating a **superuser account**:
     heroku config:set DJANGO_MAILGUN_SERVER_NAME=YOUR_MALGUN_SERVER
     heroku config:set DJANGO_MAILGUN_API_KEY=YOUR_MAILGUN_API_KEY
 
+    heroku config:set LMID=YOUR_LMID
+    heroku config:set PAYMENT_URL=YOUR_PAYMENT_URL
+    heroku config:set PAYMENT_TITLE=YOUR_PAYMENT_TITLE
+    heroku config:set PAYMENT_DESCRIPTION=YOUR_PAYMENT_DESCRIPTION
+    heroku config:set PAYMENT_CONTACT_INFO=YOUR_PAYMENT_CONTACT_INFO
+    heroku config:set PAYMENT_CERT_BUNDLE=YOUR_PAYMENT_CERT_BUNDLE
+
     heroku config:set PYTHONHASHSEED=random
     heroku config:set DJANGO_ADMIN_URL=\^somelocation/
 

@@ -1,13 +1,13 @@
 from decimal import Decimal
 
-import requests
-
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.utils import timezone
-
 from django.views.generic import DetailView, TemplateView, View
 from django.views.generic.edit import FormMixin
+from django.conf import settings
+
+import requests
 
 from .models import Workshop, Order, OrderItem
 from .forms import OrderForm
@@ -73,6 +73,14 @@ class WorkshopDetail(FormMixin, DetailView):
 class ConfirmOrder(TemplateView):
     template_name = 'payments/workshop_confirm.html'
 
+    # TODO: refactor as a mixin and apply to confirm and the intermediate
+    # view that does not yet exist
+    def get(self, request, *args, **kwargs):
+        if 'account' not in request.session:
+            url = reverse('payments:details',
+                          kwargs={'slug': kwargs['workshop_slug']})
+            return HttpResponseRedirect(url)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         order = self.request.session['order']
@@ -87,18 +95,29 @@ class SubmitOrder(View):
     def post(self, request, *args, **kwargs):
         order_data = request.session['order']
         workshop = Workshop.objects.get(slug=order_data['workshop'])
-        order = Order.objects.create(email=order_data['email'],
+        order = Order.objects.create(contact_email=order_data['email'],
                                      order_total=order_data['order_total'])
         for rate in workshop.rate_set.all():
             if order_data[rate.name] != 0:
                 OrderItem.objects.create(order=order, rate=rate,
-                                         quantity=order_data[rate.name])
-        payload = {'LMID': 'DUMMY',
-                   'unique_id': '%s' % order.pk,
-                   'sTotal': order_data['order_total'],
-                   'webTitle': 'test',
-                   'Trans_Desc': 'abc',
-                   'contact_info': 'admin@google.com'}
-        r = requests.post('http://example.com', data=payload,
-                          verify='/Users/Develop/Desktop/Certificates.pem')
+                                         # TODO: Fix this
+                                         email=order_data['email'])
+
+        # Now that the order is saved, clear the session so that they cant
+        # resubmit the order
+        request.session.flush()
+
+        payload = {
+            'LMID':         settings.LMID,
+            'unique_id':    str(order.transaction_id),
+            'sTotal':       str(order.order_total),
+            'webTitle':     settings.PAYMENT_TITLE,
+            'Trans_Desc':   settings.PAYMENT_DESCRIPTION,
+            'contact_info': settings.PAYMENT_CONTACT_INFO
+        }
+        r = requests.post(settings.PAYMENT_URL, data=payload,
+                          verify=settings.PAYMENT_CERT_BUNDLE)
+        # TODO: We should use something like lxml2 to parse the form, then do
+        # the second post on behalf of the customer, instead of just returning
+        # the intermediate form as-is.
         return HttpResponse(r.text)
