@@ -4,8 +4,8 @@
 <head>
     <link rel="stylesheet" href="style.css" />
     <title>{% block title %}{% endblock %}</title>
-    <link rel="stylesheet" href="{% static 'payments/style.css' %}" media="screen" title="no title" charset="utf-8">
-    <script src="{% static 'payments/js/qiime.js' %}" charset="utf-8"></script>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" media="screen" title="no title" charset="utf-8">
+    <script src="{% static 'js/qiime.js' %}" charset="utf-8"></script>
     <!--TODO: Remove!!! -->
     <script src="http://localhost:35729/livereload.js" charset="utf-8"></script>
     <!-- -->
@@ -14,7 +14,7 @@
 <body>
     <div class="wrapper clearfix">
         <div class="header" id="header">
-            <img class="header" src="{% static 'payments/img/qiime_logo_large.png' %}" alt="QIIME">
+            <img class="header" src="{% static 'img/qiime_logo_large.png' %}" alt="QIIME">
         </div>
         <div class="leftcol" id="leftcol">
             <div class="menuul">
@@ -45,14 +45,15 @@
             </div>
         </div>
         <div class="centercol">
-            <h1>{% block header %}{% endblock %}<img src="{% static 'payments/img/spacer_dots.png' %}" alt="..."></h1>
+            <h1>{% block header %}{% endblock %}<img src="{% static 'img/spacer_dots.png' %}" alt="..."></h1>
         	{% block content %}{% endblock %}
         </div>
         <div class="footer" id="footer">
-            <img src="{% static 'payments/img/spacer_dots.png' %}"><br />
+            <img src="{% static 'img/spacer_dots.png' %}"><br />
             &copy; Copyright 2015--, QIIME development team.<br/>
             <div>
-            <a href="http://scikit-bio.org/"><img class="f" width="412px" src="{% static 'payments/img/powered_by_skbio.png' %}" alt="Powered by scikit-bio"></a>
+            <a href="http://scikit-bio.org/"><img class="f" width="412px"
+                                                            src="{% static 'img/powered_by_skbio.png' %}" alt="Powered by scikit-bio"></a>
             </div>
         </div>
 </body>
