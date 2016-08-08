@@ -84,6 +84,7 @@ class OrderItem(models.Model):
     order = models.ForeignKey(Order)
     rate = models.ForeignKey(Rate)
     email = models.EmailField()
+    name = models.CharField(max_length=500)
 
     def __str__(self):
         return str(self.email)

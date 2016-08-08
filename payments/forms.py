@@ -30,6 +30,9 @@ class OrderForm(forms.Form):
 
 class OrderDetailForm(forms.Form):
     email = forms.EmailField(
-        widget=forms.TextInput(attrs={'placeholder': 'Ticket Email Address'})
+        widget=forms.TextInput(attrs={'placeholder': 'Ticketholder\'s Email'})
+    )
+    name = forms.CharField(
+        widget=forms.TextInput(attrs={'placeholder': 'Ticketholder\'s Name'})
     )
     rate = forms.CharField(widget=forms.HiddenInput())

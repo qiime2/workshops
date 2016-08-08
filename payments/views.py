@@ -31,7 +31,7 @@ class WorkshopList(TemplateView):
         context['upcoming_workshops'] = Workshop.objects \
             .filter(start_date__gte=timezone.now())
         context['past_workshops'] = Workshop.objects \
-            .filter(closing_date__lt=timezone.now())
+            .filter(start_date__lt=timezone.now())
         return context
 
 
@@ -86,9 +86,9 @@ class OrderDetail(SessionConfirmMixin, FormSetView):
     form_class = OrderDetailForm
     extra = 0
 
-    def post(self, request, *args, **kwargs):
+    def dispatch(self, request, *args, **kwargs):
         self.slug = kwargs['slug']
-        return super().post(request, *args, **kwargs)
+        return super().dispatch(request, *args, **kwargs)
 
     def get_initial(self):
         order = self.request.session['order']
@@ -108,6 +108,7 @@ class OrderDetail(SessionConfirmMixin, FormSetView):
             data = {'form': form, 'rate': rate}
             zipped.append(data)
         context['zipped'] = zipped
+        context['workshop'] = Workshop.objects.get(slug=self.slug)
         return context
 
     def formset_valid(self, formset):
@@ -118,7 +119,8 @@ class OrderDetail(SessionConfirmMixin, FormSetView):
         for i in range(int(total_forms)):
             rate = suborder['form-%s-rate' % i]
             email = suborder['form-%s-email' % i]
-            tickets.append({'rate': rate, 'email': email})
+            name = suborder['form-%s-name' % i]
+            tickets.append({'rate': rate, 'email': email, 'name': name})
         order['tickets'] = tickets
         self.request.session['order'] = order
         return super().formset_valid(formset)
@@ -134,8 +136,14 @@ class ConfirmOrder(SessionConfirmMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         order = self.request.session['order']
-        order.pop('csrfmiddlewaretoken')
-        context['order'] = order
+        tickets = []
+        for ticket in order['tickets']:
+            tickets.append({'name': ticket['name'], 'email': ticket['email'],
+                            'rate': Rate.objects.get(pk=ticket['rate'])})
+        context['tickets'] = tickets
+        context['order_email'] = order['email']
+        context['order_total'] = order['order_total']
+        context['workshop'] = Workshop.objects.get(slug=kwargs['slug'])
         return context
 
 
@@ -147,8 +155,10 @@ class SubmitOrder(View):
         order = Order.objects.create(contact_email=order_data['email'],
                                      order_total=order_data['order_total'])
         for ticket in request.session['order']['tickets']:
-            OrderItem.objects.create(order=order, rate_id=ticket['rate'],
-                                     email=ticket['email'])
+            OrderItem.objects.create(order=order,
+                                     rate_id=ticket['rate'],
+                                     email=ticket['email'],
+                                     name=ticket['name'])
 
         # Now that the order is saved, clear the session so that they cant
         # resubmit the order

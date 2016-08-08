@@ -40,7 +40,6 @@ p {
 
 ul {
     font-family: helvetica;
-    list-style-type: none;
     font-size: 10pt;
 }
 
@@ -190,4 +189,8 @@ html[xmlns] .clearfix {
 
 .workshop td, .workshop th {
     border: 1px solid black;
+}
+
+.errorlist {
+    color: #FF0000;
 }

@@ -1,18 +1,36 @@
 {% extends 'payments/base.html' %}
 
-{% block title %}QIIME - Order Confirmation Page{% endblock %}
+{% block title %}QIIME - Workshop: {{ workshop.title }}{% endblock %}
 
-{% block header %}Order Review{% endblock %}
+{% block header %}Workshop:<br/ >{{ workshop.title }}{% endblock %}
 
 {% block content %}
-    <p>Confirmation page...</p>
-    <ul>
-        {% for key, val in order.items %}
-            <li>{{key}}: {{val}}</li>
-        {% endfor %}
-    </ul>
-    <form method="post" action="{% url 'payments:submit' %}">
-        {% csrf_token %}
-        <input type="submit" />
-    </form>
+  <p>The following is a summary of the order. Please use the 'back'
+  functionality of your browser to fix any errors. If this looks okay, press
+  'Submit' to begin the payment process. Note: you will be taken to an off-site
+  location to complete payment. You will have the option to print or email your
+  reciept at time of payment</p>
+  <div><strong>Title: </strong>{{ workshop.title }}</div>
+  <div><strong>Dates: </strong>{{ workshop.start_date }} -
+      {{ workshop.end_date }}</div>
+  <div><strong>Order Contact Email: </strong>{{ order_email }}</div>
+  <div><strong>Order Total: </strong>{{ order_total }} USD</div>
+  <table class="workshop">
+    <tr>
+      <th>Ticketholder Name</th>
+      <th>Ticketholder Email</th>
+      <th>Ticket Rate</th>
+    </tr>
+    {% for ticket in tickets %}
+      <tr>
+        <td>{{ ticket.name }}</td>
+        <td>{{ ticket.email }}</td>
+        <td>{{ ticket.rate }}</td>
+      </tr>
+    {% endfor %}
+  </table>
+  <form method="post" action="{% url 'payments:submit' %}">
+    {% csrf_token %}
+    <input type="submit" />
+  </form>
 {% endblock %}

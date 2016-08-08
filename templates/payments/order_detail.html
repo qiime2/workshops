@@ -5,14 +5,22 @@
 {% block header %}Workshop:<br/ >{{ workshop.title }}{% endblock %}
 
 {% block content %}
+<p>Each ticket order must have contact info.</p>
+
 <form method="post" action="">
   {{ formset.management_form }}
   {% csrf_token %}
-  <table>
+  <table class="workshop">
+    <tr>
+      <th>Name</th>
+      <th>Email</th>
+      <th>Ticket Rate</th>
+    </tr>
     {% for pair in zipped %}
       <tr>
-          <td>{{ pair.form.as_p }}</td>
-          <td>{{ pair.rate }}</td>
+          <td>{{ pair.form.name.errors }} {{ pair.form.name }}</td>
+          <td>{{ pair.form.name.errors }} {{ pair.form.email }}</td>
+          <td>{{ pair.rate }} {{ pair.form.rate }}</td>
       </tr>
     {% endfor %}
   </table>
