@@ -1,0 +1,15 @@
+{% extends 'payments/base.html' %}
+
+{% block title %}QIIME - Workshop: {{ workshop.title }}{% endblock %}
+
+{% block header %}Workshop:<br/ >{{ workshop.title }}{% endblock %}
+
+{% block content %}
+<form method="post" action="">
+  <table>
+    {% csrf_token %}
+    {{ formset }}
+  </table>
+  <input type="submit" value="Continue" />
+</form>
+{% endblock %}

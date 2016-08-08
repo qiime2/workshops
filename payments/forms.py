@@ -2,6 +2,8 @@ import functools
 
 from django import forms
 
+from .models import Rate
+
 
 class OrderForm(forms.Form):
     email = forms.EmailField(
@@ -26,3 +28,10 @@ class OrderForm(forms.Form):
             raise forms.ValidationError('Order can not be empty.')
 
         return cleaned_data
+
+
+class OrderDetailForm(forms.Form):
+    email = forms.EmailField(
+        widget=forms.TextInput(attrs={'placeholder': 'Ticket Email Address'})
+    )
+    rate = forms.ModelChoiceField(disabled=True, queryset=Rate.objects.all())

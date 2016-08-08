@@ -10,6 +10,8 @@ urlpatterns = [
         name='submit'),
     url(r'^(?P<slug>[\w\-]+)/$', views.WorkshopDetail.as_view(),
         name='details'),
+    url(r'^(?P<slug>[\w\-]+)/order/$', views.OrderDetail.as_view(),
+        name='order_details'),
     url(r'^(?P<workshop_slug>[\w\-]+)/confirm/$', views.ConfirmOrder.as_view(),
         name='confirm')
 ]

@@ -8,9 +8,10 @@ from django.views.generic.edit import FormMixin
 from django.conf import settings
 
 import requests
+from extra_views import FormSetView
 
 from .models import Workshop, Order, OrderItem
-from .forms import OrderForm
+from .forms import OrderForm, OrderDetailForm
 
 
 class WorkshopList(TemplateView):
@@ -57,6 +58,7 @@ class WorkshopDetail(FormMixin, DetailView):
     def form_valid(self, form):
         order = form.data.copy()
         order['workshop'] = self.object.slug
+        order['rates'] = list(form.rate_set.values('id', 'name'))
         order_total = 0
         for rate in form.rate_set:
             order_total += Decimal(form.data[rate.name]) * rate.price
@@ -66,8 +68,31 @@ class WorkshopDetail(FormMixin, DetailView):
         return super().form_valid(form)
 
     def get_success_url(self):
+        return reverse('payments:order_details',
+                       kwargs={'slug': self.object.slug})
+
+
+class OrderDetail(FormSetView):
+    template_name = 'payments/order_detail.html'
+    form_class = OrderDetailForm
+    extra = 0
+
+    def post(self, request, *args, **kwargs):
+        self.slug = kwargs['slug']
+        return super().post(request, *args, **kwargs)
+
+    def get_initial(self):
+        order = self.request.session['order']
+        initial = []
+        for rate in order['rates']:
+            for ticket in range(int(order[rate['name']])):
+                data = {'rate': rate['id']}
+                initial.append(data)
+        return initial
+
+    def get_success_url(self):
         return reverse('payments:confirm',
-                       kwargs={'workshop_slug': self.object.slug})
+                       kwargs={'workshop_slug': self.slug})
 
 
 class ConfirmOrder(TemplateView):
@@ -76,10 +101,11 @@ class ConfirmOrder(TemplateView):
     # TODO: refactor as a mixin and apply to confirm and the intermediate
     # view that does not yet exist
     def get(self, request, *args, **kwargs):
-        if 'account' not in request.session:
+        if 'order' not in request.session:
             url = reverse('payments:details',
                           kwargs={'slug': kwargs['workshop_slug']})
             return HttpResponseRedirect(url)
+        return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
