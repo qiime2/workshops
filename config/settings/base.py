@@ -59,7 +59,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            'payments/templates',
+            'templates',
         ],
         'OPTIONS': {
             'debug': DEBUG,

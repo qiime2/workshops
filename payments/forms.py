@@ -3,10 +3,9 @@ import functools
 from django import forms
 
 
-# TODO: add custom validation
 class OrderForm(forms.Form):
     email = forms.EmailField(
-        widget=forms.TextInput(attrs={'placeholder': 'Email Address'})
+        widget=forms.TextInput(attrs={'placeholder': 'Order Email Address'})
     )
 
     def __init__(self, *args, **kwargs):

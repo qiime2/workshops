@@ -14,7 +14,7 @@ from .forms import OrderForm
 
 
 class WorkshopList(ListView):
-    queryset = Workshop.objects.filter(start_date__gte=timezone.now())
+    queryset = Workshop.objects.filter(closing_date__gte=timezone.now())
     context_object_name = 'upcoming_workshops'
 
 
