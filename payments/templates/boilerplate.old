@@ -1,9 +1,0 @@
-{% extends 'payments/default.html' %}
-
-{% block title %}{% endblock %}
-
-{% block header %}{% endblock %}
-
-{% block content %}
-
-{% endblock %}

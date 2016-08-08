@@ -1,3 +1,6 @@
+import uuid
+from datetime import date
+
 from django.db import models
 from django.core.exceptions import ValidationError
 
@@ -8,14 +11,23 @@ class Workshop(models.Model):
     description = models.TextField()
     start_date = models.DateField()
     end_date = models.DateField()
+    closing_date = models.DateField()
     url = models.URLField(verbose_name='URL', max_length=2000)
     slug = models.SlugField(help_text='This is the unique identifier for the '
                             'URL (i.e. title-YYYY-MM-DD)')
+
+    @property
+    def is_open(self):
+        return self.closing_date >= date.today()
 
     class Meta:
         unique_together = (('title', 'slug'), )
 
     def clean(self):
+        # Make sure the workshop closes before it starts...
+        if self.closing_date > self.start_date:
+            raise ValidationError('A Workshop\'s closing date must be before '
+                                  'the start date.')
         # Make sure the workshop begins before it can end...
         if self.start_date > self.end_date:
             raise ValidationError('A Workshop\'s start date must be before '
@@ -45,7 +57,8 @@ class Rate(models.Model):
 
 
 class Order(models.Model):
-    email = models.EmailField()
+    transaction_id = models.UUIDField(default=uuid.uuid4, editable=False)
+    contact_email = models.EmailField()
     order_total = models.DecimalField(max_digits=7, decimal_places=2,
                                       verbose_name='order total (USD)')
     order_datetime = models.DateTimeField(auto_now_add=True)
@@ -63,14 +76,18 @@ class Order(models.Model):
     )
 
     def __str__(self):
-        return '%s: $%s on %s' % (self.email, self.order_total,
+        return '%s: $%s on %s' % (self.contact_email, self.order_total,
                                   self.order_datetime)
 
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order)
     rate = models.ForeignKey(Rate)
-    quantity = models.PositiveIntegerField()
+    email = models.EmailField()
+    name = models.CharField(max_length=500)
 
     def __str__(self):
-        return str(self.quantity)
+        return str(self.email)
+
+    class Meta:
+        unique_together = (('order', 'rate', 'email'), )

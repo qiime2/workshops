@@ -1,0 +1,57 @@
+{% extends 'payments/base.html' %}
+
+{% block title %}QIIME - Workshop: {{ workshop.title }}{% endblock %}
+
+{% block header %}Workshop:<br/ >{{ workshop.title }}{% endblock %}
+
+{% block content %}
+  <div class="description">
+    <span><strong>When: </strong>{{ workshop.start_date }} - {{ workshop.end_date }}</span>
+    <span><strong>Where: </strong>{{ workshop.location }}</span>
+    <p>{{ workshop.description | safe | linebreaks }}</p>
+  </div>
+
+  {% if workshop.is_open %}
+    <hr />
+
+    <h3>Register Now!</h3>
+    <div class="error-flash">
+      {% if form.errors %}
+        Order Errors:
+        <ul>
+          {% for name, errors in form.errors.items %}
+            {% if name == '__all__' %}
+              <li>{{ errors|join:', ' }}</li>
+            {% else %}
+              <li>{{ name | capfirst }}: {{ errors|join:', ' }}</li>
+            {% endif %}
+          {% endfor %}
+        </ul>
+      {% endif %}
+    </div>
+    <form method="POST">
+      {% csrf_token %}
+      {{ form.email }} <br />
+      <p>Each ticket purchased as part of an order needs a unique email address.</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Ticket Quantity</th>
+            <th>Rate Type</th>
+            <th>Price</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for rate in rates %}
+            <tr>
+              <td>{{ rate.field }}</td>
+              <td>{{ rate.name }}</td>
+              <td>{{ rate.price }} USD</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <input type="submit" value="Continue" />
+    </form>
+  {% endif %}
+{% endblock %}

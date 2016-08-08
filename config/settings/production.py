@@ -89,3 +89,11 @@ LOGGING = {
 ADMIN_URL = env('DJANGO_ADMIN_URL')
 
 STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
+
+# App-specific business logic
+LMID = env.str('LMID')
+PAYMENT_URL = env.str('PAYMENT_URL')
+PAYMENT_TITLE = env.str('PAYMENT_TITLE')
+PAYMENT_DESCRIPTION = env.str('PAYMENT_DESCRIPTION')
+PAYMENT_CONTACT_INFO = env.str('PAYMENT_CONTACT_INFO')
+PAYMENT_CERT_BUNDLE = env.str('PAYMENT_CERT_BUNDLE')

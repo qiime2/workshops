@@ -3,10 +3,9 @@ import functools
 from django import forms
 
 
-# TODO: add custom validation
 class OrderForm(forms.Form):
     email = forms.EmailField(
-        widget=forms.TextInput(attrs={'placeholder': 'Email Address'})
+        widget=forms.TextInput(attrs={'placeholder': 'Order Email Address'})
     )
 
     def __init__(self, *args, **kwargs):
@@ -15,7 +14,7 @@ class OrderForm(forms.Form):
 
         self.rate_set = workshop.rate_set.order_by('price')
         for rate in self.rate_set:
-            self.fields[rate.name] = forms.IntegerField(min_value=0)
+            self.fields[rate.name] = forms.IntegerField(initial=0, min_value=0)
 
     def clean(self):
         cleaned_data = super().clean()
@@ -27,3 +26,13 @@ class OrderForm(forms.Form):
             raise forms.ValidationError('Order can not be empty.')
 
         return cleaned_data
+
+
+class OrderDetailForm(forms.Form):
+    email = forms.EmailField(
+        widget=forms.TextInput(attrs={'placeholder': 'Ticketholder\'s Email'})
+    )
+    name = forms.CharField(
+        widget=forms.TextInput(attrs={'placeholder': 'Ticketholder\'s Name'})
+    )
+    rate = forms.CharField(widget=forms.HiddenInput())

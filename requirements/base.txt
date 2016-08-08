@@ -6,3 +6,6 @@ whitenoise==3.2
 
 # Network
 requests==2.10.0
+
+# Views
+django-extra-views==0.8.0

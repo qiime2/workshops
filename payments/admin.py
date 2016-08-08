@@ -16,7 +16,7 @@ class RateInline(admin.TabularInline):
 class WorkshopAdmin(admin.ModelAdmin):
     inlines = [InstructorInline, RateInline]
     prepopulated_fields = {'slug': ('title', 'start_date')}
-    list_display = ('title', 'start_date', 'end_date', 'url')
+    list_display = ('title', 'closing_date', 'start_date', 'end_date', 'url')
 
 
 class RateAdmin(admin.ModelAdmin):
@@ -27,7 +27,8 @@ class OrderItemInline(admin.TabularInline):
     can_delete = False
     model = OrderItem
     extra = 0
-    readonly_fields = ('order', 'rate', 'quantity')
+    readonly_fields = ('rate', 'name')
+    fields = ('rate', 'name')
 
     def has_add_permission(self, request):
         return False
@@ -35,15 +36,15 @@ class OrderItemInline(admin.TabularInline):
 
 class OrderAdmin(admin.ModelAdmin):
     inlines = [OrderItemInline]
-    readonly_fields = ('email', 'order_total', 'billed_total',
-                       'billed_datetime')
-    list_display = ('email', 'order_total', 'order_datetime',
-                    'billed_total', 'billed_datetime')
+    readonly_fields = ('contact_email', 'order_total', 'billed_total',
+                       'billed_datetime', 'transaction_id')
+    list_display = ('contact_email', 'order_total', 'order_datetime',
+                    'billed_total', 'billed_datetime', 'transaction_id')
 
 
 class OrderItemAdmin(admin.ModelAdmin):
-    list_display = ('order', 'rate', 'quantity')
-    readonly_fields = ('order', 'rate', 'quantity')
+    list_display = ('order', 'rate', 'email')
+    readonly_fields = ('order', 'rate', 'email')
 
 admin.site.register(Workshop, WorkshopAdmin)
 admin.site.register(Instructor)

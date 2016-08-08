@@ -59,7 +59,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            'payments/templates',
+            'templates',
         ],
         'OPTIONS': {
             'debug': DEBUG,
@@ -119,7 +119,7 @@ USE_TZ = True
 STATIC_ROOT = str(BASE_DIR('staticfiles'))
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (
-    str(BASE_DIR.path('payments/static')),
+    str(BASE_DIR.path('static')),
 )
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
@@ -139,3 +139,14 @@ DATABASES = {
         'NAME': str(BASE_DIR.path('db.sqlite3')),
     }
 }
+
+INTERNAL_IPS = ('127.0.0.1', 'localhost')
+
+# App-specific business logic
+LMID = env.str('LMID', '1234')
+PAYMENT_URL = env.str('PAYMENT_URL', 'http://www.example.com')
+PAYMENT_TITLE = env.str('PAYMENT_TITLE', 'test')
+PAYMENT_DESCRIPTION = env.str('PAYMENT_DESCRIPTION', 'test')
+PAYMENT_CONTACT_INFO = env.str('PAYMENT_CONTACT_INFO', 'EXAMPLE GROUP\n'
+                                                       'example@example.com')
+PAYMENT_CERT_BUNDLE = env.str('PAYMENT_CERT_BUNDLE', './bundle.pem')
