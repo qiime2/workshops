@@ -149,4 +149,4 @@ PAYMENT_TITLE = env.str('PAYMENT_TITLE', 'test')
 PAYMENT_DESCRIPTION = env.str('PAYMENT_DESCRIPTION', 'test')
 PAYMENT_CONTACT_INFO = env.str('PAYMENT_CONTACT_INFO', 'EXAMPLE GROUP\n'
                                                        'example@example.com')
-PAYMENT_CERT_BUNDLE = env.path('PAYMENT_CERT_BUNDLE', './bundle.pem')
+PAYMENT_CERT_BUNDLE = env.str('PAYMENT_CERT_BUNDLE', './bundle.pem')

@@ -10,8 +10,17 @@ from django.conf import settings
 import requests
 from extra_views import FormSetView
 
-from .models import Workshop, Order, OrderItem
+from .models import Workshop, Order, OrderItem, Rate
 from .forms import OrderForm, OrderDetailForm
+
+
+class SessionConfirmMixin(object):
+    def get(self, request, *args, **kwargs):
+        if 'order' not in request.session:
+            url = reverse('payments:details',
+                          kwargs={'slug': kwargs['slug']})
+            return HttpResponseRedirect(url)
+        return super().get(request, *args, **kwargs)
 
 
 class WorkshopList(TemplateView):
@@ -20,7 +29,7 @@ class WorkshopList(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['upcoming_workshops'] = Workshop.objects \
-            .filter(closing_date__gte=timezone.now())
+            .filter(start_date__gte=timezone.now())
         context['past_workshops'] = Workshop.objects \
             .filter(closing_date__lt=timezone.now())
         return context
@@ -72,7 +81,7 @@ class WorkshopDetail(FormMixin, DetailView):
                        kwargs={'slug': self.object.slug})
 
 
-class OrderDetail(FormSetView):
+class OrderDetail(SessionConfirmMixin, FormSetView):
     template_name = 'payments/order_detail.html'
     form_class = OrderDetailForm
     extra = 0
@@ -88,24 +97,39 @@ class OrderDetail(FormSetView):
             for ticket in range(int(order[rate['name']])):
                 data = {'rate': rate['id']}
                 initial.append(data)
+        self.initial = initial
         return initial
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        zipped = []
+        for i, form in enumerate(context['formset']):
+            rate = Rate.objects.get(pk=self.initial[i]['rate'])
+            data = {'form': form, 'rate': rate}
+            zipped.append(data)
+        context['zipped'] = zipped
+        return context
+
+    def formset_valid(self, formset):
+        suborder = formset.data.copy()
+        order = self.request.session['order']
+        tickets = []
+        total_forms = suborder['form-TOTAL_FORMS']
+        for i in range(int(total_forms)):
+            rate = suborder['form-%s-rate' % i]
+            email = suborder['form-%s-email' % i]
+            tickets.append({'rate': rate, 'email': email})
+        order['tickets'] = tickets
+        self.request.session['order'] = order
+        return super().formset_valid(formset)
 
     def get_success_url(self):
         return reverse('payments:confirm',
-                       kwargs={'workshop_slug': self.slug})
+                       kwargs={'slug': self.slug})
 
 
-class ConfirmOrder(TemplateView):
+class ConfirmOrder(SessionConfirmMixin, TemplateView):
     template_name = 'payments/workshop_confirm.html'
-
-    # TODO: refactor as a mixin and apply to confirm and the intermediate
-    # view that does not yet exist
-    def get(self, request, *args, **kwargs):
-        if 'order' not in request.session:
-            url = reverse('payments:details',
-                          kwargs={'slug': kwargs['workshop_slug']})
-            return HttpResponseRedirect(url)
-        return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -120,14 +144,11 @@ class SubmitOrder(View):
 
     def post(self, request, *args, **kwargs):
         order_data = request.session['order']
-        workshop = Workshop.objects.get(slug=order_data['workshop'])
         order = Order.objects.create(contact_email=order_data['email'],
                                      order_total=order_data['order_total'])
-        for rate in workshop.rate_set.all():
-            if order_data[rate.name] != 0:
-                OrderItem.objects.create(order=order, rate=rate,
-                                         # TODO: Fix this
-                                         email=order_data['email'])
+        for ticket in request.session['order']['tickets']:
+            OrderItem.objects.create(order=order, rate_id=ticket['rate'],
+                                     email=ticket['email'])
 
         # Now that the order is saved, clear the session so that they cant
         # resubmit the order

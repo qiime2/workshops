@@ -2,8 +2,6 @@ import functools
 
 from django import forms
 
-from .models import Rate
-
 
 class OrderForm(forms.Form):
     email = forms.EmailField(
@@ -16,7 +14,7 @@ class OrderForm(forms.Form):
 
         self.rate_set = workshop.rate_set.order_by('price')
         for rate in self.rate_set:
-            self.fields[rate.name] = forms.IntegerField(min_value=0)
+            self.fields[rate.name] = forms.IntegerField(initial=0, min_value=0)
 
     def clean(self):
         cleaned_data = super().clean()
@@ -34,4 +32,4 @@ class OrderDetailForm(forms.Form):
     email = forms.EmailField(
         widget=forms.TextInput(attrs={'placeholder': 'Ticket Email Address'})
     )
-    rate = forms.ModelChoiceField(disabled=True, queryset=Rate.objects.all())
+    rate = forms.CharField(widget=forms.HiddenInput())

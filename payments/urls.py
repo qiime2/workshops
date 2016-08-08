@@ -12,6 +12,6 @@ urlpatterns = [
         name='details'),
     url(r'^(?P<slug>[\w\-]+)/order/$', views.OrderDetail.as_view(),
         name='order_details'),
-    url(r'^(?P<workshop_slug>[\w\-]+)/confirm/$', views.ConfirmOrder.as_view(),
+    url(r'^(?P<slug>[\w\-]+)/confirm/$', views.ConfirmOrder.as_view(),
         name='confirm')
 ]

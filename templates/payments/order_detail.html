@@ -6,9 +6,15 @@
 
 {% block content %}
 <form method="post" action="">
+  {{ formset.management_form }}
+  {% csrf_token %}
   <table>
-    {% csrf_token %}
-    {{ formset }}
+    {% for pair in zipped %}
+      <tr>
+          <td>{{ pair.form.as_p }}</td>
+          <td>{{ pair.rate }}</td>
+      </tr>
+    {% endfor %}
   </table>
   <input type="submit" value="Continue" />
 </form>
