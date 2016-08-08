@@ -7,7 +7,7 @@ google.load("feeds", "1");
 function newsFeedLoaded(result) {
     var container = document.getElementById("news");
   if (!result.error) {
-	formatFeed(result, container);
+    formatFeed(result, container);
   }
   else
   {
@@ -18,7 +18,7 @@ function newsFeedLoaded(result) {
 function citationFeedLoaded(result) {
     var container = document.getElementById("citations");
   if (!result.error) {
-	formatFeed(result, container);
+    formatFeed(result, container);
   }
   else
   {
@@ -29,7 +29,7 @@ function citationFeedLoaded(result) {
 function forumFeedLoaded(result) {
     var container = document.getElementById("forum");
   if (!result.error) {
-	formatFeed(result, container);
+    formatFeed(result, container);
   }
   else
   {
@@ -38,21 +38,21 @@ function forumFeedLoaded(result) {
 }
 
 function formatFeed(result, container) {
-	var html_string = '<ul class="feedlist">'
+    var html_string = '<ul class="feedlist">'
     for (var i = 0; i < result.feed.entries.length; i++) {
       var entry = result.feed.entries[i];
-		html_string += '<li><a href=\"'+entry.link+'\" target="_blank">'+entry.title+'</a><p>'+entry.publishedDate+'<br>'+entry.contentSnippet+'</p></li>';
+        html_string += '<li><a href=\"'+entry.link+'\" target="_blank">'+entry.title+'</a><p>'+entry.publishedDate+'<br>'+entry.contentSnippet+'</p></li>';
       // var div = document.createElement("div");
       // div.appendChild(document.createTextNode(entry.title));
       // container.appendChild(div);
     }
-	html_string += '</ul>'
-	container.innerHTML = html_string;
+    html_string += '</ul>'
+    container.innerHTML = html_string;
 }
 
 function load() {
-	// var container = document.getElementById("news");
-	var news_feed = new google.feeds.Feed("http://qiime.wordpress.com/feed/");
+    // var container = document.getElementById("news");
+    var news_feed = new google.feeds.Feed("http://qiime.wordpress.com/feed/");
 
   // Calling load sends the request off.  It requires a callback function.
   news_feed.load(newsFeedLoaded);
