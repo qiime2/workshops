@@ -15,9 +15,9 @@
     <hr />
 
     <h3>Register Now!</h3>
-    <div class="error-flash">
-      {% if form.errors %}
-        Order Errors:
+
+    {% if form.errors %}
+      <div class="alert alert-danger">
         <ul>
           {% for name, errors in form.errors.items %}
             {% if name == '__all__' %}
@@ -27,16 +27,16 @@
             {% endif %}
           {% endfor %}
         </ul>
-      {% endif %}
-    </div>
+      </div>
+    {% endif %}
     <form method="POST">
       {% csrf_token %}
       {{ form.email }} <br />
       <p>Each ticket purchased as part of an order needs a unique email address.</p>
-      <table>
+      <table class="table">
         <thead>
           <tr>
-            <th>Ticket Quantity</th>
+            <th class="col-xs-2">Ticket Quantity</th>
             <th>Rate Type</th>
             <th>Price</th>
           </tr>
@@ -51,7 +51,7 @@
           {% endfor %}
         </tbody>
       </table>
-      <input type="submit" value="Continue" />
+      <input type="submit" class="btn btn-primary pull-right" value="Continue" />
     </form>
   {% endif %}
 {% endblock %}
