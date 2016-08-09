@@ -185,8 +185,8 @@ class SubmitOrder(View):
             payload['metadata_item_%s,%s' % (0, i)] = \
                 '%s: %s (%s)' % (rate.name, ticket['name'], ticket['email'])
             payload['metadata_item_%s,%s' % (1, i)] = '1'
-            payload['metadata_item_%s,%s' % (2, i)] = '%s' % rate.price
-            payload['metadata_item_%s,%s' % (3, i)] = '%s' % rate.price
+            payload['metadata_item_%s,%s' % (2, i)] = str(rate.price)
+            payload['metadata_item_%s,%s' % (3, i)] = str(rate.price)
             payload['metadata_item_%s,%s' % (4, i)] = settings.PSF_SPEEDTYPE
             payload['metadata_item_%s,%s' % (5, i)] = settings.PSF_ACCT_NUMBER
 

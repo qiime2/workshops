@@ -42,6 +42,9 @@ Creating a **superuser account**:
     heroku config:set PAYMENT_CONTACT_INFO=YOUR_PAYMENT_CONTACT_INFO
     heroku config:set PAYMENT_CERT_BUNDLE=YOUR_PAYMENT_CERT_BUNDLE
 
+    heroku config:set PSF_SPEEDTYPE=YOUR_PSF_SPEEDTYPE
+    heroku config:set PSF_ACCT_NUMBER=YOUR_PSF_ACCT_NUMBER
+
     heroku config:set PYTHONHASHSEED=random
     heroku config:set DJANGO_ADMIN_URL=\^somelocation/
 
