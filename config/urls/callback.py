@@ -4,7 +4,7 @@ from django.views import defaults as default_views
 
 
 urlpatterns = [
-    url(r'^', include('payments.urls')),
+    url(r'^', include('payments.urls.callback')),
 ]
 
 if settings.DEBUG:

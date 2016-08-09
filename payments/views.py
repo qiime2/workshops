@@ -186,7 +186,7 @@ class SubmitOrder(View):
 
 
 @method_decorator(csrf_exempt, name='dispatch')
-class OrderPostback(View):
+class OrderCallback(View):
     http_method_names = ['post']
 
     def post(self, request, *args, **kwargs):
