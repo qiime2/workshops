@@ -6,7 +6,7 @@ from django.views import defaults as default_views
 
 urlpatterns = [
     url(settings.ADMIN_URL, include(admin.site.urls)),
-    url(r'^', include('payments.urls.payments')),
+    url(r'^', include('payments.urls.payments', namespace='payments')),
 ]
 
 if settings.DEBUG:

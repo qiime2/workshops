@@ -10,20 +10,34 @@
 <form method="post" action="">
   {{ formset.management_form }}
   {% csrf_token %}
-  <table class="workshop">
+  <table class="table">
     <tr>
       <th>Name</th>
       <th>Email</th>
       <th>Ticket Rate</th>
     </tr>
     {% for pair in zipped %}
-      <tr>
-          <td>{{ pair.form.name.errors }} {{ pair.form.name }}</td>
-          <td>{{ pair.form.name.errors }} {{ pair.form.email }}</td>
-          <td>{{ pair.rate }} {{ pair.form.rate }}</td>
+      <tr class="form-group">
+        <td class="control-group {%if pair.form.name.errors %}has-error{%endif%}">
+          {% if pair.form.name.errors %}
+            <label class="control-label">
+              {{ pair.form.name.errors|join:", " }}
+            </label>
+          {% endif %}
+          {{ pair.form.name }}
+        </td>
+        <td class="control-group {%if pair.form.email.errors %}has-error{%endif%}">
+          {% if pair.form.email.errors %}
+            <label class="control-label">
+              {{ pair.form.email.errors|join:", " }}
+            </label>
+          {% endif %}
+          {{ pair.form.email }}
+        </td>
+        <td class="text-right">{{ pair.rate }} {{ pair.form.rate }}</td>
       </tr>
     {% endfor %}
   </table>
-  <input type="submit" value="Continue" />
+  <input type="submit" class="btn btn-primary pull-right" value="Continue" />
 </form>
 {% endblock %}
