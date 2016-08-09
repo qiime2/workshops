@@ -191,10 +191,11 @@ class OrderCallback(View):
 
     def post(self, request, *args, **kwargs):
         try:
-            order = Order.objects.get(transaction_id=request.POST.unique_id)
-            order.billed_total = request.POST.amount
-            order.billed_datetime = request.POST.date_time
+            order = Order.objects.get(transaction_id=request.POST['unique_id'])
+            order.billed_total = request.POST['amount']
+            order.billed_datetime = request.POST['date_time']
             order.save()
         except (Order.DoesNotExist, KeyError) as e:
-            logger.error('%s: %s' % (request.body, e))
+            logger.error('%s: %s' % (e, request.body))
+            return HttpResponse(status=400)
         return HttpResponse()
