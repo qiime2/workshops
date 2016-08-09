@@ -40,7 +40,9 @@ class Workshop(models.Model):
 
 class Instructor(models.Model):
     name = models.CharField(max_length=300)
-    workshops = models.ManyToManyField(Workshop, related_name='instructors')
+    # Allow blanks otherwise workshops are needed to be assigned upon creation
+    workshops = models.ManyToManyField(Workshop, related_name='instructors',
+                                       blank=True)
 
     def __str__(self):
         return self.name
