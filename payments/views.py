@@ -1,8 +1,11 @@
+import logging
 from decimal import Decimal
 
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.utils import timezone
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import DetailView, TemplateView, View
 from django.views.generic.edit import FormMixin
 from django.conf import settings
@@ -12,6 +15,8 @@ from extra_views import FormSetView
 
 from .models import Workshop, Order, OrderItem, Rate
 from .forms import OrderForm, OrderDetailForm
+
+logger = logging.getLogger(__name__)
 
 
 class SessionConfirmMixin(object):
@@ -178,3 +183,12 @@ class SubmitOrder(View):
         # the second post on behalf of the customer, instead of just returning
         # the intermediate form as-is.
         return HttpResponse(r.text)
+
+
+@method_decorator(csrf_exempt, name='dispatch')
+class OrderPostback(View):
+    http_method_names = ['post']
+
+    def post(self, request, *args, **kwargs):
+        logger.error(request.body)
+        return HttpResponse()
