@@ -159,11 +159,12 @@ class SubmitOrder(View):
         order_data = request.session['order']
         order = Order.objects.create(contact_email=order_data['email'],
                                      order_total=order_data['order_total'])
+        items = []
         for ticket in order_data['tickets']:
-            OrderItem.objects.create(order=order,
-                                     rate_id=ticket['rate'],
-                                     email=ticket['email'],
-                                     name=ticket['name'])
+            items.append(OrderItem(order=order, rate_id=ticket['rate'],
+                         email=ticket['email'], name=ticket['name']))
+        # Hit the database only once and create all of the OrderItems generated
+        OrderItem.objects.bulk_create(items)
 
         # Now that the order is saved, clear the session so that they cant
         # resubmit the order
