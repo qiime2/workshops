@@ -33,6 +33,7 @@ DJANGO_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
 ]
 
 THIRD_PARTY_APPS = []
@@ -46,6 +47,7 @@ INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'payments.middleware.PatchedSubdomainURLRoutingMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -53,7 +55,12 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'config.urls'
+ROOT_URLCONF = 'config.urls.payments'
+
+SUBDOMAIN_URLCONFS = {
+    'workshops': 'config.urls.payments',
+    'payment-callback': 'config.urls.callback',
+}
 
 TEMPLATES = [
     {
@@ -181,6 +188,8 @@ DATABASES = {
 }
 
 INTERNAL_IPS = ('127.0.0.1', 'localhost')
+
+SITE_ID = 1
 
 # App-specific business logic
 LMID = env.str('LMID', '1234')
