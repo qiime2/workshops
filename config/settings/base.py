@@ -36,7 +36,9 @@ DJANGO_APPS = [
     'django.contrib.sites',
 ]
 
-THIRD_PARTY_APPS = []
+THIRD_PARTY_APPS = [
+    'subdomains',
+]
 
 LOCAL_APPS = [
     'payments.apps.PaymentsConfig',

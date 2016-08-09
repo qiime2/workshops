@@ -1,68 +1,67 @@
 {% load static %}
+{% load subdomainurls %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="stylesheet" href="style.css" />
-    <title>{% block title %}{% endblock %}</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}" media="screen" title="no title" charset="utf-8">
-    <script src="{% static 'js/qiime.js' %}" charset="utf-8"></script>
-    {% if debug %}
-      <script src="http://localhost:35729/livereload.js" charset="utf-8"></script>
-    {% endif %}
+  <title>{% block title %}{% endblock %}</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}" media="screen" title="no title" charset="utf-8">
+  {% if debug %}
+    <script src="http://localhost:35729/livereload.js" charset="utf-8"></script>
+  {% endif %}
 </head>
-
 <body>
-    <div class="wrapper clearfix">
-        <div class="header" id="header">
-            <img class="header" src="{% static 'img/qiime_logo_large.png' %}" alt="QIIME">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-10 col-md-offset-2">
+        <img class="header" src="{% static 'img/qiime_logo_large.png' %}" alt="QIIME">
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-2">
+        <ul class="nav nav-sidebar pull-right">
+          <li class="active text-right"><a href="http://qiime.org/index.html">Home</a></li>
+          <li class="text-right"><a href="{% url 'payments:index' subdomain='workshops' %}">Workshops</a></li>
+        </ul>
+      </div>
+
+      <div class="col-md-10">
+        <div class="dotted-vertical">
+          <h1 class="dotted-horizontal" >
+            {% block header %}{% endblock %}
+            <img src="{% static 'img/spacer_dots.png' %}" alt="...">
+          </h1>
+          {% block content %}{% endblock %}
         </div>
-        <div class="leftcol" id="leftcol">
-            <div class="menuul">
-                <ul class="menu">
-                    <li class="unselected" id="main"><a href="http://qiime.org/index.html">Home</a></li>
-                    <li class="unselected"><a href="http://qiime.org/install/index.html">Install</a></li>
-                    <li class="unselected"><a href="http://qiime.org/tutorials/index.html">Tutorials</a></li>
-                    <li class="unselected"><a href="http://scripts.qiime.org">Scripts</a></li>
-                    <li class="unselected"><a href="http://help.qiime.org">Help</a></li>
-                    <li class="unselected" id="dataFiles"><a href="http://qiime.org/home_static/dataFiles.html">Resources</a></li>
-                    <li class="unselected"><a href="http://qiime.org/documentation/index.html">File Formats</a></li>
-                    <li class="unselected"><a href="http://workshops.qiime.org">Workshops</a></li>
-                    <li class="unselected"><a href="http://blog.qiime.org/">Blog</a></li>
-                    <li class="unselected"><a href="http://qiime.org/developer/index.html">Developer</a></li>
-                    <li class="unselected" id="citation"><a href="https://scholar.google.com/scholar?cites=16903127068530972426&as_sdt=805&sciodt=0,3&hl=en">Articles Citing QIIME</a></li>
-                    <li class="unselected">
-                    <!-- SiteSearch Google -->
-                    <form name="searchForm" action="javascript:search()">
-                        <input type="text" name="query" size="18" maxlength="240" value="">
-                        <input type="radio" name="target" value="https://groups.google.com/forum/#!searchin/qiime-forum/" checked> Forum
-                        <input type="radio" name="target" value="https://www.google.com/search?ie=UTF-8&oe=UTF-8&sitesearch=qiime.org%2F&q="> Documentation
-                        <br>
-                        <input type="submit" value="Search">
-                    </form>
-                    <!-- SiteSearch Google -->
-                    </li>
-                </ul>
-            </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12">
+        <div class="row">
+          <div class="center-block">
+            <img class="center-block" src="{% static 'img/spacer_dots.png' %}">
+          </div>
         </div>
-        <div class="centercol">
-            <h1>{% block header %}{% endblock %}<img src="{% static 'img/spacer_dots.png' %}" alt="..."></h1>
-            {% block content %}{% endblock %}
+        <div class="row">
+          <div class="center-block">
+            <span class="center-block text-center">&copy; Copyright 2015--, QIIME development team.</span>
+          </div>
         </div>
-        <div class="footer" id="footer">
-            <img src="{% static 'img/spacer_dots.png' %}"><br />
-            &copy; Copyright 2015--, QIIME development team.<br/>
-            <div>
-            <a href="http://scikit-bio.org/"><img class="f" width="412px"
-                                                            src="{% static 'img/powered_by_skbio.png' %}" alt="Powered by scikit-bio"></a>
-            </div>
+        <div class="row">
+          <div class="center-block">
+            <span>
+              <a href="http://scikit-bio.org/">
+                <img class="center-block" width="412px" src="{% static 'img/powered_by_skbio.png' %}" alt="Powered by scikit-bio">
+              </a>
+            </span>
+          </div>
         </div>
+      </div>
+    </div>
+
+  </div>
 </body>
 </html>
-
-
-
-
-
-
-
-</div>
