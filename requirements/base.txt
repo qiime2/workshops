@@ -6,6 +6,7 @@ whitenoise==3.2
 
 # Network
 requests==2.10.0
+django-subdomains==2.1.0
 
 # Views
 django-extra-views==0.8.0
