@@ -58,6 +58,7 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'config.urls.payments'
 
 SUBDOMAIN_URLCONFS = {
+    'workshops': 'config.urls.payments',
     'payment-callback': 'config.urls.callback',
 }
 
