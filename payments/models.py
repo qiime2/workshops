@@ -1,5 +1,4 @@
 import uuid
-from datetime import date
 
 from django.db import models
 from django.db.models.expressions import F
@@ -18,10 +17,23 @@ class Workshop(models.Model):
                             'URL (i.e. title-YYYY-MM-DD)')
     draft = models.BooleanField(help_text='Draft workshops do not show up on '
                                 'the workshop list overview')
+    capacity = models.PositiveIntegerField()
+    sales_open = models.BooleanField(help_text='Closed workshops do not show '
+                                     'up on the workshop list overview')
+
+    @property
+    def total_tickets_sold(self):
+        return OrderItem.objects.filter(rate__workshop=self).count()
+
+    @property
+    def is_at_capacity(self):
+        return self.total_tickets_sold >= self.capacity
 
     @property
     def is_open(self):
-        return self.start_date >= date.today()
+        if self.sales_open:
+            return not self.is_at_capacity
+        return self.sales_open
 
     @property
     def available_rates(self):

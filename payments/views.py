@@ -3,7 +3,6 @@ from decimal import Decimal
 
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
-from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView, DetailView, TemplateView, View
@@ -29,8 +28,7 @@ class SessionConfirmMixin(object):
 
 
 class WorkshopList(ListView):
-    queryset = Workshop.objects.filter(start_date__gte=timezone.now()) \
-        .filter(draft=False)
+    queryset = Workshop.objects.filter(sales_open=False)
     context_object_name = 'upcoming_workshops'
 
 
