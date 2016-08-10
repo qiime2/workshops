@@ -15,3 +15,7 @@ EMAIL_HOST = 'localhost'
 EMAIL_PORT = 1025
 EMAIL_BACKEND = env('DJANGO_EMAIL_BACKEND',
                     default='django.core.mail.backends.console.EmailBackend')
+
+INSTALLED_APPS += ['debug_toolbar']
+MIDDLEWARE += ['payments.middleware.PatchedDebugToolbarMiddleware']
+DEBUG_TOOLBAR_PATCH_SETTINGS = False
