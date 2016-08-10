@@ -160,6 +160,6 @@ PAYMENT_TITLE = env.str('PAYMENT_TITLE', 'test')
 PAYMENT_DESCRIPTION = env.str('PAYMENT_DESCRIPTION', 'test')
 PAYMENT_CONTACT_INFO = env.str('PAYMENT_CONTACT_INFO', 'EXAMPLE GROUP\n'
                                                        'example@example.com')
-PAYMENT_CERT_BUNDLE = env.str('PAYMENT_CERT_BUNDLE', './bundle.pem')
+PAYMENT_CERT_BUNDLE = env.str('PAYMENT_CERT_BUNDLE', './static/bundle.pem')
 PSF_SPEEDTYPE = env.str('PSF_SPEEDTYPE', '0000')
 PSF_ACCT_NUMBER = env.str('PSF_ACCT_NUMBER', '0000')
