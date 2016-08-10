@@ -1,13 +1,12 @@
 # QIIME Workshops
 
-[![Build Status](https://travis-ci.org/jakereps/qiime-workshops.svg?branch=master)](https://travis-ci.org/jakereps/qiime-workshops)
+[![Build Status](https://travis-ci.org/qiime2/qiime-workshops.svg?branch=master)](https://travis-ci.org/qiime2/qiime-workshops)
 
 Django App for QIIME workshop payments
 
 ## Development Setup
 
     $ pyvenv venv
-    $ echo "MANIFEST_URL=some_data_url" > .env
     $ source venv/bin/activate
     $ pip install -r requirements/local.txt
     $ python manage.py migrate
