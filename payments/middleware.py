@@ -1,7 +1,7 @@
 from django.utils.deprecation import MiddlewareMixin
+from django.conf import settings
 
 from subdomains.middleware import SubdomainURLRoutingMiddleware
-from debug_toolbar.middleware import DebugToolbarMiddleware
 
 
 class PatchedSubdomainURLRoutingMiddleware(MiddlewareMixin,
@@ -9,5 +9,9 @@ class PatchedSubdomainURLRoutingMiddleware(MiddlewareMixin,
     pass
 
 
-class PatchedDebugToolbarMiddleware(MiddlewareMixin, DebugToolbarMiddleware):
-    pass
+if settings.DEBUG:
+    from debug_toolbar.middleware import DebugToolbarMiddleware
+
+    class PatchedDebugToolbarMiddleware(MiddlewareMixin,
+                                        DebugToolbarMiddleware):
+        pass
