@@ -5,6 +5,7 @@
 {% block header %}Workshop:<br/ >{{ workshop.title }}{% endblock %}
 
 {% block content %}
+{% include 'payments/_draft_notice.html' %}
 <p>Each ticket order must have contact info.</p>
 
 <form method="post" action="">

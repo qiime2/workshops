@@ -1,0 +1,6 @@
+{% if user.is_authenticated and workshop.draft %}
+  <div class="alert alert-warning">
+    Current workshop is marked as draft, and is only viewable
+    by site administrators.
+  </div>
+{% endif %}
