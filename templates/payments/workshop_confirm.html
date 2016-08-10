@@ -12,11 +12,21 @@
   'Submit' to begin the payment process. Note: you will be taken to an off-site
   location to complete payment. You will have the option to print or email your
   reciept at time of payment</p><br />
-  <div><strong>Title: </strong>{{ workshop.title }}</div>
-  <div><strong>Dates: </strong>{{ workshop.start_date }} -
-      {{ workshop.end_date }}</div>
-  <div><strong>Order Contact Email: </strong>{{ order_email }}</div>
-  <div><strong>Order Total: </strong>{{ order_total }} USD</div> <br /><br />
+
+  <dl class="dl-horizontal">
+    <dt>Title</dt>
+    <dd>{{ workshop.title }}</dd>
+
+    <dt>Dates</dt>
+    <dd>{{ workshop.start_date }} - {{ workshop.end_date }}</dd>
+
+    <dt>Order Contact Email</dt>
+    <dd>{{ order_email }}</dd>
+
+    <dt>Order Total</dt>
+    <dd>{{ order_total }} USD</dd>
+  </dl>
+
   <table class="table">
     <tr>
       <th>Ticketholder Name</th>

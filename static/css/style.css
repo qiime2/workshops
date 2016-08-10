@@ -1,11 +1,3 @@
-* {
-    font-family: 'Helvetica' !important;
-}
-
-.errorlist {
-    color: #FF0000;
-}
-
 .dotted-horizontal {
     border-bottom: 1px dashed #bbb;
 }

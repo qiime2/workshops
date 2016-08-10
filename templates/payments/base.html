@@ -21,9 +21,13 @@
 
     <div class="row">
       <div class="col-md-2">
-        <ul class="nav nav-sidebar pull-right">
-          <li class="active text-right"><a href="http://qiime.org/index.html">Home</a></li>
-          <li class="text-right"><a href="{% url 'payments:index' subdomain='workshops' %}">Workshops</a></li>
+        <ul class="nav nav-sidebar pull-right text-right">
+          <li>
+            <a href="http://qiime.org/index.html">Home</a>
+          </li>
+          <li>
+            <a href="{% url 'payments:index' subdomain='workshops' %}">Workshops</a>
+          </li>
         </ul>
       </div>
 
