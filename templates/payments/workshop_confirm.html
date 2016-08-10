@@ -5,6 +5,8 @@
 {% block header %}Workshop:<br/ >{{ workshop.title }}{% endblock %}
 
 {% block content %}
+  {% include 'payments/_draft_notice.html' %}
+
   <p>The following is a summary of the order. Please use the 'back'
   functionality of your browser to fix any errors. If this looks okay, press
   'Submit' to begin the payment process. Note: you will be taken to an off-site

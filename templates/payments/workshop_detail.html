@@ -5,13 +5,15 @@
 {% block header %}Workshop:<br/ >{{ workshop.title }}{% endblock %}
 
 {% block content %}
+  {% include 'payments/_draft_notice.html' %}
+
   <div class="description">
     <span><strong>When: </strong>{{ workshop.start_date }} - {{ workshop.end_date }}</span>
     <span><strong>Where: </strong>{{ workshop.location }}</span>
     <p>{{ workshop.description | safe | linebreaks }}</p>
   </div>
 
-  {% if workshop.is_open %}
+  {% if workshop.is_open or user.is_authenticated %}
     <hr />
 
     <h3>Register Now!</h3>

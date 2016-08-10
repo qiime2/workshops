@@ -34,9 +34,11 @@ class WorkshopList(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['upcoming_workshops'] = Workshop.objects \
-            .filter(start_date__gte=timezone.now())
+            .filter(start_date__gte=timezone.now()) \
+            .filter(draft=False)
         context['past_workshops'] = Workshop.objects \
-            .filter(start_date__lt=timezone.now())
+            .filter(start_date__lt=timezone.now()) \
+            .filter(draft=False)
         return context
 
 
@@ -44,6 +46,12 @@ class WorkshopDetail(FormMixin, DetailView):
     model = Workshop
     form_class = OrderForm
     context_object_name = 'workshop'
+
+    def get(self, request, *args, **kwargs):
+        response = super().get(request, *args, **kwargs)
+        if not request.user.is_authenticated() and self.object.draft:
+            return HttpResponseRedirect(reverse('payments:index'))
+        return response
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()

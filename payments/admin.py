@@ -16,7 +16,13 @@ class RateInline(admin.TabularInline):
 class WorkshopAdmin(admin.ModelAdmin):
     inlines = [InstructorInline, RateInline]
     prepopulated_fields = {'slug': ('title', 'start_date')}
-    list_display = ('title', 'closing_date', 'start_date', 'end_date', 'url')
+    list_display = ('title', 'closing_date', 'start_date', 'end_date', 'url',
+                    '_draft')
+
+    def _draft(self, obj):
+        return not obj.draft
+    _draft.boolean = True
+    _draft.short_description = 'Live?'
 
 
 class RateAdmin(admin.ModelAdmin):

@@ -3,6 +3,7 @@ from datetime import date
 
 from django.db import models
 from django.core.exceptions import ValidationError
+from django.core.urlresolvers import reverse
 
 
 class Workshop(models.Model):
@@ -15,6 +16,8 @@ class Workshop(models.Model):
     url = models.URLField(verbose_name='URL', max_length=2000)
     slug = models.SlugField(help_text='This is the unique identifier for the '
                             'URL (i.e. title-YYYY-MM-DD)')
+    draft = models.BooleanField(help_text='Draft workshops do not show up on '
+                                'the workshop list overview')
 
     @property
     def is_open(self):
@@ -36,6 +39,10 @@ class Workshop(models.Model):
 
     def __str__(self):
         return self.title
+
+    # For django admin 'view on site' link
+    def get_absolute_url(self):
+        return reverse('payments:details', kwargs={'slug': self.slug})
 
 
 class Instructor(models.Model):
