@@ -2,6 +2,7 @@ import uuid
 from datetime import date
 
 from django.db import models
+from django.db.models.expressions import F
 from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
 
@@ -21,6 +22,14 @@ class Workshop(models.Model):
     @property
     def is_open(self):
         return self.start_date >= date.today()
+
+    @property
+    def available_rates(self):
+        return self.rate_set.filter(sold_out=False)
+
+    @property
+    def sold_out_rates(self):
+        return self.rate_set.filter(sold_out=True)
 
     class Meta:
         unique_together = (('title', 'slug'), )
@@ -50,11 +59,28 @@ class Instructor(models.Model):
         return self.name
 
 
+class RateManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset() \
+            .annotate(ticket_count=models.Count('orderitem')) \
+            .annotate(sold_out=models.Case(
+                          models.When(
+                              ticket_count__lt=F('capacity'),
+                              then=models.Value(False),
+                          ),
+                          default=True,
+                          output_field=models.BooleanField(),
+                        ))
+
+
 class Rate(models.Model):
     workshop = models.ForeignKey(Workshop)
     name = models.CharField(max_length=300)
     price = models.DecimalField(max_digits=6, decimal_places=2,
                                 verbose_name='price (USD)')
+    capacity = models.PositiveIntegerField()
+
+    objects = RateManager()
 
     def __str__(self):
         return '%s: $%s' % (self.name, self.price)

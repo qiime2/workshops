@@ -56,8 +56,8 @@ class WorkshopDetail(FormMixin, DetailView):
         rates = []
         for rate in self.object.rate_set.order_by('price'):
             field = context['form'][rate.name]
-            rates.append({'field': field, 'name': rate.name, 'price':
-                          rate.price})
+            rates.append({'field': field, 'name': rate.name,
+                          'price': rate.price, 'sold_out': rate.sold_out})
         context['rates'] = rates
         return context
 
