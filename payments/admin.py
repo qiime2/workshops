@@ -16,8 +16,7 @@ class RateInline(admin.TabularInline):
 class WorkshopAdmin(admin.ModelAdmin):
     inlines = [InstructorInline, RateInline]
     prepopulated_fields = {'slug': ('title', 'start_date')}
-    list_display = ('title', 'closing_date', 'start_date', 'end_date', 'url',
-                    'live')
+    list_display = ('title', 'start_date', 'end_date', 'url', 'live')
 
     # Show 'draft' in the admin is a bit confusing with the default django
     # widgets, so inverting makes sense here

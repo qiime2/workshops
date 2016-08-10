@@ -1,6 +1,13 @@
-{% if user.is_authenticated and workshop.draft %}
-  <div class="alert alert-warning">
-    Current workshop is marked as draft, and is only viewable
-    by site administrators.
-  </div>
+{% if user.is_authenticated %}
+  {% if workshop.draft or not workshop.is_open %}
+    <div class="alert alert-warning">
+      Current workshop is
+      {% if workshop.draft %}
+        marked as draft,
+      {% elif not workship.is_open %}
+        not open,
+      {% endif %}
+      and is only viewable by site administrators.
+    </div>
+  {% endif %}
 {% endif %}

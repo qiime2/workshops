@@ -12,7 +12,6 @@ class Workshop(models.Model):
     description = models.TextField()
     start_date = models.DateField()
     end_date = models.DateField()
-    closing_date = models.DateField()
     url = models.URLField(verbose_name='URL', max_length=2000)
     slug = models.SlugField(help_text='This is the unique identifier for the '
                             'URL (i.e. title-YYYY-MM-DD)')
@@ -21,16 +20,12 @@ class Workshop(models.Model):
 
     @property
     def is_open(self):
-        return self.closing_date >= date.today()
+        return self.start_date >= date.today()
 
     class Meta:
         unique_together = (('title', 'slug'), )
 
     def clean(self):
-        # Make sure the workshop closes before it starts...
-        if self.closing_date > self.start_date:
-            raise ValidationError('A Workshop\'s closing date must be before '
-                                  'the start date.')
         # Make sure the workshop begins before it can end...
         if self.start_date > self.end_date:
             raise ValidationError('A Workshop\'s start date must be before '
