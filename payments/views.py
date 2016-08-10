@@ -3,10 +3,9 @@ from decimal import Decimal
 
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
-from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
-from django.views.generic import DetailView, TemplateView, View
+from django.views.generic import ListView, DetailView, TemplateView, View
 from django.views.generic.edit import FormMixin
 from django.conf import settings
 
@@ -28,18 +27,9 @@ class SessionConfirmMixin(object):
         return super().get(request, *args, **kwargs)
 
 
-class WorkshopList(TemplateView):
-    template_name = 'payments/workshop_list.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['upcoming_workshops'] = Workshop.objects \
-            .filter(start_date__gte=timezone.now()) \
-            .filter(draft=False)
-        context['past_workshops'] = Workshop.objects \
-            .filter(start_date__lt=timezone.now()) \
-            .filter(draft=False)
-        return context
+class WorkshopList(ListView):
+    queryset = Workshop.objects.filter(sales_open=True)
+    context_object_name = 'upcoming_workshops'
 
 
 class WorkshopDetail(FormMixin, DetailView):
@@ -64,8 +54,8 @@ class WorkshopDetail(FormMixin, DetailView):
         rates = []
         for rate in self.object.rate_set.order_by('price'):
             field = context['form'][rate.name]
-            rates.append({'field': field, 'name': rate.name, 'price':
-                          rate.price})
+            rates.append({'field': field, 'name': rate.name,
+                          'price': rate.price, 'sold_out': rate.sold_out})
         context['rates'] = rates
         return context
 

@@ -13,11 +13,18 @@ class OrderForm(forms.Form):
         workshop = kwargs.pop('workshop')
         super().__init__(*args, **kwargs)
 
-        self.rate_set = workshop.rate_set.order_by('price')
+        self.rate_set = workshop.available_rates.order_by('price')
         for rate in self.rate_set:
             self.fields[rate.name] = forms.IntegerField(
                 initial=0,
                 min_value=0,
+                widget=forms.NumberInput(attrs={'class': 'form-control'})
+            )
+        for rate in workshop.sold_out_rates.all():
+            self.fields[rate.name] = forms.IntegerField(
+                initial=0,
+                min_value=0,
+                disabled=True,
                 widget=forms.NumberInput(attrs={'class': 'form-control'})
             )
 

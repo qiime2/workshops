@@ -1,7 +1,7 @@
 import uuid
-from datetime import date
 
 from django.db import models
+from django.db.models.expressions import F
 from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
 
@@ -12,25 +12,41 @@ class Workshop(models.Model):
     description = models.TextField()
     start_date = models.DateField()
     end_date = models.DateField()
-    closing_date = models.DateField()
     url = models.URLField(verbose_name='URL', max_length=2000)
     slug = models.SlugField(help_text='This is the unique identifier for the '
                             'URL (i.e. title-YYYY-MM-DD)')
     draft = models.BooleanField(help_text='Draft workshops do not show up on '
                                 'the workshop list overview')
+    capacity = models.PositiveIntegerField()
+    sales_open = models.BooleanField(help_text='Closed workshops do not show '
+                                     'up on the workshop list overview')
+
+    @property
+    def total_tickets_sold(self):
+        return OrderItem.objects.filter(rate__workshop=self).count()
+
+    @property
+    def is_at_capacity(self):
+        return self.total_tickets_sold >= self.capacity
 
     @property
     def is_open(self):
-        return self.closing_date >= date.today()
+        if self.sales_open:
+            return not self.is_at_capacity
+        return self.sales_open
+
+    @property
+    def available_rates(self):
+        return self.rate_set.filter(sold_out=False)
+
+    @property
+    def sold_out_rates(self):
+        return self.rate_set.filter(sold_out=True)
 
     class Meta:
         unique_together = (('title', 'slug'), )
 
     def clean(self):
-        # Make sure the workshop closes before it starts...
-        if self.closing_date > self.start_date:
-            raise ValidationError('A Workshop\'s closing date must be before '
-                                  'the start date.')
         # Make sure the workshop begins before it can end...
         if self.start_date > self.end_date:
             raise ValidationError('A Workshop\'s start date must be before '
@@ -55,11 +71,28 @@ class Instructor(models.Model):
         return self.name
 
 
+class RateManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset() \
+            .annotate(ticket_count=models.Count('orderitem')) \
+            .annotate(sold_out=models.Case(
+                          models.When(
+                              ticket_count__lt=F('capacity'),
+                              then=models.Value(False),
+                          ),
+                          default=True,
+                          output_field=models.BooleanField(),
+                        ))
+
+
 class Rate(models.Model):
     workshop = models.ForeignKey(Workshop)
     name = models.CharField(max_length=300)
     price = models.DecimalField(max_digits=6, decimal_places=2,
                                 verbose_name='price (USD)')
+    capacity = models.PositiveIntegerField()
+
+    objects = RateManager()
 
     def __str__(self):
         return '%s: $%s' % (self.name, self.price)
