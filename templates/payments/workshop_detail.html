@@ -7,11 +7,16 @@
 {% block content %}
   {% include 'payments/_draft_notice.html' %}
 
-  <div class="description">
-    <span><strong>When: </strong>{{ workshop.start_date }} - {{ workshop.end_date }}</span>
-    <span><strong>Where: </strong>{{ workshop.location }}</span>
-    <p>{{ workshop.description | safe | linebreaks }}</p>
-  </div>
+  <dl class="dl-horizontal">
+    <dt>When</dt>
+    <dd>{{ workshop.start_date }} - {{ workshop.end_date }}</dd>
+
+    <dt>Where</dt>
+    <dd>{{ workshop.location }}</dd>
+
+    <dt>Description</dt>
+    <dd>{{ workshop.description | safe | linebreaks }}</dd>
+  </dl>
 
   {% if workshop.is_open or user.is_authenticated %}
     <hr />
