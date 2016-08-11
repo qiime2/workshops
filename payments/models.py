@@ -121,8 +121,9 @@ class Order(models.Model):
         verbose_name='billed total (USD)',
         help_text='This is the confirmed paid amount from NAU'
     )
-    billed_datetime = models.DateTimeField(
-        null=True,
+    billed_datetime = models.CharField(
+        blank=True,
+        max_length=300,
         help_text='This is the confirmed date and time of payment',
         verbose_name='billed date & time'
     )
