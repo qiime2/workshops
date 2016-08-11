@@ -122,6 +122,7 @@ class Order(models.Model):
         help_text='This is the confirmed paid amount from NAU'
     )
     billed_datetime = models.CharField(
+        blank=True,
         max_length=300,
         help_text='This is the confirmed date and time of payment',
         verbose_name='billed date & time'
