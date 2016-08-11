@@ -47,6 +47,7 @@ DJANGO_APPS = [
 THIRD_PARTY_APPS = [
     'subdomains',
     'import_export',
+    'markdownx'
 ]
 
 LOCAL_APPS = [

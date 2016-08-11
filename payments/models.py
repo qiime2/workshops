@@ -14,11 +14,13 @@ from django.core.exceptions import ValidationError
 
 from subdomains.utils import reverse
 
+from markdownx.models import MarkdownxField
+
 
 class Workshop(models.Model):
     title = models.CharField(max_length=300)
     location = models.CharField(max_length=300)
-    description = models.TextField()
+    description = MarkdownxField()
     start_date = models.DateField()
     end_date = models.DateField()
     url = models.URLField(verbose_name='URL', max_length=2000, blank=True)

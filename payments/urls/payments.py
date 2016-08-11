@@ -6,7 +6,7 @@
 # The full license is in the file LICENSE, distributed with this software.
 # ----------------------------------------------------------------------------
 
-from django.conf.urls import url
+from django.conf.urls import url, include
 
 from ..import views
 
@@ -16,6 +16,7 @@ urlpatterns = [
         name='index'),
     url(r'^submit/$', views.SubmitOrder.as_view(),
         name='submit'),
+    url(r'^markdownx/', include('markdownx.urls')),
     url(r'^(?P<slug>[\w\-]+)/$', views.WorkshopDetail.as_view(),
         name='details'),
     url(r'^(?P<slug>[\w\-]+)/order/$', views.OrderDetail.as_view(),

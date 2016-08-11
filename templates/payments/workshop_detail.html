@@ -22,6 +22,7 @@
 
     <dt>Description</dt>
     <dd>{{ workshop.description | safe | linebreaks }}</dd>
+    {{ workshop.description.media }}
   </dl>
 
   {% if workshop.is_open or user.is_authenticated %}

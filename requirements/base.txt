@@ -13,3 +13,6 @@ django-extra-views==0.8.0
 
 # Import/Export
 django-import-export==0.4.5
+
+# Markdown
+django-markdownx==1.6
