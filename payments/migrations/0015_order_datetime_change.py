@@ -23,7 +23,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='order',
             name='billed_datetime',
-            field=models.CharField(default='', help_text='This is the confirmed date and time of payment', max_length=300, verbose_name='billed date & time'),
+            field=models.CharField(blank=True, default='', help_text='This is the confirmed date and time of payment', max_length=300, verbose_name='billed date & time'),
             preserve_default=False,
         ),
     ]
