@@ -98,6 +98,8 @@ ADMIN_URL = env('DJANGO_ADMIN_URL')
 
 STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
+ADMINS = env('ADMINS', cast=list_of_tuples)
+
 # App-specific business logic
 LMID = env.str('LMID')
 PAYMENT_URL = env.str('PAYMENT_URL')

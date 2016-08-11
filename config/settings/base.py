@@ -161,6 +161,16 @@ INTERNAL_IPS = ('127.0.0.1', 'localhost')
 
 SITE_ID = 1
 
+def list_of_tuples(var):
+    pairs = var.split(';')
+    out = []
+    for pair in pairs:
+        out.append(tuple(pair.split(',')))
+    return out
+
+ADMINS = env('ADMINS', default=list_of_tuples('x,x@x.com;y,y@y.com'),
+             cast=list_of_tuples)
+
 # App-specific business logic
 LMID = env.str('LMID', '1234')
 PAYMENT_URL = env.str('PAYMENT_URL', 'http://www.example.com')
