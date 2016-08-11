@@ -11,7 +11,8 @@ import uuid
 from django.db import models
 from django.db.models.expressions import F
 from django.core.exceptions import ValidationError
-from django.core.urlresolvers import reverse
+
+from subdomains.utils import reverse
 
 
 class Workshop(models.Model):
@@ -66,7 +67,8 @@ class Workshop(models.Model):
 
     # For django admin 'view on site' link
     def get_absolute_url(self):
-        return reverse('payments:details', kwargs={'slug': self.slug})
+        return reverse('payments:details', kwargs={'slug': self.slug},
+                       subdomain='workshops')
 
 
 class Instructor(models.Model):
