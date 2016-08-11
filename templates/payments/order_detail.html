@@ -1,4 +1,5 @@
 {% extends 'payments/base.html' %}
+{% load form_errors %}
 
 {% block title %}QIIME - Workshop: {{ workshop.title }}{% endblock %}
 
@@ -8,6 +9,7 @@
 {% include 'payments/_draft_notice.html' %}
 <p>Each ticket order must have contact info.</p>
 
+{% form_errors formset %}
 <form method="post" action="">
   {{ formset.management_form }}
   {% csrf_token %}
