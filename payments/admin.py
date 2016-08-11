@@ -25,14 +25,20 @@ class WorkshopAdmin(admin.ModelAdmin):
     inlines = [InstructorInline, RateInline]
     prepopulated_fields = {'slug': ('title', 'start_date')}
     list_display = ('title', 'start_date', 'end_date', 'url', 'live',
-                    'capacity', 'total_tickets_sold', 'sales_open')
+                    'capacity', 'total_tickets_sold', 'sales_open',
+                    'seats_available')
 
     # Show 'draft' in the admin is a bit confusing with the default django
     # widgets, so inverting makes sense here
     def live(self, obj):
         return not obj.draft
     live.boolean = True
-    live.short_description = 'Live?'
+    live.short_description = 'Visible'
+
+    def seats_available(self, obj):
+        return not obj.is_at_capacity
+    seats_available.boolean = True
+    seats_available.short_description = 'Seats available'
 
 
 class RateAdmin(admin.ModelAdmin):
