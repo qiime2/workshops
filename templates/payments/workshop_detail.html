@@ -15,8 +15,10 @@
     <dt>Where</dt>
     <dd>{{ workshop.location }}</dd>
 
-    <dt>URL</dt>
-    <dd><a href="{{ workshop.url }}">{{ workshop.url }}</a></dd>
+    {% if workshop.url %}
+      <dt>URL</dt>
+      <dd><a href="{{ workshop.url }}">{{ workshop.url }}</a></dd>
+    {% endif %}
 
     <dt>Description</dt>
     <dd>{{ workshop.description | safe | linebreaks }}</dd>
