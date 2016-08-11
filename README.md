@@ -30,6 +30,7 @@ Creating a **superuser account**:
     heroku config:set DJANGO_SECRET_KEY=`openssl rand -base64 64`
     heroku config:set DJANGO_SETTINGS_MODULE='config.settings.production'
     heroku config:set DJANGO_ALLOWED_HOSTS='.herokuapp.com'
+    heroku config:set ADMINS='x,x@x.com;y,y@y.com'
 
     heroku config:set DJANGO_MAILGUN_SERVER_NAME=YOUR_MALGUN_SERVER
     heroku config:set DJANGO_MAILGUN_API_KEY=YOUR_MAILGUN_API_KEY
