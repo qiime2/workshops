@@ -3,10 +3,6 @@
 {% block title %}QIIME - Workshops{% endblock %}
 {% block header %}Workshops{% endblock %}
 {% block content %}
-{% comment %}
-<!-- Drop the is_authenticated check when we go live in prod -->
-{% endcomment %}
-{% if user.is_authenticated %}
   <h3>Upcoming Workshops</h3>
   {% if upcoming_workshops %}
     <table class="table">
@@ -30,7 +26,6 @@
   {% else %}
     <p>No upcoming workshops</p>
   {% endif %}
-{% endif %}
   <div>
     <p>
       See <a href="https://github.com/biocore/qiime/wiki/Official-QIIME-workshops">here</a>
