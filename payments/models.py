@@ -12,7 +12,7 @@ class Workshop(models.Model):
     description = models.TextField()
     start_date = models.DateField()
     end_date = models.DateField()
-    url = models.URLField(verbose_name='URL', max_length=2000)
+    url = models.URLField(verbose_name='URL', max_length=2000, blank=True)
     slug = models.SlugField(help_text='This is the unique identifier for the '
                             'URL (i.e. title-YYYY-MM-DD)')
     draft = models.BooleanField(help_text='Draft workshops do not show up on '
