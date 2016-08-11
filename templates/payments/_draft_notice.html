@@ -4,7 +4,9 @@
       Current workshop is
       {% if workshop.draft %}
         marked as draft,
-      {% elif not workship.is_open %}
+      {% elif workshop.is_at_capacity %}
+        sold out,
+      {% elif not workshop.sales_open %}
         not open,
       {% endif %}
       and is only viewable by site administrators.
