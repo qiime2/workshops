@@ -13,7 +13,7 @@ import requests
 from extra_views import FormSetView
 
 from .models import Workshop, Order, OrderItem, Rate
-from .forms import OrderForm, OrderDetailForm
+from .forms import OrderForm, OrderDetailForm, OrderDetailFormSet
 
 logger = logging.getLogger(__name__)
 
@@ -87,6 +87,7 @@ class WorkshopDetail(FormMixin, DetailView):
 class OrderDetail(SessionConfirmMixin, FormSetView):
     template_name = 'payments/order_detail.html'
     form_class = OrderDetailForm
+    formset_class = OrderDetailFormSet
     extra = 0
 
     def dispatch(self, request, *args, **kwargs):

@@ -1,0 +1,16 @@
+{% if form.errors %}
+  <div class="alert alert-danger">
+    <ul>
+      {% for name, errors in form.errors.items %}
+        {% if name == '__all__' %}
+          <li>{{ errors|join:', ' }}</li>
+        {% else %}
+          <li>{{ name | capfirst }}: {{ errors|join:', ' }}</li>
+        {% endif %}
+      {% endfor %}
+      {% for error in form.non_form_errors %}
+        <li>{{ error }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endif %}

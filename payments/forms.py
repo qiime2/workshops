@@ -53,3 +53,16 @@ class OrderDetailForm(forms.Form):
                                       'class': 'form-control'})
     )
     rate = forms.CharField(widget=forms.HiddenInput())
+
+
+class OrderDetailFormSet(forms.BaseFormSet):
+    def clean(self):
+        if any(self.errors):
+            return
+        emails = []
+        for form in self.forms:
+            email = form.cleaned_data['email']
+            if email in emails:
+                raise forms.ValidationError('Tickets must have a unique '
+                                            'email address.')
+            emails.append(email)
