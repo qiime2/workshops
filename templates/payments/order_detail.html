@@ -8,6 +8,11 @@
 {% block content %}
 {% include 'payments/_draft_notice.html' %}
 <p>Each ticket order must have contact info.</p>
+<p class="text-warning">
+  Please note: due to technical limitations with our payment processor, please
+  do not enter any non-ASCII characters in the contact info fields. We are
+  working to rectify the situation.
+</p>
 
 {% form_errors formset %}
 <form method="post" action="">

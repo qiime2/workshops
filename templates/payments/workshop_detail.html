@@ -34,7 +34,10 @@
     <form method="POST">
       {% csrf_token %}
       {{ form.email }} <br />
-      <p>Each ticket purchased as part of an order needs a unique email address.</p>
+      <p>
+        Each ticket purchased as part of an order will need a unique email
+        address (these will be collected on the next step).
+      </p>
       <table class="table">
         <thead>
           <tr>

@@ -3,6 +3,13 @@
 {% block title %}QIIME - Workshops{% endblock %}
 {% block header %}Workshops{% endblock %}
 {% block content %}
+  <div>
+    <p>
+      See <a href="https://github.com/biocore/qiime/wiki/Official-QIIME-workshops">here</a>
+      for information on hosting or attending an official QIIME workshop.
+    </p>
+  </div>
+
   <h3>Upcoming Workshops</h3>
   {% if upcoming_workshops %}
     <table class="table">
@@ -26,10 +33,4 @@
   {% else %}
     <p>No upcoming workshops</p>
   {% endif %}
-  <div>
-    <p>
-      See <a href="https://github.com/biocore/qiime/wiki/Official-QIIME-workshops">here</a>
-      for information on hosting or attending an official QIIME workshop.
-    </p>
-  </div>
 {% endblock %}
