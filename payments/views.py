@@ -173,9 +173,9 @@ class SubmitOrder(View):
         # Hit the database only once and create all of the OrderItems generated
         OrderItem.objects.bulk_create(items)
 
-        # Now that the order is saved, clear the session so that they cant
+        # Now that the order is saved, clear the session so that they can't
         # resubmit the order
-        request.session.flush()
+        del request.session['order']
 
         payload = {
             'LMID':         settings.LMID,
@@ -199,10 +199,7 @@ class SubmitOrder(View):
 
         r = requests.post(settings.PAYMENT_URL, data=payload,
                           verify=settings.PAYMENT_CERT_BUNDLE)
-        # TODO: We should use something like lxml2 to parse the form, then do
-        # the second post on behalf of the customer, instead of just returning
-        # the intermediate form as-is.
-        return HttpResponse(r.text)
+        return HttpResponse(r.content, status=r.status_code)
 
 
 @method_decorator(csrf_exempt, name='dispatch')
