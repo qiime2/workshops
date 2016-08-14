@@ -178,13 +178,15 @@ class SubmitOrder(View):
         del request.session['order']
 
         payload = {
-            'LMID':         settings.LMID,
-            'unique_id':    str(order.transaction_id),
-            'sTotal':       str(order.order_total),
-            'webTitle':     settings.PAYMENT_TITLE,
-            'Trans_Desc':   settings.PAYMENT_DESCRIPTION,
-            'contact_info': settings.PAYMENT_CONTACT_INFO,
-            'arrayname':    'metadata',
+            'LMID':                settings.LMID,
+            'unique_id':           str(order.transaction_id),
+            'sTotal':              str(order.order_total),
+            'webTitle':            settings.PAYMENT_TITLE,
+            'Trans_Desc':          settings.PAYMENT_DESCRIPTION,
+            'contact_info':        settings.PAYMENT_CONTACT_INFO,
+            'BILL_CUSTOMER_EMAIL': order.contact_email,
+            'note':                '',  # Placeholder
+            'arrayname':           'metadata',
         }
 
         for i, ticket in enumerate(order_data['tickets']):
