@@ -33,6 +33,7 @@
 
     <form method="POST">
       {% csrf_token %}
+      {{ form.name }} <br />
       {{ form.email }} <br />
       <p>
         Each ticket purchased as part of an order will need a unique email

@@ -153,6 +153,7 @@ class ConfirmOrder(SessionConfirmMixin, TemplateView):
             tickets.append({'name': ticket['name'], 'email': ticket['email'],
                             'rate': Rate.objects.get(pk=ticket['rate'])})
         context['tickets'] = tickets
+        context['order_name'] = order['name']
         context['order_email'] = order['email']
         context['order_total'] = order['order_total']
         context['workshop'] = Workshop.objects.get(slug=kwargs['slug'])
@@ -165,6 +166,7 @@ class SubmitOrder(View):
     def post(self, request, *args, **kwargs):
         order_data = request.session['order']
         order = Order.objects.create(contact_email=order_data['email'],
+                                     contact_name=order_data['name'],
                                      order_total=order_data['order_total'])
         items = []
         for ticket in order_data['tickets']:
@@ -177,16 +179,20 @@ class SubmitOrder(View):
         # resubmit the order
         del request.session['order']
 
+        name = order.contact_name.split(' ')
+
         payload = {
-            'LMID':                settings.LMID,
-            'unique_id':           str(order.transaction_id),
-            'sTotal':              str(order.order_total),
-            'webTitle':            settings.PAYMENT_TITLE,
-            'Trans_Desc':          settings.PAYMENT_DESCRIPTION,
-            'contact_info':        settings.PAYMENT_CONTACT_INFO,
-            'BILL_CUSTOMER_EMAIL': order.contact_email,
-            'note':                '',  # Placeholder
-            'arrayname':           'metadata',
+            'LMID':                    settings.LMID,
+            'unique_id':               str(order.transaction_id),
+            'sTotal':                  str(order.order_total),
+            'webTitle':                settings.PAYMENT_TITLE,
+            'Trans_Desc':              settings.PAYMENT_DESCRIPTION,
+            'contact_info':            settings.PAYMENT_CONTACT_INFO,
+            'BILL_CUSTOMER_EMAIL':     order.contact_email,
+            'BILL_CUSTOMER_FIRSTNAME': name[0],
+            'BILL_CUSTOMER_LASTNAME':  name[-1] if len(name) > 1 else '',
+            'note':                    '',  # Placeholder
+            'arrayname':               'metadata',
         }
 
         for i, ticket in enumerate(order_data['tickets']):
