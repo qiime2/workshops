@@ -89,6 +89,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'payments.context_processors.contact_info',
             ],
         },
     },
@@ -161,6 +162,7 @@ INTERNAL_IPS = ('127.0.0.1', 'localhost')
 
 SITE_ID = 1
 
+
 def list_of_tuples(var):
     pairs = var.split(';')
     out = []
@@ -181,3 +183,7 @@ PAYMENT_CONTACT_INFO = env.str('PAYMENT_CONTACT_INFO', 'EXAMPLE GROUP\n'
 PAYMENT_CERT_BUNDLE = env.str('PAYMENT_CERT_BUNDLE', './static/bundle.pem')
 PSF_SPEEDTYPE = env.str('PSF_SPEEDTYPE', '0000')
 PSF_ACCT_NUMBER = env.str('PSF_ACCT_NUMBER', '0000')
+TECHNICAL_CONTACT = env.str('TECHNICAL_CONTACT', 'Problems with '
+                            'purchasing a ticket? '
+                            '<a href="mailto:test@test.com">'
+                            'Contact us.</a>')
