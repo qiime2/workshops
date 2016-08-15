@@ -110,6 +110,7 @@ class Rate(models.Model):
 
 class Order(models.Model):
     transaction_id = models.UUIDField(default=uuid.uuid4, editable=False)
+    contact_name = models.CharField(max_length=300)
     contact_email = models.EmailField()
     order_total = models.DecimalField(max_digits=7, decimal_places=2,
                                       verbose_name='order total (USD)')

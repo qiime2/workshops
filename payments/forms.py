@@ -12,8 +12,12 @@ from django import forms
 
 
 class OrderForm(forms.Form):
+    name = forms.CharField(
+        widget=forms.TextInput(attrs={'placeholder': "Orderer's Name",
+                                      'class': 'form-control'})
+    )
     email = forms.EmailField(
-        widget=forms.TextInput(attrs={'placeholder': 'Order Email Address',
+        widget=forms.TextInput(attrs={'placeholder': "Orderer's Email Address",
                                       'class': 'form-control'})
     )
 
