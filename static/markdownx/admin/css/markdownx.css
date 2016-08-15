@@ -4,7 +4,8 @@
 .markdownx .markdownx-editor,
 .markdownx .markdownx-preview {
     margin-left: 0;
-    width: 610px;
+    max-width: 610px;
+    width: 100%;
 }
 .markdownx .markdownx-preview {
     overflow-y: scroll;
@@ -17,7 +18,6 @@
 .markdownx .markdownx-preview * {
     line-height: 1.5;
 }
-
 
 /* Django admin overrides */
 

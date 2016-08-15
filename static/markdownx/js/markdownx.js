@@ -178,6 +178,7 @@
 
             updateHeight();
             markdownify();
+            setTimeout(() => { markdownxEditor.innerHeight('100px'); updateHeight(); }, 1500);
         });
     };
 

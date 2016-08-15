@@ -20,6 +20,7 @@ from django.conf import settings
 
 import requests
 from extra_views import FormSetView
+from markdownx.utils import markdownify
 
 from .models import Workshop, Order, OrderItem, Rate
 from .forms import OrderForm, OrderDetailForm, OrderDetailFormSet
@@ -66,6 +67,8 @@ class WorkshopDetail(FormMixin, DetailView):
             rates.append({'field': field, 'name': rate.name,
                           'price': rate.price, 'sold_out': rate.sold_out})
         context['rates'] = rates
+        context['workshop'].description = \
+            markdownify(context['workshop'].description)
         return context
 
     def post(self, request, *args, **kwargs):

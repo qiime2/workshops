@@ -7,6 +7,9 @@
 # ----------------------------------------------------------------------------
 
 from django.contrib import admin
+from django.db import models
+
+from markdownx.widgets import AdminMarkdownxWidget
 
 from import_export.admin import ExportMixin
 
@@ -43,6 +46,9 @@ class WorkshopAdmin(admin.ModelAdmin):
     list_display = ('title', 'start_date', 'end_date', 'url', 'live',
                     'capacity', 'total_tickets_sold', 'sales_open',
                     'seats_available')
+    formfield_overrides = {
+        models.TextField: {'widget': AdminMarkdownxWidget},
+    }
 
     # Show 'draft' in the admin is a bit confusing with the default django
     # widgets, so inverting makes sense here
