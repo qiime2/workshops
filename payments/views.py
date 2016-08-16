@@ -8,6 +8,7 @@
 
 import logging
 from decimal import Decimal
+from urllib.parse import quote_plus as qp
 
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
@@ -189,8 +190,8 @@ class SubmitOrder(View):
             'Trans_Desc':              settings.PAYMENT_DESCRIPTION,
             'contact_info':            settings.PAYMENT_CONTACT_INFO,
             'BILL_CUSTOMER_EMAIL':     order.contact_email,
-            'BILL_CUSTOMER_FIRSTNAME': name[0],
-            'BILL_CUSTOMER_LASTNAME':  name[-1] if len(name) > 1 else '',
+            'BILL_CUSTOMER_FIRSTNAME': qp(name[0]),
+            'BILL_CUSTOMER_LASTNAME':  qp(name[-1]) if len(name) > 1 else '',
             'note':                    '',  # Placeholder
             'arrayname':               'metadata',
         }
@@ -198,7 +199,8 @@ class SubmitOrder(View):
         for i, ticket in enumerate(order_data['tickets']):
             rate = Rate.objects.get(pk=ticket['rate'])
             payload['metadata_item_%s,%s' % (0, i)] = \
-                '%s: %s (%s)' % (rate.name, ticket['name'], ticket['email'])
+                '%s: %s (%s)' % (rate.name, qp(ticket['name']),
+                                 ticket['email'])
             payload['metadata_item_%s,%s' % (1, i)] = '1'
             payload['metadata_item_%s,%s' % (2, i)] = str(rate.price)
             payload['metadata_item_%s,%s' % (3, i)] = str(rate.price)
