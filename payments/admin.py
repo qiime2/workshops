@@ -60,8 +60,11 @@ class OrderAdmin(admin.ModelAdmin):
     inlines = [OrderItemInline]
     readonly_fields = ('contact_email', 'order_total', 'billed_total',
                        'billed_datetime', 'transaction_id')
-    list_display = ('contact_email', 'order_total', 'order_datetime',
-                    'billed_total', 'billed_datetime', 'transaction_id')
+    list_display = ('contact_name', 'contact_email', 'order_total',
+                    'order_datetime', 'billed_total', 'billed_datetime',
+                    'transaction_id')
+    list_filter = ('order_datetime', 'contact_email', 'billed_datetime',
+                   'billed_total')
 
 
 class OrderItemAdmin(admin.ModelAdmin):
