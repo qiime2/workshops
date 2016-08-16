@@ -25,10 +25,11 @@ class Workshop(models.Model):
     slug = models.SlugField(help_text='This is the unique identifier for the '
                             'URL (i.e. title-YYYY-MM-DD)')
     draft = models.BooleanField(help_text='Draft workshops do not show up on '
-                                'the workshop list overview')
+                                'the workshop list overview', default=True)
     capacity = models.PositiveIntegerField()
     sales_open = models.BooleanField(help_text='Closed workshops do not show '
-                                     'up on the workshop list overview')
+                                     'up on the workshop list overview',
+                                     default=False)
 
     @property
     def total_tickets_sold(self):
