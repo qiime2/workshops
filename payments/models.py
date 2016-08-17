@@ -115,10 +115,9 @@ class Order(models.Model):
     order_total = models.DecimalField(max_digits=7, decimal_places=2,
                                       verbose_name='order total (USD)')
     order_datetime = models.DateTimeField(auto_now_add=True)
-    billed_total = models.DecimalField(
-        max_digits=7,
-        decimal_places=2,
-        null=True,
+    billed_total = models.CharField(
+        blank=True,
+        max_length=300,
         verbose_name='billed total (USD)',
         help_text='This is the confirmed paid amount from NAU'
     )
