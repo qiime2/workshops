@@ -33,7 +33,9 @@ class Workshop(models.Model):
 
     @property
     def total_tickets_sold(self):
-        return OrderItem.objects.filter(rate__workshop=self).count()
+        # TODO: Fix this, related manager knows nothing about paid
+        return OrderItem.objects.filter(rate__workshop=self) \
+                .filter(order__paid=True).count()
 
     @property
     def is_at_capacity(self):
@@ -109,6 +111,19 @@ class Rate(models.Model):
         return '%s: $%s' % (self.name, self.price)
 
 
+class OrderManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset() \
+            .annotate(paid=models.Case(
+                          models.When(
+                              billed_total='',
+                              then=models.Value(False),
+                          ),
+                          default=models.Value(True),
+                          output_field=models.BooleanField(),
+                        ))
+
+
 class Order(models.Model):
     transaction_id = models.UUIDField(default=uuid.uuid4, editable=False)
     contact_name = models.CharField(max_length=300)
@@ -128,6 +143,8 @@ class Order(models.Model):
         help_text='This is the confirmed date and time of payment',
         verbose_name='billed date & time'
     )
+
+    objects = OrderManager()
 
     def __str__(self):
         return '%s: $%s on %s' % (self.contact_email, self.order_total,
