@@ -8,12 +8,14 @@
 
 from django.conf import settings
 from django.conf.urls import include, url
-from django.contrib import admin
 from django.views import defaults as default_views
+
+from payments.admin import site
 
 
 urlpatterns = [
-    url(settings.ADMIN_URL, include(admin.site.urls)),
+    url(settings.ADMIN_URL, include(site.urls)),
+
     url(r'^', include('payments.urls.payments', namespace='payments')),
 ]
 

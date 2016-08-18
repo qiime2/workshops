@@ -33,7 +33,8 @@ class Workshop(models.Model):
 
     @property
     def total_tickets_sold(self):
-        return OrderItem.objects.filter(rate__workshop=self).count()
+        return OrderItem.objects.filter(rate__workshop=self) \
+                .exclude(order__billed_total='').count()
 
     @property
     def is_at_capacity(self):
