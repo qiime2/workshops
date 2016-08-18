@@ -16,10 +16,6 @@ from .admin_filters import (OrderPaidListFilter, OrderWorkshopListFilter,
 from .models import Workshop, Instructor, Rate, Order, OrderItem
 
 
-class WorkshopsAdminSite(admin.AdminSite):
-    site_header = 'QIIME Workshops Administration'
-
-
 class InstructorInline(admin.TabularInline):
     model = Instructor.workshops.through
     extra = 1
@@ -115,8 +111,7 @@ class InstructorAdmin(admin.ModelAdmin):
         return {}
 
 
-site = WorkshopsAdminSite(name='payments')
-site.register(Instructor, InstructorAdmin)
-site.register(Workshop, WorkshopAdmin)
-site.register(Order, OrderAdmin)
-site.register(OrderItem, OrderItemAdmin)
+admin.site.register(Instructor, InstructorAdmin)
+admin.site.register(Workshop, WorkshopAdmin)
+admin.site.register(Order, OrderAdmin)
+admin.site.register(OrderItem, OrderItemAdmin)
