@@ -8,6 +8,8 @@
 
 from django.contrib import admin
 
+from .admin_filters import (OrderPaidListFilter, OrderWorkshopFilter,
+                            OrderItemPaidListFilter, OrderItemWorkshopFilter)
 from .models import Workshop, Instructor, Rate, Order, OrderItem
 
 
@@ -56,36 +58,6 @@ class OrderItemInline(admin.TabularInline):
         return False
 
 
-class OrderPaidListFilter(admin.SimpleListFilter):
-    title = 'payment status'
-    parameter_name = 'paid'
-
-    def lookups(self, request, model_admin):
-        return (
-            ('true', 'Paid'),
-            ('false', 'Not Paid'),
-        )
-
-    def queryset(self, request, queryset):
-        if self.value() == 'true':
-            return queryset.exclude(billed_total='')
-        if self.value() == 'false':
-            return queryset.filter(billed_total='')
-
-
-class OrderWorkshopFilter(admin.SimpleListFilter):
-    title = 'workshop'
-    parameter_name = 'workshop'
-
-    def lookups(self, request, model_admin):
-        return Workshop.objects.values_list('pk', 'title') \
-                .order_by('start_date')
-
-    def queryset(self, request, queryset):
-        if self.value():
-            return queryset.filter(orderitem__rate__workshop=self.value())
-
-
 class OrderAdmin(admin.ModelAdmin):
     inlines = [OrderItemInline]
     readonly_fields = ('contact_name', 'contact_email', 'order_total',
@@ -96,36 +68,6 @@ class OrderAdmin(admin.ModelAdmin):
     list_display_links = ('contact_name', 'contact_email')
     list_filter = (OrderPaidListFilter, OrderWorkshopFilter, 'order_datetime',
                    'contact_email')
-
-
-class OrderItemWorkshopFilter(admin.SimpleListFilter):
-    title = 'workshop'
-    parameter_name = 'workshop'
-
-    def lookups(self, request, model_admin):
-        return Workshop.objects.values_list('pk', 'title') \
-                .order_by('start_date')
-
-    def queryset(self, request, queryset):
-        if self.value():
-            return queryset.filter(rate__workshop=self.value())
-
-
-class OrderItemPaidListFilter(admin.SimpleListFilter):
-    title = 'payment status'
-    parameter_name = 'paid'
-
-    def lookups(self, request, model_admin):
-        return (
-            ('true', 'Paid'),
-            ('false', 'Not Paid'),
-        )
-
-    def queryset(self, request, queryset):
-        if self.value() == 'true':
-            return queryset.exclude(order__billed_total='')
-        if self.value() == 'false':
-            return queryset.filter(order__billed_total='')
 
 
 class OrderItemAdmin(admin.ModelAdmin):
