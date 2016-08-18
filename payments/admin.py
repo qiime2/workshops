@@ -8,8 +8,9 @@
 
 from django.contrib import admin
 
-from .admin_filters import (OrderPaidListFilter, OrderWorkshopFilter,
-                            OrderItemPaidListFilter, OrderItemWorkshopFilter)
+from .admin_filters import (OrderPaidListFilter, OrderWorkshopListFilter,
+                            OrderItemPaidListFilter,
+                            OrderItemWorkshopListFilter)
 from .models import Workshop, Instructor, Rate, Order, OrderItem
 
 
@@ -66,14 +67,14 @@ class OrderAdmin(admin.ModelAdmin):
                     'order_datetime', 'billed_total', 'billed_datetime',
                     'transaction_id')
     list_display_links = ('contact_name', 'contact_email')
-    list_filter = (OrderPaidListFilter, OrderWorkshopFilter, 'order_datetime',
-                   'contact_email')
+    list_filter = (OrderPaidListFilter, OrderWorkshopListFilter,
+                   'order_datetime', 'contact_email')
 
 
 class OrderItemAdmin(admin.ModelAdmin):
     list_display = ('name', 'email', 'workshop', 'rate',
                     'order_transaction_id')
-    list_filter = (OrderItemWorkshopFilter, OrderItemPaidListFilter)
+    list_filter = (OrderItemWorkshopListFilter, OrderItemPaidListFilter)
     readonly_fields = ('order', 'rate', 'name', 'email')
 
     def order_transaction_id(self, obj):

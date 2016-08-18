@@ -14,7 +14,7 @@ from .models import Workshop
 class WorkshopFilterBase(admin.SimpleListFilter):
     title = 'workshop'
     parameter_name = 'workshop'
-    filter = None
+    _filter = None
 
     def lookups(self, request, model_admin):
         return Workshop.objects.values_list('pk', 'title') \
@@ -22,30 +22,21 @@ class WorkshopFilterBase(admin.SimpleListFilter):
 
     def queryset(self, request, queryset):
         if self.value():
-            # TODO: set this filter from `filter`
-            return queryset.filter(orderitem__rate__workshop=self.value())
+            return queryset.filter(**{self._filter: self.value()})
 
 
-class OrderWorkshopFilter(WorkshopFilterBase):
-    filter = 'orderitem__rate__workshop'
+class OrderWorkshopListFilter(WorkshopFilterBase):
+    _filter = 'orderitem__rate__workshop'
 
 
-class OrderItemWorkshopFilter(admin.SimpleListFilter):
-    title = 'workshop'
-    parameter_name = 'workshop'
-
-    def lookups(self, request, model_admin):
-        return Workshop.objects.values_list('pk', 'title') \
-                .order_by('start_date')
-
-    def queryset(self, request, queryset):
-        if self.value():
-            return queryset.filter(rate__workshop=self.value())
+class OrderItemWorkshopListFilter(WorkshopFilterBase):
+    _filter = 'rate__workshop'
 
 
-class OrderPaidListFilter(admin.SimpleListFilter):
+class PaidFilterBase(admin.SimpleListFilter):
     title = 'payment status'
     parameter_name = 'paid'
+    _filter = None
 
     def lookups(self, request, model_admin):
         return (
@@ -54,24 +45,17 @@ class OrderPaidListFilter(admin.SimpleListFilter):
         )
 
     def queryset(self, request, queryset):
-        if self.value() == 'true':
-            return queryset.exclude(billed_total='')
-        if self.value() == 'false':
-            return queryset.filter(billed_total='')
+        value = self.value()
+        kwargs = {self._filter: ''}
+        if value == 'true':
+            return queryset.exclude(**kwargs)
+        if value == 'false':
+            return queryset.filter(**kwargs)
 
 
-class OrderItemPaidListFilter(admin.SimpleListFilter):
-    title = 'payment status'
-    parameter_name = 'paid'
+class OrderPaidListFilter(PaidFilterBase):
+    _filter = 'billed_total'
 
-    def lookups(self, request, model_admin):
-        return (
-            ('true', 'Paid'),
-            ('false', 'Not Paid'),
-        )
 
-    def queryset(self, request, queryset):
-        if self.value() == 'true':
-            return queryset.exclude(order__billed_total='')
-        if self.value() == 'false':
-            return queryset.filter(order__billed_total='')
+class OrderItemPaidListFilter(PaidFilterBase):
+    _filter = 'order__billed_total'
