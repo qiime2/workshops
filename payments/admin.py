@@ -24,6 +24,17 @@ class RateInline(admin.TabularInline):
     extra = 1
 
 
+class OrderItemInline(admin.TabularInline):
+    can_delete = False
+    model = OrderItem
+    extra = 0
+    readonly_fields = ('rate', 'name')
+    fields = ('rate', 'name')
+
+    def has_add_permission(self, request):
+        return False
+
+
 class WorkshopAdmin(admin.ModelAdmin):
     inlines = [InstructorInline, RateInline]
     prepopulated_fields = {'slug': ('title', 'start_date')}
@@ -44,35 +55,24 @@ class WorkshopAdmin(admin.ModelAdmin):
     seats_available.short_description = 'Seats available'
 
 
-class RateAdmin(admin.ModelAdmin):
-    list_display = ('name', 'price', 'workshop')
-
-
-class OrderItemInline(admin.TabularInline):
-    can_delete = False
-    model = OrderItem
-    extra = 0
-    readonly_fields = ('rate', 'name')
-    fields = ('rate', 'name')
-
-    def has_add_permission(self, request):
-        return False
-
-
 class OrderAdmin(admin.ModelAdmin):
     inlines = [OrderItemInline]
     readonly_fields = ('contact_name', 'contact_email', 'order_total',
                        'billed_total', 'billed_datetime', 'transaction_id')
-    list_display = ('contact_name', 'contact_email', 'order_total',
-                    'order_datetime', 'billed_total', 'billed_datetime',
-                    'transaction_id')
+    list_display = ('contact_name', 'contact_email', 'order_total', 'paid',
+                    'order_datetime', 'billed_datetime', 'transaction_id')
     list_display_links = ('contact_name', 'contact_email')
     list_filter = (OrderPaidListFilter, OrderWorkshopListFilter,
                    'order_datetime', 'contact_email')
 
+    def paid(self, obj):
+        return obj.billed_total != ''
+    paid.admin_order_field = 'billed_total'
+    paid.boolean = True
+
 
 class OrderItemAdmin(admin.ModelAdmin):
-    list_display = ('name', 'email', 'workshop', 'rate',
+    list_display = ('name', 'email', 'workshop', 'rate', 'paid',
                     'order_transaction_id')
     list_filter = (OrderItemWorkshopListFilter, OrderItemPaidListFilter)
     readonly_fields = ('order', 'rate', 'name', 'email')
@@ -85,9 +85,19 @@ class OrderItemAdmin(admin.ModelAdmin):
         return obj.rate.workshop.title
     workshop.admin_order_field = 'rate__workshop__title'
 
+    def paid(self, obj):
+        return obj.order.billed_total != ''
+    paid.admin_order_field = 'order__billed_total'
+    paid.boolean = True
 
+
+class InstructorAdmin(admin.ModelAdmin):
+    # This hides `Instructors` on the admin changelist page
+    def get_model_perms(self, request):
+        return {}
+
+
+admin.site.register(Instructor, InstructorAdmin)
 admin.site.register(Workshop, WorkshopAdmin)
-admin.site.register(Instructor)
-admin.site.register(Rate, RateAdmin)
 admin.site.register(Order, OrderAdmin)
 admin.site.register(OrderItem, OrderItemAdmin)
