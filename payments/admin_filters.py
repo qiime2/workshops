@@ -11,9 +11,10 @@ from django.contrib import admin
 from .models import Workshop
 
 
-class OrderWorkshopFilter(admin.SimpleListFilter):
+class WorkshopFilterBase(admin.SimpleListFilter):
     title = 'workshop'
     parameter_name = 'workshop'
+    filter = None
 
     def lookups(self, request, model_admin):
         return Workshop.objects.values_list('pk', 'title') \
@@ -21,7 +22,12 @@ class OrderWorkshopFilter(admin.SimpleListFilter):
 
     def queryset(self, request, queryset):
         if self.value():
+            # TODO: set this filter from `filter`
             return queryset.filter(orderitem__rate__workshop=self.value())
+
+
+class OrderWorkshopFilter(WorkshopFilterBase):
+    filter = 'orderitem__rate__workshop'
 
 
 class OrderItemWorkshopFilter(admin.SimpleListFilter):
