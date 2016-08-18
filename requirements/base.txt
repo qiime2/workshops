@@ -10,3 +10,6 @@ django-subdomains==2.1.0
 
 # Views
 django-extra-views==0.8.0
+
+# Import/Export
+django-import-export==0.4.5

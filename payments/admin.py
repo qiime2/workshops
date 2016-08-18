@@ -8,10 +8,16 @@
 
 from django.contrib import admin
 
+from import_export.admin import ExportMixin
+
 from .admin_filters import (OrderPaidListFilter, OrderWorkshopListFilter,
                             OrderItemPaidListFilter,
                             OrderItemWorkshopListFilter)
 from .models import Workshop, Instructor, Rate, Order, OrderItem
+
+
+class WorkshopsAdminSite(admin.AdminSite):
+    site_header = 'QIIME Workshops Administration'
 
 
 class InstructorInline(admin.TabularInline):
@@ -55,7 +61,7 @@ class WorkshopAdmin(admin.ModelAdmin):
     seats_available.short_description = 'Seats available'
 
 
-class OrderAdmin(admin.ModelAdmin):
+class OrderAdmin(ExportMixin, admin.ModelAdmin):
     inlines = [OrderItemInline]
     readonly_fields = ('contact_name', 'contact_email', 'order_total',
                        'billed_total', 'billed_datetime', 'transaction_id')
@@ -69,6 +75,12 @@ class OrderAdmin(admin.ModelAdmin):
         return obj.billed_total != ''
     paid.admin_order_field = 'billed_total'
     paid.boolean = True
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
 
 
 class OrderItemAdmin(admin.ModelAdmin):
@@ -90,6 +102,12 @@ class OrderItemAdmin(admin.ModelAdmin):
     paid.admin_order_field = 'order__billed_total'
     paid.boolean = True
 
+    def has_add_permission(self, request):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
 
 class InstructorAdmin(admin.ModelAdmin):
     # This hides `Instructors` on the admin changelist page
@@ -97,7 +115,8 @@ class InstructorAdmin(admin.ModelAdmin):
         return {}
 
 
-admin.site.register(Instructor, InstructorAdmin)
-admin.site.register(Workshop, WorkshopAdmin)
-admin.site.register(Order, OrderAdmin)
-admin.site.register(OrderItem, OrderItemAdmin)
+site = WorkshopsAdminSite(name='payments')
+site.register(Instructor, InstructorAdmin)
+site.register(Workshop, WorkshopAdmin)
+site.register(Order, OrderAdmin)
+site.register(OrderItem, OrderItemAdmin)
