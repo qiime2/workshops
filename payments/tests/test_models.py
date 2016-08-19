@@ -19,23 +19,14 @@ class WorkshopTestCase(TestCase):
         self.assertEqual(str(w), w.title)
 
     def test_total_tickets_sold(self):
-        oi = OrderItemFactory()  # Create single ticket
-        o, w = oi.order, oi.rate.workshop
+        # Create a single order item (ticket)
+        oi = OrderItemFactory(order__billed_total='100.00')
+        self.assertEqual(1, oi.rate.workshop.total_tickets_sold)
 
-        self.assertEqual(0, w.total_tickets_sold)
-
-        o.billed_total = '100.00'  # Any non-empty string for now
-        o.save()
-
-        self.assertEqual(1, w.total_tickets_sold)
+        oi = OrderItemFactory(order__billed_total='')
+        self.assertEqual(0, oi.rate.workshop.total_tickets_sold)
 
     def test_is_at_capacity(self):
-        oi = OrderItemFactory()
-        o, r, w = oi.order, oi.rate, oi.rate.workshop
-
-        o.billed_total, w.capacity, r.capacity = 'asdf', 5, 5
-
-        for m in [o, r, w]:
-            m.save()
-
-        self.assertEqual(False, w.is_at_capacity)
+        oi = OrderItemFactory(order__billed_total='asdf', rate__capacity=5,
+                              rate__workshop__capacity=5)
+        self.assertEqual(False, oi.rate.workshop.is_at_capacity)
