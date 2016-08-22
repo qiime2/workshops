@@ -13,3 +13,4 @@ install:
 script:
   - python manage.py migrate
   - flake8 --exclude=migrations,settings,manage.py
+  - python manage.py test
