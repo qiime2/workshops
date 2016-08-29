@@ -38,7 +38,18 @@ class InstructorFactory(factory.DjangoModelFactory):
         model = Instructor
 
     name = FuzzyText(length=50)
-    workshop = factory.SubFactory(WorkshopFactory)
+
+    # Required modification for a ManyToManyField relationship
+    # http://factoryboy.readthedocs.io/en/latest/recipes.html \
+    # #simple-many-to-many-relationship
+    @factory.post_generation
+    def workshops(self, create, extracted, **kwargs):
+        if not create:
+            return
+
+        if extracted:
+            for workshop in extracted:
+                self.workshops.add(workshop)
 
 
 class RateFactory(factory.DjangoModelFactory):
