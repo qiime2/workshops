@@ -35,17 +35,17 @@ class WorkshopTestCase(TestCase):
 
     def test_has_available_rates(self):
         w = WorkshopFactory()
-        rates = [RateFactory(workshop=w) for i in range(5)]
+        [RateFactory(workshop=w) for i in range(5)]
         self.assertEqual(len(w.available_rates), 5)
 
     def test_has_sold_out_rates(self):
         w = WorkshopFactory()
-        r = RateFactory(workshop=w, capacity=0)
+        RateFactory(workshop=w, capacity=0)
         self.assertEqual(len(w.sold_out_rates), 1)
 
     def test_has_no_sold_out_rates(self):
         w = WorkshopFactory()
-        rates = [RateFactory(workshop=w) for i in range(5)]
+        [RateFactory(workshop=w) for i in range(5)]
         self.assertEqual(len(w.sold_out_rates), 0)
 
     def test_generates_proper_slug(self):
