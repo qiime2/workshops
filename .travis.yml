@@ -6,10 +6,14 @@ services:
   - postgresql
 before_install:
   - psql -c 'create database testdb;' -U postgres
-  - export DJANGO_SETTINGS_MODULE=config.settings.test
+  - export DJANGO_SETTINGS_MODULE=config.settings.travis
   - export DATABASE_URL=postgres://postgres@localhost/testdb
 install:
-  - pip install -r requirements/test.txt
+  - pip install -r requirements/travis.txt
+  - pip install coveralls
 script:
   - python manage.py migrate
   - flake8 --exclude=migrations,settings,manage.py
+  - coverage run manage.py test
+after_success:
+  - coveralls
