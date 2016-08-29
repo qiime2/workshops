@@ -10,7 +10,10 @@ before_install:
   - export DATABASE_URL=postgres://postgres@localhost/testdb
 install:
   - pip install -r requirements/travis.txt
+  - pip install coveralls
 script:
   - python manage.py migrate
   - flake8 --exclude=migrations,settings,manage.py
-  - python manage.py test
+  - coverage run manage.py test
+after_success:
+  - coveralls

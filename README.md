@@ -1,6 +1,7 @@
 # QIIME Workshops
 
 [![Build Status](https://travis-ci.org/qiime2/qiime-workshops.svg?branch=master)](https://travis-ci.org/qiime2/qiime-workshops)
+[![Coverage Status](https://coveralls.io/repos/github/qiime2/qiime-workshops/badge.svg?branch=master)](https://coveralls.io/github/qiime2/qiime-workshops?branch=master)
 
 Django App for QIIME workshop payments
 
