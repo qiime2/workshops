@@ -1,3 +1,9 @@
 [run]
-omit = ./venv/*
+omit =
+    */venv/*
+    */config/*
+    */migrations/*
+    manage.py
 branch = True
+include =
+    */payments/*
