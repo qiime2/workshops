@@ -60,7 +60,11 @@
           {% endfor %}
         </tbody>
       </table>
-      <input type="submit" class="btn btn-primary pull-right" value="Continue" />
+      <div class="col-md-3 col-md-offset-9">
+          {{ form.special_code }}
+          <br />
+          <input type="submit" class="btn btn-primary pull-right" value="Continue" />
+      </div>
     </form>
   {% endif %}
 {% endblock %}
