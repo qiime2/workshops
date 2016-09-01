@@ -38,8 +38,29 @@ class SessionConfirmMixin(object):
 
 
 class WorkshopList(ListView):
-    queryset = Workshop.objects.filter(draft=False)
     context_object_name = 'upcoming_workshops'
+    private_code = None
+
+    def get_queryset(self):
+        queryset = None
+        if self.private_code:
+            code = self.private_code
+            try:
+                queryset = Workshop.objects.filter(private_code=code)
+            except Workshop.DoesNotExist:
+                pass
+        if queryset is None or len(queryset) == 0:
+            queryset = Workshop.objects.filter(draft=False)
+        return queryset
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.GET:
+            try:
+                self.private_code = request.GET['code']
+                request.session['private_code'] = self.private_code
+            except KeyError:
+                pass
+        return super().dispatch(request, *args, **kwargs)
 
 
 class WorkshopDetail(FormMixin, DetailView):
@@ -49,7 +70,9 @@ class WorkshopDetail(FormMixin, DetailView):
 
     def get(self, request, *args, **kwargs):
         response = super().get(request, *args, **kwargs)
-        if not request.user.is_authenticated() and self.object.draft:
+        if (not request.user.is_authenticated() and self.object.draft) or \
+           (not self.object.public and request.session['private_code'] !=
+           self.object.private_code):
             return HttpResponseRedirect(reverse('payments:index'))
         return response
 

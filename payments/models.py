@@ -32,6 +32,10 @@ class Workshop(models.Model):
     sales_open = models.BooleanField(help_text='Closed workshops do not show '
                                      'up on the workshop list overview',
                                      default=False)
+    public = models.BooleanField(help_text='Private workshops will require a '
+                                 'custom URL and will not be visible on the '
+                                 'default Workshop List', default=True)
+    private_code = models.CharField(max_length=200)
 
     @property
     def total_tickets_sold(self):
