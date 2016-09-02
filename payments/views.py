@@ -41,26 +41,28 @@ class WorkshopList(ListView):
     context_object_name = 'upcoming_workshops'
     private_code = None
 
+    # Since there are possible GET parameters we need to conditionally
+    # determine the queryset for the ListView
     def get_queryset(self):
         queryset = None
         if self.private_code:
-            code = self.private_code
-            try:
-                queryset = Workshop.objects.filter(private_code=code)
-            except Workshop.DoesNotExist:
-                pass
+            queryset = Workshop.objects.filter(private_code=self.private_code)
+
         if queryset is None or len(queryset) == 0:
-            queryset = Workshop.objects.filter(draft=False)
+            queryset = Workshop.objects.filter(draft=False, public=True)
         return queryset
 
-    def dispatch(self, request, *args, **kwargs):
+    # Capture the GET and store it in the user session. This allows
+    # for blocking the ability to see a workshop detail page even if you know
+    # the slug for it.
+    def get(self, request, *args, **kwargs):
         if request.GET:
             try:
                 self.private_code = request.GET['code']
                 request.session['private_code'] = self.private_code
             except KeyError:
                 pass
-        return super().dispatch(request, *args, **kwargs)
+        return super().get(request, *args, **kwargs)
 
 
 class WorkshopDetail(FormMixin, DetailView):
@@ -70,9 +72,14 @@ class WorkshopDetail(FormMixin, DetailView):
 
     def get(self, request, *args, **kwargs):
         response = super().get(request, *args, **kwargs)
+        code = None
+        try:
+            code = request.session['private_code']
+        except KeyError:
+            pass
+
         if (not request.user.is_authenticated() and self.object.draft) or \
-           (not self.object.public and request.session['private_code'] !=
-           self.object.private_code):
+           (not self.object.public and code != self.object.private_code):
             return HttpResponseRedirect(reverse('payments:index'))
         return response
 
