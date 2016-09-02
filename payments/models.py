@@ -35,7 +35,10 @@ class Workshop(models.Model):
     public = models.BooleanField(help_text='Private workshops will require a '
                                  'custom URL and will not be visible on the '
                                  'default Workshop List', default=True)
-    private_code = models.CharField(max_length=200)
+    private_code = models.UUIDField(help_text='This will be the unlock code '
+                                    'for your private workshop: https://work'
+                                    'shops.qiime.org/?code=<span id="pcode">'
+                                    '</span>', default=uuid.uuid4)
 
     @property
     def total_tickets_sold(self):

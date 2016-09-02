@@ -44,6 +44,13 @@ class WorkshopAdmin(admin.ModelAdmin):
                     'capacity', 'total_tickets_sold', 'sales_open',
                     'seats_available')
 
+    # inject jQuery and our WorkshopAdmin specific JavaScript file
+    class Media:
+        js = (
+            '//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js',
+            'js/workshop.js'
+        )
+
     # Show 'draft' in the admin is a bit confusing with the default django
     # widgets, so inverting makes sense here
     def live(self, obj):
