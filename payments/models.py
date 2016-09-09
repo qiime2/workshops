@@ -83,6 +83,16 @@ class Workshop(models.Model):
         return reverse('payments:details', kwargs={'slug': self.slug},
                        subdomain='workshops')
 
+    def filter_rates(self, rate_code):
+        rate_set = None
+        if rate_code:
+            rate_set = self.rate_set.filter(discount_code=rate_code)\
+                .order_by('price')
+
+        if rate_code is None or len(rate_set) == 0:
+            rate_set = self.rate_set.filter(discount=False).order_by('price')
+        return rate_set
+
 
 class Instructor(models.Model):
     name = models.CharField(max_length=300)
@@ -114,7 +124,12 @@ class Rate(models.Model):
     price = models.DecimalField(max_digits=6, decimal_places=2,
                                 verbose_name='price (USD)')
     capacity = models.PositiveIntegerField()
-
+    discount = models.BooleanField(default=False)
+    discount_code = models.SlugField(help_text='This will be the code given to'
+                                     'a customer receiving a discount in the '
+                                     'form of https://workshops.qiime.org/wor'
+                                     'kshop_slug/rate=discount_code',
+                                     default=uuid.uuid4)
     objects = RateManager()
 
     def __str__(self):
