@@ -56,12 +56,9 @@ class WorkshopList(ListView):
     # for blocking the ability to see a workshop detail page even if you know
     # the slug for it.
     def get(self, request, *args, **kwargs):
-        if request.GET:
-            try:
-                self.private_code = request.GET['code']
-                request.session['private_code'] = self.private_code
-            except KeyError:
-                pass
+        self.private_code = request.GET.get('code')
+        if self.private_code:
+            request.session['private_code'] = self.private_code
         return super().get(request, *args, **kwargs)
 
 
@@ -72,11 +69,7 @@ class WorkshopDetail(FormMixin, DetailView):
 
     def get(self, request, *args, **kwargs):
         response = super().get(request, *args, **kwargs)
-        code = None
-        try:
-            code = request.session['private_code']
-        except KeyError:
-            pass
+        code = request.session.get('private_code')
 
         if (not request.user.is_authenticated() and self.object.draft) or \
            (not self.object.public and code != self.object.private_code):

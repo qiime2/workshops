@@ -20,10 +20,6 @@ class OrderForm(forms.Form):
         widget=forms.TextInput(attrs={'placeholder': "Orderer's Email Address",
                                       'class': 'form-control'})
     )
-    special_code = forms.CharField(
-        widget=forms.TextInput(attrs={'placeholder': 'Discount Code',
-                                      'class': 'form-control'})
-    )
 
     def __init__(self, *args, **kwargs):
         workshop = kwargs.pop('workshop')

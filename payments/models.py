@@ -35,10 +35,12 @@ class Workshop(models.Model):
     public = models.BooleanField(help_text='Private workshops will require a '
                                  'custom URL and will not be visible on the '
                                  'default Workshop List', default=True)
-    private_code = models.UUIDField(help_text='This will be the unlock code '
+    # SlugField will provide the correct sanitization for URL safe values
+    private_code = models.SlugField(help_text='This will be the unlock code '
                                     'for your private workshop: https://work'
                                     'shops.qiime.org/?code=<span id="pcode">'
-                                    '</span>', default=uuid.uuid4)
+                                    '</span>', default=uuid.uuid4,
+                                    max_length=300)
 
     @property
     def total_tickets_sold(self):
@@ -64,7 +66,7 @@ class Workshop(models.Model):
         return self.rate_set.filter(sold_out=True)
 
     class Meta:
-        unique_together = (('title', 'slug'), )
+        unique_together = (('title', 'slug'), ('private_code', 'public'))
 
     def clean(self):
         # Make sure the workshop begins before it can end...
