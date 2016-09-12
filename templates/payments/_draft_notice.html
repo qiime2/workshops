@@ -1,13 +1,15 @@
 {% if user.is_authenticated %}
-  {% if workshop.draft or not workshop.is_open %}
     <div class="alert alert-warning">
+      You are currently logged in. The content available to you may
+      differ from that of an anonymous user.
+    </div>
+  {% if workshop.draft or workshop.is_at_capacity %}
+    <div class="alert alert-danger">
       Current workshop is
       {% if workshop.draft %}
         marked as draft,
       {% elif workshop.is_at_capacity %}
         sold out,
-      {% elif not workshop.sales_open %}
-        not open,
       {% endif %}
       and is only viewable by site administrators.
     </div>

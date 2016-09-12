@@ -38,7 +38,7 @@ class SessionConfirmMixin(object):
 
 
 class WorkshopList(ListView):
-    queryset = Workshop.objects.filter(sales_open=True)
+    queryset = Workshop.objects.filter(draft=False)
     context_object_name = 'upcoming_workshops'
 
 
