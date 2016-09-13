@@ -26,8 +26,6 @@ class OrderForm(forms.Form):
         discount_code = kwargs.pop('discount_code')
         super().__init__(*args, **kwargs)
 
-        print(discount_code)
-
         self.rate_set = workshop.filter_rates(discount_code)
         for rate in self.rate_set:
             self.fields[rate.name] = forms.IntegerField(
