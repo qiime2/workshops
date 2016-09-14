@@ -121,7 +121,7 @@ class RateManager(models.Manager):
 class Rate(models.Model):
     workshop = models.ForeignKey(Workshop)
     name = models.CharField(max_length=300)
-    price = models.DecimalField(max_digits=6, decimal_places=2,
+    price = models.DecimalField(max_digits=8, decimal_places=2,
                                 verbose_name='price (USD)')
     capacity = models.PositiveIntegerField()
     discount = models.BooleanField(default=False)

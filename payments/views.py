@@ -66,13 +66,6 @@ class WorkshopDetail(FormMixin, DetailView):
     model = Workshop
     form_class = OrderForm
     context_object_name = 'workshop'
-    discount_code = None
-
-    # dicount_code must be grabbed before anything begins as putting it
-    # in the get() was somehow being beaten by the get_form_kwargs()
-    def dispatch(self, request, *args, **kwargs):
-        self.discount_code = request.GET.get('rate')
-        return super().dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         response = super().get(request, *args, **kwargs)
@@ -90,6 +83,7 @@ class WorkshopDetail(FormMixin, DetailView):
         return kwargs
 
     def get_context_data(self, **kwargs):
+        self.discount_code = self.request.GET.get('rate')
         context = super().get_context_data(**kwargs)
         context['form'] = self.get_form()
 
