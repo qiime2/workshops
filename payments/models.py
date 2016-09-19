@@ -126,11 +126,17 @@ class Rate(models.Model):
     capacity = models.PositiveIntegerField()
     discount = models.BooleanField(default=False)
     discount_code = models.SlugField(help_text='This will be the code given to'
-                                     'a customer receiving a discount in the '
+                                     ' a customer receiving a discount in the '
                                      'form of https://workshops.qiime.org/wor'
                                      'kshop_slug/rate=discount_code',
-                                     default=uuid.uuid4)
+                                     blank=True)
     objects = RateManager()
+
+    def clean(self):
+        # assign a UUID if it is a discount, but no custom code was given
+        if self.discount and not self.discount_code:
+            self.discount_code = uuid.uuid4()
+        return super().clean()
 
     def __str__(self):
         return '%s: $%s' % (self.name, self.price)
