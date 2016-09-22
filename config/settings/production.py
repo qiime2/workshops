@@ -10,47 +10,48 @@
 Production settings
 """
 
-from .base import * # gross but is the best for now
+from .base import *  # noqa 403
 
 
-SECRET_KEY = env('DJANGO_SECRET_KEY')
+SECRET_KEY = env('DJANGO_SECRET_KEY')  # noqa: F405
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
-INSTALLED_APPS += ['djangosecure']
+INSTALLED_APPS += ['djangosecure']  # noqa: F405
 
 # set this to 60 seconds and then to 518400 when you can prove it works
 SECURE_HSTS_SECONDS = 60
-SECURE_HSTS_INCLUDE_SUBDOMAINS = env.bool(
+SECURE_HSTS_INCLUDE_SUBDOMAINS = env.bool(  # noqa: F405
     "DJANGO_SECURE_HSTS_INCLUDE_SUBDOMAINS", default=True)
-SECURE_FRAME_DENY = env.bool("DJANGO_SECURE_FRAME_DENY", default=True)
-SECURE_CONTENT_TYPE_NOSNIFF = env.bool(
+SECURE_FRAME_DENY = env.bool("DJANGO_SECURE_FRAME_DENY", default=True)  # noqa: F405
+SECURE_CONTENT_TYPE_NOSNIFF = env.bool(  # noqa: F405
     "DJANGO_SECURE_CONTENT_TYPE_NOSNIFF", default=True)
 SECURE_BROWSER_XSS_FILTER = True
 SESSION_COOKIE_SECURE = False
 SESSION_COOKIE_HTTPONLY = True
-SECURE_SSL_REDIRECT = env.bool("DJANGO_SECURE_SSL_REDIRECT", default=True)
+SECURE_SSL_REDIRECT = env.bool("DJANGO_SECURE_SSL_REDIRECT", default=True)  # noqa: F405
 
 
-ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=['workshops.qiime.org'])
+ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=['workshops.qiime.org'])  # noqa: F405
 
 
-TEMPLATES[0]['OPTIONS']['loaders'] = [
+TEMPLATES[0]['OPTIONS']['loaders'] = [  # noqa: F405
     ('django.template.loaders.cached.Loader', [
         'django.template.loaders.filesystem.Loader',
         'django.template.loaders.app_directories.Loader', ]),
     ]
 
 
-DATABASES['default'] = env.db("DATABASE_URL")
+DATABASES['default'] = env.db("DATABASE_URL")  # noqa: F405
 
 
-DEFAULT_FROM_EMAIL = env('DJANGO_DEFAULT_FROM_EMAIL',
-                         default='QIIME Workshops Admin <noreply@workshops.qiime.org>')
+DEFAULT_FROM_EMAIL = env('DJANGO_DEFAULT_FROM_EMAIL',  # noqa: F405
+                         default='QIIME Workshops Admin '
+                         '<noreply@workshops.qiime.org>')
 EMAIL_BACKEND = 'django_mailgun.MailgunBackend'
-MAILGUN_ACCESS_KEY = env('DJANGO_MAILGUN_API_KEY')
-MAILGUN_SERVER_NAME = env('DJANGO_MAILGUN_SERVER_NAME')
-EMAIL_SUBJECT_PREFIX = env("DJANGO_EMAIL_SUBJECT_PREFIX", default='[qiime workshops] ')
-SERVER_EMAIL = env('DJANGO_SERVER_EMAIL', default=DEFAULT_FROM_EMAIL)
+MAILGUN_ACCESS_KEY = env('DJANGO_MAILGUN_API_KEY')  # noqa: F405
+MAILGUN_SERVER_NAME = env('DJANGO_MAILGUN_SERVER_NAME')  # noqa: F405
+EMAIL_SUBJECT_PREFIX = env("DJANGO_EMAIL_SUBJECT_PREFIX", default='[qiime workshops] ')  # noqa: F405
+SERVER_EMAIL = env('DJANGO_SERVER_EMAIL', default=DEFAULT_FROM_EMAIL)  # noqa: F405
 
 
 LOGGING = {
@@ -94,19 +95,19 @@ LOGGING = {
 }
 
 
-ADMIN_URL = env('DJANGO_ADMIN_URL')
+ADMIN_URL = env('DJANGO_ADMIN_URL')  # noqa: F405
 
 STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
-ADMINS = env('ADMINS', cast=list_of_tuples)
+ADMINS = env('ADMINS', cast=list_of_tuples)  # noqa: F405
 
 # App-specific business logic
-LMID = env.str('LMID')
-PAYMENT_URL = env.str('PAYMENT_URL')
-PAYMENT_TITLE = env.str('PAYMENT_TITLE')
-PAYMENT_DESCRIPTION = env.str('PAYMENT_DESCRIPTION')
-PAYMENT_CONTACT_INFO = env.str('PAYMENT_CONTACT_INFO')
-PAYMENT_CERT_BUNDLE = env.str('PAYMENT_CERT_BUNDLE')
-PSF_SPEEDTYPE = env.str('PSF_SPEEDTYPE')
-PSF_ACCT_NUMBER = env.str('PSF_ACCT_NUMBER')
-TECHNICAL_CONTACT = env.str('TECHNICAL_CONTACT')
+LMID = env.str('LMID')  # noqa: F405
+PAYMENT_URL = env.str('PAYMENT_URL')  # noqa: F405
+PAYMENT_TITLE = env.str('PAYMENT_TITLE')  # noqa: F405
+PAYMENT_DESCRIPTION = env.str('PAYMENT_DESCRIPTION')  # noqa: F405
+PAYMENT_CONTACT_INFO = env.str('PAYMENT_CONTACT_INFO')  # noqa: F405
+PAYMENT_CERT_BUNDLE = env.str('PAYMENT_CERT_BUNDLE')  # noqa: F405
+PSF_SPEEDTYPE = env.str('PSF_SPEEDTYPE')  # noqa: F405
+PSF_ACCT_NUMBER = env.str('PSF_ACCT_NUMBER')  # noqa: F405
+TECHNICAL_CONTACT = env.str('TECHNICAL_CONTACT')  # noqa: F405

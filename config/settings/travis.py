@@ -10,7 +10,7 @@
 Testing env (e.g. travis ci) settings
 """
 
-from .local import * # gross but is the best for now
+from .local import *  # noqa: 403
 
 
-DATABASES['default'] = env.db("DATABASE_URL")
+DATABASES['default'] = env.db("DATABASE_URL")  # noqa: F405
