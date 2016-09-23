@@ -25,7 +25,7 @@
     {{ workshop.description.media }}
   </dl>
 
-  {% if workshop.is_open or user.is_authenticated %}
+  {% if workshop.is_open and purchasable or user.is_authenticated %}
     <hr />
 
     <h3>Register Now!</h3>

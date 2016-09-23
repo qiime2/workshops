@@ -49,7 +49,7 @@ class WorkshopList(ListView):
             queryset = Workshop.objects.filter(private_code=self.private_code)
 
         if queryset is None or len(queryset) == 0:
-            queryset = Workshop.objects.filter(draft=False, public=True)
+            queryset = Workshop.objects.filter(draft=False)
         return queryset
 
     # Capture the GET and store it in the user session. This allows
@@ -67,12 +67,15 @@ class WorkshopDetail(FormMixin, DetailView):
     form_class = OrderForm
     context_object_name = 'workshop'
 
+    # discount_code is needed on POST as well, so only getting it on
+    # context_data breaks the form and makes it invalid every time.
+    def dispatch(self, request, *args, **kwargs):
+        self.discount_code = self.request.GET.get('rate')
+        return super().dispatch(request, *args, **kwargs)
+
     def get(self, request, *args, **kwargs):
         response = super().get(request, *args, **kwargs)
-        code = request.session.get('private_code')
-
-        if (not request.user.is_authenticated() and self.object.draft) or \
-           (not self.object.public and code != self.object.private_code):
+        if not request.user.is_authenticated() and self.object.draft:
             return HttpResponseRedirect(reverse('payments:index'))
         return response
 
@@ -83,7 +86,7 @@ class WorkshopDetail(FormMixin, DetailView):
         return kwargs
 
     def get_context_data(self, **kwargs):
-        self.discount_code = self.request.GET.get('rate')
+        code = self.request.session.get('private_code')
         context = super().get_context_data(**kwargs)
         context['form'] = self.get_form()
 
@@ -95,6 +98,11 @@ class WorkshopDetail(FormMixin, DetailView):
         context['rates'] = rates
         context['workshop'].description = \
             markdownify(context['workshop'].description)
+
+        purchasable = (self.object.public or (not self.object.public and
+                       code == self.object.private_code))
+        context['purchasable'] = purchasable
+
         return context
 
     def post(self, request, *args, **kwargs):
