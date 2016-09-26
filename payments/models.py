@@ -134,8 +134,17 @@ class Rate(models.Model):
 
     def clean(self):
         # assign a UUID if it is a discount, but no custom code was given
-        if self.discount and not self.discount_code:
-            self.discount_code = uuid.uuid4()
+        if self.discount:
+            if not self.discount_code:
+                self.discount_code = uuid.uuid4()
+            else:
+                res = Rate.objects.filter(discount_code=self.discount_code)
+                if len(res) > 0 and self not in res:
+                    raise ValidationError(
+                        'Discount codes must be unique. The code %s on the %s '
+                        'is already in use.' % (self.discount_code, self)
+                    )
+
         return super().clean()
 
     def __str__(self):
