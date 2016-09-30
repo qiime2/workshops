@@ -67,12 +67,6 @@ class WorkshopDetail(FormMixin, DetailView):
     form_class = OrderForm
     context_object_name = 'workshop'
 
-    # discount_code is needed on POST as well, so only getting it on
-    # context_data breaks the form and makes it invalid every time.
-    def dispatch(self, request, *args, **kwargs):
-        self.discount_code = self.request.GET.get('rate')
-        return super().dispatch(request, *args, **kwargs)
-
     def get(self, request, *args, **kwargs):
         response = super().get(request, *args, **kwargs)
         if not request.user.is_authenticated() and self.object.draft:
@@ -80,18 +74,20 @@ class WorkshopDetail(FormMixin, DetailView):
         return response
 
     def get_form_kwargs(self):
+        self.request.session['discount_code'] = self.request.GET.get('rate')
         kwargs = super().get_form_kwargs()
         kwargs['workshop'] = self.object
-        kwargs['discount_code'] = self.discount_code
+        kwargs['discount_code'] = self.request.session.get('discount_code')
         return kwargs
 
     def get_context_data(self, **kwargs):
         code = self.request.session.get('private_code')
+        discount_code = self.request.session.get('discount_code')
         context = super().get_context_data(**kwargs)
         context['form'] = self.get_form()
 
         rates = []
-        for rate in self.object.filter_rates(self.discount_code):
+        for rate in self.object.filter_rates(discount_code):
             field = context['form'][rate.name]
             rates.append({'field': field, 'name': rate.name,
                           'price': rate.price, 'sold_out': rate.sold_out})
