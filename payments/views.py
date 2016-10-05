@@ -199,6 +199,16 @@ class SubmitOrder(View):
 
     def post(self, request, *args, **kwargs):
         order_data = request.session['order']
+
+        for ticket in order_data['tickets']:
+            rate = Rate.objects.get(id=ticket['rate'])
+            if rate.sold_out:
+                return HttpResponseRedirect(
+                    reverse('payments:details', kwargs={
+                        'slug': order_data['workshop']
+                    })
+                )
+
         order = Order.objects.create(contact_email=order_data['email'],
                                      contact_name=order_data['name'],
                                      order_total=order_data['order_total'])
