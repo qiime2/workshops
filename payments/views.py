@@ -17,6 +17,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView, DetailView, TemplateView, View
 from django.views.generic.edit import FormMixin
 from django.conf import settings
+from django.contrib import messages
 
 import requests
 from extra_views import FormSetView
@@ -68,13 +69,13 @@ class WorkshopDetail(FormMixin, DetailView):
     context_object_name = 'workshop'
 
     def get(self, request, *args, **kwargs):
+        self.request.session['discount_code'] = self.request.GET.get('rate')
         response = super().get(request, *args, **kwargs)
         if not request.user.is_authenticated() and self.object.draft:
             return HttpResponseRedirect(reverse('payments:index'))
         return response
 
     def get_form_kwargs(self):
-        self.request.session['discount_code'] = self.request.GET.get('rate')
         kwargs = super().get_form_kwargs()
         kwargs['workshop'] = self.object
         kwargs['discount_code'] = self.request.session.get('discount_code')
@@ -200,9 +201,20 @@ class SubmitOrder(View):
     def post(self, request, *args, **kwargs):
         order_data = request.session['order']
 
+        rates = {}
         for ticket in order_data['tickets']:
             rate = Rate.objects.get(id=ticket['rate'])
-            if rate.sold_out:
+            if rate not in rates:
+                rates[rate] = 1
+            else:
+                rates[rate] += 1
+
+        for rate, quantity in rates.items():
+            if rate.ticket_count + quantity > rate.capacity:
+                remaining = rate.capacity - rate.ticket_count
+                messages.warning(request, 'There are too many %s tickets in '
+                                 'this order. Ticket(s) remaining at this '
+                                 'rate: %d.' % (rate.name, remaining))
                 return HttpResponseRedirect(
                     reverse('payments:details', kwargs={
                         'slug': order_data['workshop']
