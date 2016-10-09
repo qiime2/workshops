@@ -38,8 +38,28 @@ class SessionConfirmMixin(object):
 
 
 class WorkshopList(ListView):
-    queryset = Workshop.objects.filter(draft=False)
     context_object_name = 'upcoming_workshops'
+    private_code = None
+
+    # Since there are possible GET parameters we need to conditionally
+    # determine the queryset for the ListView
+    def get_queryset(self):
+        queryset = None
+        if self.private_code:
+            queryset = Workshop.objects.filter(private_code=self.private_code)
+
+        if queryset is None or len(queryset) == 0:
+            queryset = Workshop.objects.filter(draft=False)
+        return queryset
+
+    # Capture the GET and store it in the user session. This allows
+    # for blocking the ability to see a workshop detail page even if you know
+    # the slug for it.
+    def get(self, request, *args, **kwargs):
+        self.private_code = request.GET.get('code')
+        if self.private_code:
+            request.session['private_code'] = self.private_code
+        return super().get(request, *args, **kwargs)
 
 
 class WorkshopDetail(FormMixin, DetailView):
@@ -54,21 +74,31 @@ class WorkshopDetail(FormMixin, DetailView):
         return response
 
     def get_form_kwargs(self):
+        self.request.session['discount_code'] = self.request.GET.get('rate')
         kwargs = super().get_form_kwargs()
         kwargs['workshop'] = self.object
+        kwargs['discount_code'] = self.request.session.get('discount_code')
         return kwargs
 
     def get_context_data(self, **kwargs):
+        code = self.request.session.get('private_code')
+        discount_code = self.request.session.get('discount_code')
         context = super().get_context_data(**kwargs)
         context['form'] = self.get_form()
+
         rates = []
-        for rate in self.object.rate_set.order_by('price'):
+        for rate in self.object.filter_rates(discount_code):
             field = context['form'][rate.name]
             rates.append({'field': field, 'name': rate.name,
                           'price': rate.price, 'sold_out': rate.sold_out})
         context['rates'] = rates
         context['workshop'].description = \
             markdownify(context['workshop'].description)
+
+        purchasable = (self.object.public or (not self.object.public and
+                       code == self.object.private_code))
+        context['purchasable'] = purchasable
+
         return context
 
     def post(self, request, *args, **kwargs):
@@ -169,6 +199,16 @@ class SubmitOrder(View):
 
     def post(self, request, *args, **kwargs):
         order_data = request.session['order']
+
+        for ticket in order_data['tickets']:
+            rate = Rate.objects.get(id=ticket['rate'])
+            if rate.sold_out:
+                return HttpResponseRedirect(
+                    reverse('payments:details', kwargs={
+                        'slug': order_data['workshop']
+                    })
+                )
+
         order = Order.objects.create(contact_email=order_data['email'],
                                      contact_name=order_data['name'],
                                      order_total=order_data['order_total'])

@@ -6,6 +6,9 @@
   {% if workshop.draft or workshop.is_at_capacity %}
     <div class="alert alert-danger">
       Current workshop is
+      {% if not workshop.public %}
+        a private workshop that is
+      {% endif %}
       {% if workshop.draft %}
         marked as draft,
       {% elif workshop.is_at_capacity %}

@@ -32,6 +32,15 @@ class Workshop(models.Model):
     sales_open = models.BooleanField(help_text='Closed workshops do not show '
                                      'up on the workshop list overview',
                                      default=False)
+    public = models.BooleanField(help_text='Private workshops will require a '
+                                 'custom URL and will not be visible on the '
+                                 'default Workshop List', default=True)
+    # SlugField will provide the correct sanitization for URL safe values
+    private_code = models.SlugField(help_text='This will be the unlock code '
+                                    'for your private workshop: https://work'
+                                    'shops.qiime.org/?code=<span id="pcode">'
+                                    '</span>', default=uuid.uuid4,
+                                    max_length=300)
 
     @property
     def total_tickets_sold(self):
@@ -57,7 +66,7 @@ class Workshop(models.Model):
         return self.rate_set.filter(sold_out=True)
 
     class Meta:
-        unique_together = (('title', 'slug'), )
+        unique_together = (('title', 'slug'), ('private_code', 'public'))
 
     def clean(self):
         # Make sure the workshop begins before it can end...
@@ -73,6 +82,16 @@ class Workshop(models.Model):
     def get_absolute_url(self):
         return reverse('payments:details', kwargs={'slug': self.slug},
                        subdomain='workshops')
+
+    def filter_rates(self, rate_code):
+        rate_set = None
+        if rate_code:
+            rate_set = self.rate_set.filter(discount_code=rate_code)\
+                .order_by('price')
+
+        if rate_code is None or len(rate_set) == 0:
+            rate_set = self.rate_set.filter(discount=False).order_by('price')
+        return rate_set
 
 
 class Instructor(models.Model):
@@ -102,11 +121,31 @@ class RateManager(models.Manager):
 class Rate(models.Model):
     workshop = models.ForeignKey(Workshop)
     name = models.CharField(max_length=300)
-    price = models.DecimalField(max_digits=6, decimal_places=2,
+    price = models.DecimalField(max_digits=8, decimal_places=2,
                                 verbose_name='price (USD)')
     capacity = models.PositiveIntegerField()
-
+    discount = models.BooleanField(default=False)
+    discount_code = models.SlugField(help_text='This will be the code given to'
+                                     ' a customer receiving a discount in the '
+                                     'form of https://workshops.qiime.org/wor'
+                                     'kshop_slug/rate=discount_code',
+                                     blank=True)
     objects = RateManager()
+
+    def clean(self):
+        # assign a UUID if it is a discount, but no custom code was given
+        if self.discount:
+            if not self.discount_code:
+                self.discount_code = uuid.uuid4()
+            else:
+                res = Rate.objects.filter(discount_code=self.discount_code)
+                if len(res) > 0 and self not in res:
+                    raise ValidationError(
+                        'Discount codes must be unique. The code %s on the %s '
+                        'is already in use.' % (self.discount_code, self)
+                    )
+
+        return super().clean()
 
     def __str__(self):
         return '%s: $%s' % (self.name, self.price)
