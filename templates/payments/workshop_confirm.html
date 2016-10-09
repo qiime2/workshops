@@ -49,6 +49,6 @@
   </table>
   <form method="post" action="{% url 'payments:submit' %}">
     {% csrf_token %}
-    <input type="submit" class="btn btn-primary pull-right"/>
+    <input type="submit" class="btn btn-primary pull-right" value="Submit Order"/>
   </form>
 {% endblock %}

@@ -8,6 +8,16 @@
 {% block content %}
   {% include 'payments/_draft_notice.html' %}
 
+  {% if messages %}
+    <div class="alert alert-warning">
+      <ul>
+      {% for message in messages %}
+        <li>{{ message }}</li>
+      {% endfor %}
+      </ul>
+    </div>
+  {% endif %}
+
   <dl class="dl-horizontal">
     <dt>When</dt>
     <dd>{{ workshop.start_date }} - {{ workshop.end_date }}</dd>
