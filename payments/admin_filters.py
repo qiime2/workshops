@@ -17,8 +17,9 @@ class WorkshopFilterBase(admin.SimpleListFilter):
     _filter = None
 
     def lookups(self, request, model_admin):
-        return Workshop.objects.values_list('pk', 'title') \
-                .order_by('start_date')
+        workshops = Workshop.objects.values_list('pk', 'title', 'start_date') \
+                                    .order_by('start_date')
+        return [(w[0], '%s (%s)' % (w[1], w[2])) for w in workshops]
 
     def queryset(self, request, queryset):
         if self.value():
@@ -53,9 +54,37 @@ class PaidFilterBase(admin.SimpleListFilter):
             return queryset.filter(**kwargs)
 
 
+class RefundedFilterBase(admin.SimpleListFilter):
+    title = 'refund status'
+    parameter_name = 'refunded'
+    _filter = None
+
+    def lookups(self, request, model_admin):
+        return (
+            ('true', 'Refunded'),
+            ('false', 'Not Refunded'),
+        )
+
+    def queryset(self, request, queryset):
+        value = self.value()
+        kwargs = {self._filter: False}
+        if value == 'true':
+            return queryset.exclude(**kwargs)
+        if value == 'false':
+            return queryset.filter(**kwargs)
+
+
 class OrderPaidListFilter(PaidFilterBase):
     _filter = 'billed_total'
 
 
 class OrderItemPaidListFilter(PaidFilterBase):
     _filter = 'order__billed_total'
+
+
+class OrderRefundedListFilter(RefundedFilterBase):
+    _filter = 'refunded'
+
+
+class OrderItemRefundedListFilter(RefundedFilterBase):
+    _filter = 'order__refunded'

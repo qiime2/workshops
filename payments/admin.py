@@ -12,7 +12,9 @@ from import_export.admin import ExportMixin
 
 from .admin_filters import (OrderPaidListFilter, OrderWorkshopListFilter,
                             OrderItemPaidListFilter,
-                            OrderItemWorkshopListFilter)
+                            OrderItemWorkshopListFilter,
+                            OrderRefundedListFilter,
+                            OrderItemRefundedListFilter)
 from .models import Workshop, Instructor, Rate, Order, OrderItem
 
 
@@ -67,12 +69,13 @@ class WorkshopAdmin(admin.ModelAdmin):
 class OrderAdmin(ExportMixin, admin.ModelAdmin):
     inlines = [OrderItemInline]
     readonly_fields = ('contact_name', 'contact_email', 'order_total',
-                       'billed_total', 'billed_datetime', 'transaction_id')
+                       'transaction_id')
     list_display = ('contact_name', 'contact_email', 'order_total', 'paid',
-                    'order_datetime', 'billed_datetime', 'transaction_id')
+                    'refunded', 'order_datetime', 'billed_datetime',
+                    'transaction_id')
     list_display_links = ('contact_name', 'contact_email')
-    list_filter = (OrderPaidListFilter, OrderWorkshopListFilter,
-                   'order_datetime', 'contact_email')
+    list_filter = (OrderWorkshopListFilter, OrderPaidListFilter,
+                   OrderRefundedListFilter, 'order_datetime', 'contact_email')
 
     def paid(self, obj):
         return obj.billed_total != ''
@@ -86,10 +89,11 @@ class OrderAdmin(ExportMixin, admin.ModelAdmin):
         return False
 
 
-class OrderItemAdmin(admin.ModelAdmin):
-    list_display = ('name', 'email', 'workshop', 'rate', 'paid',
+class OrderItemAdmin(ExportMixin, admin.ModelAdmin):
+    list_display = ('name', 'email', 'workshop', 'rate', 'paid', 'refunded',
                     'order_transaction_id')
-    list_filter = (OrderItemWorkshopListFilter, OrderItemPaidListFilter)
+    list_filter = (OrderItemWorkshopListFilter, OrderItemPaidListFilter,
+                   OrderItemRefundedListFilter)
     readonly_fields = ('order', 'rate', 'name', 'email')
 
     def order_transaction_id(self, obj):
@@ -104,6 +108,11 @@ class OrderItemAdmin(admin.ModelAdmin):
         return obj.order.billed_total != ''
     paid.admin_order_field = 'order__billed_total'
     paid.boolean = True
+
+    def refunded(self, obj):
+        return obj.order.refunded
+    refunded.admin_order_field = 'order__refunded'
+    refunded.boolean = True
 
     def has_add_permission(self, request):
         return False
