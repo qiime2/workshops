@@ -7,8 +7,5 @@ gunicorn==19.6.0
 # Mailgun Support
 django-mailgun==0.8.0
 
-# DB
-psycopg2==2.6.1
-
 # Misc
 django-secure==1.0.1
