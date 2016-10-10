@@ -154,11 +154,9 @@ EMAIL_BACKEND = env('DJANGO_EMAIL_BACKEND',
                     default='django.core.mail.backends.smtp.EmailBackend')
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': str(BASE_DIR.path('db.sqlite3')),
-    }
+    'default': env.db("DATABASE_URL", default="postgres:///qiime-workshops"),
 }
+DATABASES['default']['ATOMIC_REQUESTS'] = True
 
 INTERNAL_IPS = ('127.0.0.1', 'localhost')
 

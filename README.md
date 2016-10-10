@@ -10,6 +10,7 @@ Django App for QIIME workshop payments
     $ pyvenv venv
     $ source venv/bin/activate
     $ pip install -r requirements/local.txt
+    $ createdb qiime-workshops
     $ python manage.py migrate
     $ python manage.py runserver
 
