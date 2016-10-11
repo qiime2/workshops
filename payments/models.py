@@ -9,7 +9,7 @@
 import uuid
 
 from django.db import models
-from django.db.models.expressions import F
+from django.db.models.expressions import F, Q
 from django.core.exceptions import ValidationError
 
 from subdomains.utils import reverse
@@ -107,7 +107,24 @@ class Instructor(models.Model):
 class RateManager(models.Manager):
     def get_queryset(self):
         return super().get_queryset() \
-            .annotate(ticket_count=models.Count('orderitem')) \
+            .annotate(ticket_count=models.Sum(
+                models.Case(
+                    models.When(
+                        orderitem__order__refunded=True,
+                        then=1
+                    ),
+                    models.When(
+                        orderitem__order__billed_total__exact='',
+                        orderitem__order__refunded=False,
+                        then=0
+                    ),
+                    models.When(
+                        ~Q(orderitem__order__billed_total__exact=''),
+                        then=0
+                    ),
+                    default=1,
+                    output_field=models.IntegerField(),
+                ))) \
             .annotate(sold_out=models.Case(
                           models.When(
                               ticket_count__lt=F('capacity'),
@@ -170,6 +187,7 @@ class Order(models.Model):
         help_text='This is the confirmed date and time of payment',
         verbose_name='billed date & time'
     )
+    refunded = models.BooleanField(default=False)
 
     def __str__(self):
         return '%s: $%s on %s' % (self.contact_email, self.order_total,
