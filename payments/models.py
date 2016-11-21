@@ -28,7 +28,6 @@ class Workshop(models.Model):
                             'URL (i.e. title-YYYY-MM-DD)')
     draft = models.BooleanField(help_text='Draft workshops do not show up on '
                                 'the workshop list overview', default=True)
-    capacity = models.PositiveIntegerField()
     sales_open = models.BooleanField(help_text='Closed workshops do not show '
                                      'up on the workshop list overview',
                                      default=False)
@@ -48,13 +47,9 @@ class Workshop(models.Model):
                 .exclude(order__billed_total='').count()
 
     @property
-    def is_at_capacity(self):
-        return self.total_tickets_sold >= self.capacity
-
-    @property
     def is_open(self):
         if self.sales_open:
-            return not self.is_at_capacity
+            return True  # TODO: Ref to new functionality?
         return self.sales_open
 
     @property
