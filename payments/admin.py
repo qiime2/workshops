@@ -43,7 +43,7 @@ class WorkshopAdmin(admin.ModelAdmin):
     inlines = [InstructorInline, RateInline]
     prepopulated_fields = {'slug': ('title', 'start_date')}
     list_display = ('title', 'start_date', 'end_date', 'url', 'live',
-                    'total_tickets_sold', 'sales_open')
+                    'total_tickets_sold')
 
     # inject jQuery and our WorkshopAdmin specific JavaScript file
     class Media:
