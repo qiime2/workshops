@@ -1,21 +1,10 @@
 // Dynamic Admin forms
 $(document).ready(function() {
-    var publicWorkshop = $('#id_public');
-    var privateCodeRow = $('.field-private_code');
-    var privateCodeInput = $('#id_private_code');
-    var privateCodeUrlSpan = $('#pcode');
     var rateSetButton = $('#rate_set-group .add-row');
     var discount_set = $('[id^=id_rate_set-][id$=-discount]');
     var discount_code_set = $('[id^=id_rate_set-][id$=-discount_code]');
 
-    function onInputChange() {
-        privateCodeUrlSpan.text(privateCodeInput.val());
-    }
-
-    function onPublicCheck() {
-        privateCodeRow.toggle(!publicWorkshop.is(':checked'));
-    }
-
+    // More rates were added, add them to the discount rate set
     function docChanged() {
         discount_set = $('[id^=id_rate_set-][id$=-discount]');
         for (var i = 0; i < discount_set.length; i++){
@@ -24,6 +13,7 @@ $(document).ready(function() {
         discount_set.on('change', onDiscountCheck);
     }
 
+    // A rate was changed, toggle it's code view and URL
     function onDiscountCheck(e) {
         $('#' + e.target.id + '_code').toggle($(e.target).is(':checked'));
         if ($(e.target).is(':checked')) {
@@ -33,20 +23,17 @@ $(document).ready(function() {
         }
     }
 
+    // Handle discount code changing to update live display of link
     function onCodeChange(e) {
         $('#'+ e.target.id + '_customURL').text($(e.target).val())
     }
 
-    // Set listeners
-    publicWorkshop.on('change', onPublicCheck);
+    // Set change and input listeners
     rateSetButton.on('click', docChanged);
-    privateCodeInput.on('input', onInputChange);
     discount_set.on('change', onDiscountCheck);
     discount_code_set.on('input', onCodeChange);
 
     // Run functions so screen matches initial conditions
-    onInputChange();
-    onPublicCheck();
     for (var i = 0; i < discount_set.length; i++){
         $('#' + discount_set[i].id + '_code').toggle($(discount_set[i]).is(':checked'));
         $('#' + discount_set[i].id +'_code').attr('placeholder', 'Optional - will auto-populate if left blank');

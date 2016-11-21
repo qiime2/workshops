@@ -39,28 +39,8 @@ class SessionConfirmMixin(object):
 
 
 class WorkshopList(ListView):
+    queryset = Workshop.objects.filter(draft=False)
     context_object_name = 'upcoming_workshops'
-    private_code = None
-
-    # Since there are possible GET parameters we need to conditionally
-    # determine the queryset for the ListView
-    def get_queryset(self):
-        queryset = None
-        if self.private_code:
-            queryset = Workshop.objects.filter(private_code=self.private_code)
-
-        if queryset is None or len(queryset) == 0:
-            queryset = Workshop.objects.filter(draft=False)
-        return queryset
-
-    # Capture the GET and store it in the user session. This allows
-    # for blocking the ability to see a workshop detail page even if you know
-    # the slug for it.
-    def get(self, request, *args, **kwargs):
-        self.private_code = request.GET.get('code')
-        if self.private_code:
-            request.session['private_code'] = self.private_code
-        return super().get(request, *args, **kwargs)
 
 
 class WorkshopDetail(FormMixin, DetailView):
@@ -82,7 +62,6 @@ class WorkshopDetail(FormMixin, DetailView):
         return kwargs
 
     def get_context_data(self, **kwargs):
-        code = self.request.session.get('private_code')
         discount_code = self.request.session.get('discount_code')
         context = super().get_context_data(**kwargs)
         context['form'] = self.get_form()
@@ -95,10 +74,6 @@ class WorkshopDetail(FormMixin, DetailView):
         context['rates'] = rates
         context['workshop'].description = \
             markdownify(context['workshop'].description)
-
-        purchasable = (self.object.public or (not self.object.public and
-                       code == self.object.private_code))
-        context['purchasable'] = purchasable
 
         return context
 
