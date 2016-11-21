@@ -29,7 +29,6 @@ class WorkshopFactory(factory.DjangoModelFactory):
     url = factory.LazyAttribute(lambda o: '%s.com' % o.title)
     slug = factory.Sequence(lambda n: 'workshop%d' % n)
     draft = FuzzyChoice([True, False])
-    capacity = FuzzyInteger(1, 100)
     sales_open = FuzzyChoice([True, False])
 
 
