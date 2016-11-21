@@ -28,20 +28,18 @@ class Workshop(models.Model):
                             'URL (i.e. title-YYYY-MM-DD)')
     draft = models.BooleanField(help_text='Draft workshops do not show up on '
                                 'the workshop list overview', default=True)
-    sales_open = models.BooleanField(help_text='Closed workshops do not show '
-                                     'up on the workshop list overview',
-                                     default=False)
 
     @property
     def total_tickets_sold(self):
         return OrderItem.objects.filter(rate__workshop=self) \
                 .exclude(order__billed_total='').count()
 
-    @property
-    def is_open(self):
-        if self.sales_open:
-            return True  # TODO: Ref to new functionality?
-        return self.sales_open
+    # TODO: Ref to new functionality?
+    # @property
+    # def is_open(self):
+    #     if self.sales_open:
+    #         return True
+    #     return self.sales_open
 
     @property
     def available_rates(self):
