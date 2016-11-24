@@ -1,4 +1,5 @@
 {% extends 'payments/base.html' %}
+{% load workshop_list_filter %}
 
 {% block title %}QIIME - Workshops{% endblock %}
 {% block header %}Workshops{% endblock %}
@@ -10,27 +11,29 @@
     </p>
   </div>
 
-  <h3>Upcoming Workshops</h3>
-  {% if upcoming_workshops %}
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Title</th>
-          <th>Location</th>
-          <th>Workshop Dates</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for workshop in upcoming_workshops %}
-          <tr>
-            <td><a href="{% url 'payments:details' workshop.slug %}">{{ workshop.title }}</a></td>
-            <td>{{ workshop.location }}</td>
-            <td>{{ workshop.start_date }} - {{ workshop.end_date }}</td>
-          </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  {% else %}
-    <p>No upcoming workshops</p>
-  {% endif %}
+  {% for category in workshop_categories %}
+      <h3>{{ category | title }} Workshops</h3>
+      {% if workshops|workshop_history:category %}
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Location</th>
+              <th>Workshop Dates</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for workshop in workshops|workshop_history:category %}
+              <tr>
+                <td><a href="{% url 'payments:details' workshop.slug %}">{{ workshop.title }}</a></td>
+                <td>{{ workshop.location }}</td>
+                <td>{{ workshop.start_date }} - {{ workshop.end_date }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <p>No {{ category }} workshops</p>
+      {% endif %}
+  {% endfor %}
 {% endblock %}

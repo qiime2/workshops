@@ -34,12 +34,9 @@ class Workshop(models.Model):
         return OrderItem.objects.filter(rate__workshop=self) \
                 .exclude(order__billed_total='').count()
 
-    # TODO: Ref to new functionality?
-    # @property
-    # def is_open(self):
-    #     if self.sales_open:
-    #         return True
-    #     return self.sales_open
+    @property
+    def is_open(self):
+        return self.rate_set.filter(private=False, sold_out=False)
 
     @property
     def available_rates(self):
@@ -74,7 +71,7 @@ class Workshop(models.Model):
                 .order_by('price')
 
         if rate_code is None or len(rate_set) == 0:
-            rate_set = self.rate_set.filter(discount=False).order_by('price')
+            rate_set = self.rate_set.filter(private=False).order_by('price')
         return rate_set
 
 
@@ -125,7 +122,7 @@ class Rate(models.Model):
     price = models.DecimalField(max_digits=8, decimal_places=2,
                                 verbose_name='price (USD)')
     capacity = models.PositiveIntegerField()
-    discount = models.BooleanField(default=False)
+    private = models.BooleanField(default=False)
     discount_code = models.SlugField(help_text='This will be the code given to'
                                      ' a customer receiving a discount in the '
                                      'form of https://workshops.qiime.org/wor'
@@ -135,7 +132,7 @@ class Rate(models.Model):
 
     def clean(self):
         # assign a UUID if it is a discount, but no custom code was given
-        if self.discount:
+        if self.private:
             if not self.discount_code:
                 self.discount_code = uuid.uuid4()
             else:

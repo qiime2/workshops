@@ -40,7 +40,12 @@ class SessionConfirmMixin(object):
 
 class WorkshopList(ListView):
     queryset = Workshop.objects.filter(draft=False)
-    context_object_name = 'upcoming_workshops'
+    context_object_name = 'workshops'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['workshop_categories'] = ['upcoming', 'past']
+        return context
 
 
 class WorkshopDetail(FormMixin, DetailView):
