@@ -67,11 +67,12 @@ class Workshop(models.Model):
     def filter_rates(self, rate_code):
         rate_set = None
         if rate_code:
-            rate_set = self.rate_set.filter(discount_code=rate_code)\
-                .order_by('price')
+            rate_set = self.rate_set.filter(
+                discount_code=rate_code, sales_open=True).order_by('price')
 
         if rate_code is None or len(rate_set) == 0:
-            rate_set = self.rate_set.filter(private=False).order_by('price')
+            rate_set = self.rate_set.filter(
+                private=False, sales_open=True).order_by('price')
         return rate_set
 
 
@@ -128,6 +129,7 @@ class Rate(models.Model):
                                      'form of https://workshops.qiime.org/wor'
                                      'kshop_slug/rate=discount_code',
                                      blank=True)
+    sales_open = models.BooleanField(default=True)
     objects = RateManager()
 
     def clean(self):
