@@ -26,6 +26,8 @@ class InstructorInline(admin.TabularInline):
 class RateInline(admin.TabularInline):
     model = Rate
     extra = 1
+    fields = ('name', 'price', 'capacity', 'sales_open', 'private',
+              'discount_code')
 
 
 class OrderItemInline(admin.TabularInline):
@@ -40,7 +42,7 @@ class OrderItemInline(admin.TabularInline):
 
 
 class WorkshopAdmin(admin.ModelAdmin):
-    inlines = [InstructorInline, RateInline]
+    inlines = [RateInline, InstructorInline]
     prepopulated_fields = {'slug': ('title', 'start_date')}
     list_display = ('title', 'start_date', 'end_date', 'url', 'live',
                     'total_tickets_sold')
