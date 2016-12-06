@@ -32,7 +32,8 @@ class Workshop(models.Model):
     @property
     def total_tickets_sold(self):
         return OrderItem.objects.filter(rate__workshop=self) \
-                .exclude(order__billed_total='').count()
+                .exclude(order__billed_total='') \
+                .exclude(order__refunded=True).count()
 
     @property
     def is_open(self):
@@ -94,7 +95,7 @@ class RateManager(models.Manager):
                 models.Case(
                     models.When(
                         orderitem__order__refunded=True,
-                        then=1
+                        then=0
                     ),
                     models.When(
                         orderitem__order__billed_total__exact='',
@@ -103,7 +104,7 @@ class RateManager(models.Manager):
                     ),
                     models.When(
                         ~Q(orderitem__order__billed_total__exact=''),
-                        then=0
+                        then=1
                     ),
                     default=1,
                     output_field=models.IntegerField(),
