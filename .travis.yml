@@ -10,10 +10,8 @@ before_install:
   - export DATABASE_URL=postgres://postgres@localhost/testdb
 install:
   - pip install -r requirements/travis.txt
-  - pip install coveralls
+  - git clone https://github.com/qiime2/q2lint
 script:
   - python manage.py migrate
   - flake8 --exclude=migrations
-  - coverage run manage.py test
-after_success:
-  - coveralls
+  - python q2lint/q2lint.py
