@@ -62,8 +62,7 @@ class WorkshopAdmin(admin.ModelAdmin):
     live.short_description = 'Visible'
 
     def seats_available(self, obj):
-        # Admins forms wouldn't implicitly interpret this as boolean
-        return len(obj.rate_set.filter(private=False, sold_out=False)) != 0
+        return obj.is_open
     seats_available.boolean = True
     seats_available.short_description = 'Seats available'
 

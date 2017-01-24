@@ -27,11 +27,11 @@ class WorkshopTestCase(TestCase):
         i = InstructorFactory(workshops=[w])
         self.assertEqual(i.workshops.first(), w)
 
-    # def test_is_open(self):
-    #     w = WorkshopFactory()
-    #     self.assertFalse(w.is_open)
-    #     w.sales_open = True
-    #     self.assertTrue(w.is_open)
+    def test_is_open(self):
+        w = WorkshopFactory()
+        self.assertFalse(w.is_open)
+        [RateFactory(workshop=w) for i in range(5)]
+        self.assertTrue(w.is_open)
 
     def test_has_available_rates(self):
         w = WorkshopFactory()
