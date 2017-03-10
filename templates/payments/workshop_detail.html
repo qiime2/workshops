@@ -1,9 +1,8 @@
 {% extends 'payments/base.html' %}
 {% load form_errors %}
 
-{% block title %}QIIME - Workshop: {{ workshop.title }}{% endblock %}
-
-{% block header %}Workshop:<br/ >{{ workshop.title }}{% endblock %}
+{% block title %}QIIME: {{ workshop.title }}{% endblock %}
+{% block header %}{{ workshop.title }}{% endblock %}
 
 {% block content %}
   {% include 'payments/_draft_notice.html' %}

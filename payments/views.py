@@ -23,7 +23,7 @@ import requests
 from extra_views import FormSetView
 from markdownx.utils import markdownify
 
-from .models import Workshop, Order, OrderItem, Rate
+from .models import Workshop, Order, OrderItem, Rate, PosterOption
 from .forms import OrderForm, OrderDetailForm, OrderDetailFormSet
 
 logger = logging.getLogger(__name__)
@@ -113,6 +113,9 @@ class OrderDetail(SessionConfirmMixin, FormSetView):
     formset_class = OrderDetailFormSet
     extra = 0
 
+    def get_extra_form_kwargs(self):
+        return {'workshop': self.request.session['order']['workshop']}
+
     def dispatch(self, request, *args, **kwargs):
         self.slug = kwargs['slug']
         return super().dispatch(request, *args, **kwargs)
@@ -143,11 +146,16 @@ class OrderDetail(SessionConfirmMixin, FormSetView):
         order = self.request.session['order']
         tickets = []
         total_forms = suborder['form-TOTAL_FORMS']
+        # Note, we are appending JSON serializable vals here so that we can
+        # recreate the necessary model objects in later views in this flow.
         for i in range(int(total_forms)):
             rate = suborder['form-%s-rate' % i]
             email = suborder['form-%s-email' % i]
             name = suborder['form-%s-name' % i]
-            tickets.append({'rate': rate, 'email': email, 'name': name})
+            ticket = {'rate': rate, 'email': email, 'name': name}
+            p_attr = 'form-%s-poster_option' % i
+            ticket['poster'] = suborder[p_attr] if p_attr in suborder else None
+            tickets.append(ticket)
         order['tickets'] = tickets
         self.request.session['order'] = order
         return super().formset_valid(formset)
@@ -165,8 +173,13 @@ class ConfirmOrder(SessionConfirmMixin, TemplateView):
         order = self.request.session['order']
         tickets = []
         for ticket in order['tickets']:
-            tickets.append({'name': ticket['name'], 'email': ticket['email'],
-                            'rate': Rate.objects.get(pk=ticket['rate'])})
+            t = {'name': ticket['name'], 'email': ticket['email'],
+                 'rate': Rate.objects.get(pk=ticket['rate'])}
+            if ticket['poster']:
+                t['poster'] = PosterOption.objects.get(id=ticket['poster'])
+            else:
+                t['poster'] = None
+            tickets.append(t)
         context['tickets'] = tickets
         context['order_name'] = order['name']
         context['order_email'] = order['email']
@@ -207,7 +220,8 @@ class SubmitOrder(View):
         items = []
         for ticket in order_data['tickets']:
             items.append(OrderItem(order=order, rate_id=ticket['rate'],
-                         email=ticket['email'], name=ticket['name']))
+                         email=ticket['email'], name=ticket['name'],
+                         poster_id=ticket['poster']))
         # Hit the database only once and create all of the OrderItems generated
         OrderItem.objects.bulk_create(items)
 

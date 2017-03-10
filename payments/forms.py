@@ -10,6 +10,8 @@ import functools
 
 from django import forms
 
+from .models import PosterOption
+
 
 class OrderForm(forms.Form):
     name = forms.CharField(
@@ -58,6 +60,14 @@ class OrderForm(forms.Form):
 
 
 class OrderDetailForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        workshop = kwargs.pop('workshop')
+        super().__init__(*args, **kwargs)
+        qs = PosterOption.objects.filter(workshop__slug=workshop)
+        if qs.count() != 0:
+            self.fields['poster_option'] = forms.ModelChoiceField(
+                queryset=qs)
+
     email = forms.EmailField(
         widget=forms.TextInput(attrs={'placeholder': 'Ticketholder\'s Email',
                                       'class': 'form-control'})
