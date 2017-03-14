@@ -19,3 +19,6 @@ django-markdownx==1.6
 
 # DB
 psycopg2==2.6.2
+
+# Email
+django-anymail==0.8

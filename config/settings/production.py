@@ -46,10 +46,9 @@ DATABASES['default'] = env.db("DATABASE_URL")  # noqa: F405
 
 DEFAULT_FROM_EMAIL = env('DJANGO_DEFAULT_FROM_EMAIL',  # noqa: F405
                          default='QIIME Workshops Admin '
-                         '<noreply@workshops.qiime.org>')
-EMAIL_BACKEND = 'django_mailgun.MailgunBackend'
-MAILGUN_ACCESS_KEY = env('DJANGO_MAILGUN_API_KEY')  # noqa: F405
-MAILGUN_SERVER_NAME = env('DJANGO_MAILGUN_SERVER_NAME')  # noqa: F405
+                         '<noreply@qiime2.org>')
+EMAIL_BACKEND = 'anymail.backends.sparkpost.EmailBackend'
+SPARKPOST_API_KEY = env('SPARKPOST_API_KEY')  # noqa: F405
 EMAIL_SUBJECT_PREFIX = env("DJANGO_EMAIL_SUBJECT_PREFIX", default='[qiime workshops] ')  # noqa: F405
 SERVER_EMAIL = env('DJANGO_SERVER_EMAIL', default=DEFAULT_FROM_EMAIL)  # noqa: F405
 

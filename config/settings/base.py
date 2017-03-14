@@ -47,7 +47,8 @@ DJANGO_APPS = [
 THIRD_PARTY_APPS = [
     'subdomains',
     'import_export',
-    'markdownx'
+    'markdownx',
+    'anymail',
 ]
 
 LOCAL_APPS = [
@@ -150,8 +151,7 @@ SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
 
 ADMIN_URL = r'^admin/'
 
-EMAIL_BACKEND = env('DJANGO_EMAIL_BACKEND',
-                    default='django.core.mail.backends.smtp.EmailBackend')
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 DATABASES = {
     'default': env.db("DATABASE_URL", default="postgres:///qiime-workshops"),
@@ -161,6 +161,7 @@ DATABASES['default']['ATOMIC_REQUESTS'] = True
 INTERNAL_IPS = ('127.0.0.1', 'localhost')
 
 SITE_ID = 1
+SITE = 1
 
 
 def list_of_tuples(var):
