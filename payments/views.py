@@ -12,6 +12,7 @@ from urllib.parse import quote_plus as qp
 
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
+from django.core.mail import EmailMultiAlternatives
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView, DetailView, TemplateView, View
@@ -271,6 +272,31 @@ class OrderCallback(View):
             order.billed_total = request.POST['amount']
             order.billed_datetime = request.POST['date_time']
             order.save()
+            # send emails
+            all_orders = order.orderitem_set.all()
+            workshop = all_orders[0].rate.workshop
+            subject = 'Confirmation of payment - %s' % workshop.title
+            plaintext_msg = 'Please enable HTML viewing'
+            contact = '%s <%s>' % (order.contact_name, order.contact_email)
+            attendees = ['%s <%s>' % (i.name, i.email) for i in all_orders]
+
+            body = '<html><h1>%s</h1>' % workshop.title
+            body += '<h2>Workshop Details</h2>'
+            body += '<div>%s</div>' % markdownify(workshop.email_description)
+            body += '<div><h2>Order Details</h2>'
+            body += '<p>Orderer: %s (%s)</p>' % (order.contact_name,
+                                                 order.contact_email)
+            body += '<h3>Orders:</h3><ul>'
+            for oi in all_orders:
+                body += '<li>%s (%s): %s</li>' % (oi.name, oi.email, oi.rate)
+            body += '</ul></div>'
+            body += '</html>'
+
+            msg = EmailMultiAlternatives(subject, plaintext_msg,
+                                         'noreply@qiime2.org',
+                                         to=[contact], cc=attendees)
+            msg.attach_alternative(body, "text/html")
+            msg.send()
         except (Order.DoesNotExist, KeyError) as e:
             logger.error('%s: %s' % (e, request.body))
             return HttpResponse(status=400)

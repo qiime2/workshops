@@ -21,6 +21,11 @@ class Workshop(models.Model):
     title = models.CharField(max_length=300)
     location = models.CharField(max_length=300)
     description = MarkdownxField()
+    email_description = MarkdownxField(help_text='This is the text that is '
+                                       'emailed to all workshop attendees '
+                                       'when their payment is processed. '
+                                       'Supports Markdown.',
+                                       blank=True)
     start_date = models.DateField()
     end_date = models.DateField()
     url = models.URLField(verbose_name='URL', max_length=2000, blank=True)
