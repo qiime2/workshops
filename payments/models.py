@@ -119,6 +119,20 @@ class RateManager(models.Manager):
                         ))
 
 
+class PosterOption(models.Model):
+    workshop = models.ForeignKey(Workshop)
+    name = models.CharField(max_length=300)
+    sort_order = models.IntegerField(help_text='This value is used to sort '
+                                     'the display order of the poster '
+                                     'presentation options')
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        ordering = ('sort_order',)
+
+
 class Rate(models.Model):
     workshop = models.ForeignKey(Workshop)
     name = models.CharField(max_length=300)
@@ -182,6 +196,7 @@ class Order(models.Model):
 class OrderItem(models.Model):
     order = models.ForeignKey(Order)
     rate = models.ForeignKey(Rate)
+    poster = models.ForeignKey(PosterOption, null=True)
     email = models.EmailField()
     name = models.CharField(max_length=500)
 

@@ -15,7 +15,7 @@ from .admin_filters import (OrderPaidListFilter, OrderWorkshopListFilter,
                             OrderItemWorkshopListFilter,
                             OrderRefundedListFilter,
                             OrderItemRefundedListFilter)
-from .models import Workshop, Instructor, Rate, Order, OrderItem
+from .models import Workshop, Instructor, Rate, Order, OrderItem, PosterOption
 
 
 class InstructorInline(admin.TabularInline):
@@ -34,15 +34,20 @@ class OrderItemInline(admin.TabularInline):
     can_delete = False
     model = OrderItem
     extra = 0
-    readonly_fields = ('rate', 'name')
-    fields = ('rate', 'name')
+    readonly_fields = ('rate', 'name', 'poster')
+    fields = ('rate', 'name', 'poster')
 
     def has_add_permission(self, request):
         return False
 
 
+class PosterOptionInline(admin.TabularInline):
+    model = PosterOption
+    extra = 1
+
+
 class WorkshopAdmin(admin.ModelAdmin):
-    inlines = [RateInline, InstructorInline]
+    inlines = [RateInline, PosterOptionInline, InstructorInline]
     prepopulated_fields = {'slug': ('title', 'start_date')}
     list_display = ('title', 'start_date', 'end_date', 'url', 'live',
                     'total_tickets_sold', 'seats_available')
@@ -92,11 +97,11 @@ class OrderAdmin(ExportMixin, admin.ModelAdmin):
 
 
 class OrderItemAdmin(ExportMixin, admin.ModelAdmin):
-    list_display = ('name', 'email', 'workshop', 'rate', 'paid', 'refunded',
-                    'order_transaction_id')
+    list_display = ('name', 'email', 'workshop', 'rate', 'poster', 'paid',
+                    'refunded', 'order_transaction_id')
     list_filter = (OrderItemWorkshopListFilter, OrderItemPaidListFilter,
                    OrderItemRefundedListFilter)
-    readonly_fields = ('order', 'rate', 'name', 'email')
+    readonly_fields = ('order', 'rate', 'poster', 'name', 'email')
 
     def order_transaction_id(self, obj):
         return obj.order.transaction_id

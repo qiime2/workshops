@@ -1,8 +1,7 @@
 {% extends 'payments/base.html' %}
 
-{% block title %}QIIME - Workshop: {{ workshop.title }}{% endblock %}
-
-{% block header %}Workshop:<br/ >{{ workshop.title }}{% endblock %}
+{% block title %}QIIME: {{ workshop.title }}{% endblock %} 
+{% block header %}{{ workshop.title }}{% endblock %}
 
 {% block content %}
   {% include 'payments/_draft_notice.html' %}
@@ -37,12 +36,18 @@
     <tr>
       <th>Ticketholder Name</th>
       <th>Ticketholder Email</th>
+      {%if workshop.posteroption_set.count %}
+        <th>Poster Session Interest</th>
+      {%endif%}
       <th>Ticket Rate</th>
     </tr>
     {% for ticket in tickets %}
       <tr>
         <td>{{ ticket.name }}</td>
         <td>{{ ticket.email }}</td>
+        {%if workshop.posteroption_set.count %}
+          <td>{{ ticket.poster }}</td>
+        {%endif%}
         <td>{{ ticket.rate }}</td>
       </tr>
     {% endfor %}

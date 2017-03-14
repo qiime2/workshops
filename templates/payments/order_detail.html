@@ -1,9 +1,8 @@
 {% extends 'payments/base.html' %}
 {% load form_errors %}
 
-{% block title %}QIIME - Workshop: {{ workshop.title }}{% endblock %}
-
-{% block header %}Workshop:<br/ >{{ workshop.title }}{% endblock %}
+{% block title %}QIIME: {{ workshop.title }}{% endblock %}
+{% block header %}{{ workshop.title }}{% endblock %}
 
 {% block content %}
 {% include 'payments/_draft_notice.html' %}
@@ -17,6 +16,7 @@
     <tr>
       <th>Name</th>
       <th>Email</th>
+      {%if zipped.0.form.poster_option%}<th>Poster Session</th>{%endif%}
       <th>Ticket Rate</th>
     </tr>
     {% for pair in zipped %}
@@ -37,7 +37,17 @@
           {% endif %}
           {{ pair.form.email }}
         </td>
-        <td class="text-right">{{ pair.rate }} {{ pair.form.rate }}</td>
+        {% if pair.form.poster_option %}
+        <td class="control-group {%if pair.form.poster_option.errors %}has-error{%endif%}">
+          {% if pair.form.poster_option.errors %}
+            <label class="control-label">
+              {{ pair.form.poster_option.errors|join:", " }}
+            </label>
+          {% endif %}
+          {{ pair.form.poster_option }}
+        </td>
+        {% endif %}
+        <td>{{ pair.rate }} {{ pair.form.rate }}</td>
       </tr>
     {% endfor %}
   </table>
