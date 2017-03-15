@@ -50,7 +50,7 @@ class WorkshopAdmin(admin.ModelAdmin):
     inlines = [RateInline, PosterOptionInline, InstructorInline]
     prepopulated_fields = {'slug': ('title', 'start_date')}
     list_display = ('title', 'start_date', 'end_date', 'url', 'live',
-                    'total_tickets_sold', 'seats_available')
+                    'total_tickets_sold', 'is_open')
 
     # inject jQuery and our WorkshopAdmin specific JavaScript file
     class Media:
@@ -66,11 +66,10 @@ class WorkshopAdmin(admin.ModelAdmin):
     live.boolean = True
     live.short_description = 'Visible'
 
-    def seats_available(self, obj):
-        # Admins forms wouldn't implicitly interpret this as boolean
-        return len(obj.rate_set.filter(private=False, sold_out=False)) != 0
-    seats_available.boolean = True
-    seats_available.short_description = 'Seats available'
+    def is_open(self, obj):
+        return obj.is_open
+    is_open.boolean = True
+    is_open.short_description = 'Sales Open?'
 
 
 class OrderAdmin(ExportMixin, admin.ModelAdmin):

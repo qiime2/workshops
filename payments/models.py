@@ -42,8 +42,8 @@ class Workshop(models.Model):
 
     @property
     def is_open(self):
-        return self.rate_set.filter(
-            private=False, sold_out=False, sales_open=True)
+        return self.rate_set.filter(private=False, sold_out=False,
+                                    sales_open=True).count() != 0
 
     @property
     def available_rates(self):
