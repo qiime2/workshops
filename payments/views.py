@@ -45,6 +45,7 @@ class WorkshopList(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        print(list(self.request._messages))
         context['workshop_categories'] = ['upcoming', 'past']
         return context
 
