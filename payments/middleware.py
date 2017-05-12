@@ -8,6 +8,8 @@
 
 from django.utils.deprecation import MiddlewareMixin
 from django.conf import settings
+from django.contrib import messages
+
 
 from subdomains.middleware import SubdomainURLRoutingMiddleware
 
@@ -23,3 +25,25 @@ if settings.DEBUG:
     class PatchedDebugToolbarMiddleware(MiddlewareMixin,
                                         DebugToolbarMiddleware):
         pass
+
+
+class CookieValidationMiddleware:
+    request = None
+
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        if self.request:
+            if not request.COOKIES.get('valid_config') and request.path != '/':
+                messages.warning(request, 'This site requires cookies. Please '
+                                 'enable cookies and try again.')
+                request.path_info = '/'
+
+        response = self.get_response(request)
+        response.set_cookie('valid_config', 'true')
+
+        if not self.request:
+            self.request = request
+
+        return response
