@@ -226,6 +226,15 @@ class SubmitOrder(View):
         # Hit the database only once and create all of the OrderItems generated
         OrderItem.objects.bulk_create(items)
 
+        if str(order.order_total) == '0.00':
+            payload = {
+                'unique_id': str(order.transaction_id),
+                'amount': str(order.order_total),
+                'date_time': str(order.order_datetime),
+            }
+            requests.post('https://payment-callback.qiime.org', data=payload)
+            return HttpResponseRedirect('https://workshops.qiime.org/')
+
         # Now that the order is saved, clear the session so that they can't
         # resubmit the order
         del request.session['order']
