@@ -14,24 +14,24 @@ from .models import Workshop
 class WorkshopFilterBase(admin.SimpleListFilter):
     title = 'workshop'
     parameter_name = 'workshop'
-    _filter = None
 
     def lookups(self, request, model_admin):
         workshops = Workshop.objects.values_list('pk', 'title', 'start_date') \
                                     .order_by('start_date')
         return [(w[0], '%s (%s)' % (w[1], w[2])) for w in workshops]
 
-    def queryset(self, request, queryset):
-        if self.value():
-            return queryset.filter(**{self._filter: self.value()})
-
 
 class OrderWorkshopListFilter(WorkshopFilterBase):
-    _filter = 'orderitem__rate__workshop'
+    def queryset(self, request, queryset):
+        if self.value():
+            qs = queryset.filter(orderitem__rate__workshop=self.value())
+            return qs.distinct()
 
 
 class OrderItemWorkshopListFilter(WorkshopFilterBase):
-    _filter = 'rate__workshop'
+    def queryset(self, request, queryset):
+        if self.value():
+            return queryset.filter(rate__workshop=self.value())
 
 
 class PaidFilterBase(admin.SimpleListFilter):
