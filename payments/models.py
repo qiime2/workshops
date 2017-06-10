@@ -9,7 +9,7 @@
 import uuid
 
 from django.db import models
-from django.db.models.expressions import F, Q
+from django.db.models.expressions import F
 from django.core.exceptions import ValidationError
 
 from subdomains.utils import reverse
@@ -103,13 +103,12 @@ class RateManager(models.Manager):
                         then=0
                     ),
                     models.When(
-                        orderitem__order__billed_total__exact='',
-                        orderitem__order__refunded=False,
+                        orderitem__order__billed_total='',
                         then=0
                     ),
                     models.When(
-                        ~Q(orderitem__order__billed_total__exact=''),
-                        then=1
+                        orderitem__order__billed_total__isnull=True,
+                        then=0
                     ),
                     default=1,
                     output_field=models.IntegerField(),

@@ -7,6 +7,7 @@
 # ----------------------------------------------------------------------------
 
 from django.contrib import admin
+from django.utils.html import format_html_join
 
 from import_export.admin import ExportMixin
 
@@ -49,8 +50,8 @@ class PosterOptionInline(admin.TabularInline):
 class WorkshopAdmin(admin.ModelAdmin):
     inlines = [RateInline, PosterOptionInline, InstructorInline]
     prepopulated_fields = {'slug': ('title', 'start_date')}
-    list_display = ('title', 'start_date', 'end_date', 'url', 'live',
-                    'total_tickets_sold', 'is_open')
+    list_display = ('title', 'start_date', 'end_date', 'live', 'is_open',
+                    'total_tickets_sold', 'per_rate_tickets')
 
     # inject jQuery and our WorkshopAdmin specific JavaScript file
     class Media:
@@ -71,13 +72,19 @@ class WorkshopAdmin(admin.ModelAdmin):
     is_open.boolean = True
     is_open.short_description = 'Sales Open?'
 
+    def per_rate_tickets(self, obj):
+        return format_html_join('\n', '<li>{} ({}/{})</li>',
+                                ((r.name, r.ticket_count, r.capacity) for r in
+                                 obj.rate_set.all()))
+    per_rate_tickets.description = 'Per-rate Tickets'
+
 
 class OrderAdmin(ExportMixin, admin.ModelAdmin):
     inlines = [OrderItemInline]
     readonly_fields = ('contact_name', 'contact_email', 'order_total',
                        'transaction_id')
-    list_display = ('contact_name', 'contact_email', 'order_total', 'paid',
-                    'refunded', 'order_datetime', 'billed_datetime',
+    list_display = ('contact_name', 'contact_email', 'tickets', 'order_total',
+                    'paid', 'refunded', 'order_datetime', 'billed_datetime',
                     'transaction_id')
     list_display_links = ('contact_name', 'contact_email')
     list_filter = (OrderWorkshopListFilter, OrderPaidListFilter,
@@ -87,6 +94,9 @@ class OrderAdmin(ExportMixin, admin.ModelAdmin):
         return obj.billed_total != ''
     paid.admin_order_field = 'billed_total'
     paid.boolean = True
+
+    def tickets(self, obj):
+        return obj.orderitem_set.count()
 
     def has_add_permission(self, request):
         return False
