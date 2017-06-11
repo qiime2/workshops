@@ -7,7 +7,7 @@
 # ----------------------------------------------------------------------------
 
 from django.contrib import admin
-from django.utils.html import format_html_join
+from django.utils.html import format_html_join, format_html
 
 from import_export.admin import ExportMixin
 
@@ -50,8 +50,10 @@ class PosterOptionInline(admin.TabularInline):
 class WorkshopAdmin(admin.ModelAdmin):
     inlines = [RateInline, PosterOptionInline, InstructorInline]
     prepopulated_fields = {'slug': ('title', 'start_date')}
-    list_display = ('title', 'start_date', 'end_date', 'live', 'is_open',
-                    'total_tickets_sold', 'per_rate_tickets')
+    list_display = ('dedicated_qiime2', 'title', 'start_date', 'end_date',
+                    'live', 'is_open', 'total_tickets_sold',
+                    'per_rate_tickets', 'charged')
+    list_display_links = ('title', 'start_date', 'end_date')
 
     # inject jQuery and our WorkshopAdmin specific JavaScript file
     class Media:
@@ -73,10 +75,36 @@ class WorkshopAdmin(admin.ModelAdmin):
     is_open.short_description = 'Sales Open?'
 
     def per_rate_tickets(self, obj):
-        return format_html_join('\n', '<li>{} ({}/{})</li>',
-                                ((r.name, r.ticket_count, r.capacity) for r in
-                                 obj.rate_set.all()))
+        available_rates = obj.rate_set.filter(sold_out=False, sales_open=True)
+        available = format_html_join('\n', '<li>{} ({}/{})</li>',
+                                     ((r.name, r.ticket_count, r.capacity)
+                                      for r in available_rates))
+        sold_out_rates = obj.rate_set.filter(sold_out=True)
+        sold_out = format_html_join('\n', '<li>{} ({}/{})</li>',
+                                    ((r.name, r.ticket_count, r.capacity)
+                                     for r in sold_out_rates))
+        closed_rates = obj.rate_set.filter(sales_open=False)
+        closed = format_html_join('\n', '<li>{} ({}/{})</li>',
+                                  ((r.name, r.ticket_count, r.capacity)
+                                   for r in closed_rates))
+        if available == '' and sold_out == '' and closed == '':
+            return '-'
+        available = available if available != '' else 'No available rates'
+        sold_out = sold_out if sold_out != '' else 'No sold out rates'
+        closed = closed if closed != '' else 'No closed rates'
+        return format_html('<span>Available</span><ul>{}</ul><span>Sold Out'
+                           '</span><ul>{}</ul> <span>Closed</span><ul>{}</ul>',
+                           available, sold_out, closed)
     per_rate_tickets.description = 'Per-rate Tickets'
+
+    def charged(self, obj):
+        charged = 0
+        for rate in obj.rate_set.all():
+            for order_item in rate.orderitem_set.all():
+                if (order_item.order.billed_total != '' and
+                        order_item.order.refunded is False):
+                    charged += order_item.rate.price
+        return '$%s' % charged
 
 
 class OrderAdmin(ExportMixin, admin.ModelAdmin):

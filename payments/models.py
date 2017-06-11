@@ -19,6 +19,7 @@ from markdownx.models import MarkdownxField
 
 class Workshop(models.Model):
     title = models.CharField(max_length=300)
+    dedicated_qiime2 = models.BooleanField(default=False)
     location = models.CharField(max_length=300)
     description = MarkdownxField()
     email_description = MarkdownxField(help_text='This is the text that is '
