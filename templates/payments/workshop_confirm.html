@@ -1,9 +1,9 @@
 {% extends 'payments/base.html' %}
 
-{% block title %}QIIME: {{ workshop.title }}{% endblock %} 
-{% block header %}{{ workshop.title }}{% endblock %}
+{% block title %}QIIME 2: {{ workshop.title }}{% endblock %}
 
 {% block content %}
+  <h1 class="dotted-horizontal">{{ workshop.title }}</h1>
   {% include 'payments/_draft_notice.html' %}
 
   <p>
