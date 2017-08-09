@@ -25,7 +25,7 @@
   <div class="container">
     <div class="row">
       <div class="col-md-10 col-md-offset-2">
-        <img class="header" src="{% static 'img/qiime_logo_large.png' %}" alt="QIIME">
+        <img class="header" src="{% static 'img/q2workshops.svg' %}" alt="QIIME">
       </div>
     </div>
 
@@ -33,7 +33,7 @@
       <div class="col-md-2">
         <ul class="nav nav-sidebar pull-right text-right">
           <li>
-            <a href="http://qiime.org/index.html">Home</a>
+            <a href="http://qiime2.org">Home</a>
           </li>
           <li>
             <a href="{% url 'payments:index' subdomain='workshops' %}">Workshops</a>
@@ -43,10 +43,6 @@
 
       <div class="col-md-10">
         <div class="dotted-vertical">
-          <h1 class="dotted-horizontal" >
-            {% block header %}{% endblock %}
-            <img src="{% static 'img/spacer_dots.png' %}" alt="...">
-          </h1>
           {% block content %}{% endblock %}
           <p>{{ TECHNICAL_CONTACT|safe }}</p>
         </div>
@@ -55,24 +51,8 @@
 
     <div class="row">
       <div class="col-md-12">
-        <div class="row">
-          <div class="center-block">
-            <img class="center-block" src="{% static 'img/spacer_dots.png' %}">
-          </div>
-        </div>
-        <div class="row">
-          <div class="center-block">
-            <span class="center-block text-center">&copy; Copyright 2015--, QIIME development team.</span>
-          </div>
-        </div>
-        <div class="row">
-          <div class="center-block">
-            <span>
-              <a href="http://scikit-bio.org/">
-                <img class="center-block" width="412px" src="{% static 'img/powered_by_skbio.png' %}" alt="Powered by scikit-bio">
-              </a>
-            </span>
-          </div>
+        <div class="center-block">
+          <span class="center-block text-center">&copy; Copyright 2016--, QIIME 2 development team.</span>
         </div>
       </div>
     </div>
