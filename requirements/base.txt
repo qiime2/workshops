@@ -18,7 +18,7 @@ django-import-export==0.4.5
 django-markdownx==1.6
 
 # DB
-psycopg2==2.6.2
+psycopg2==2.7
 
 # Email
 django-anymail==0.8
