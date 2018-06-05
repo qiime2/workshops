@@ -1,17 +1,18 @@
 sudo: false
+dist: trusty
 language: python
 python:
   - 3.5
-services:
-  - postgresql
+addons:
+  postgresql: '9.5'
 before_install:
   - psql -c 'create database testdb;' -U postgres
   - export DJANGO_SETTINGS_MODULE=config.settings.travis
   - export DATABASE_URL=postgres://postgres@localhost/testdb
 install:
   - pip install -r requirements/travis.txt
-  - git clone https://github.com/qiime2/q2lint
+  - pip install -q https://github.com/qiime2/q2lint/archive/master.zip
 script:
   - python manage.py migrate
   - flake8 --exclude=migrations
-  - python q2lint/q2lint.py
+  - q2lint
