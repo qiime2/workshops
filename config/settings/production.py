@@ -31,7 +31,7 @@ SESSION_COOKIE_HTTPONLY = True
 SECURE_SSL_REDIRECT = env.bool("DJANGO_SECURE_SSL_REDIRECT", default=True)  # noqa: F405
 
 
-ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=['workshops.qiime.org'])  # noqa: F405
+ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=['workshops.qiime2.org'])  # noqa: F405
 
 
 TEMPLATES[0]['OPTIONS']['loaders'] = [  # noqa: F405

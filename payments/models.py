@@ -147,7 +147,7 @@ class Rate(models.Model):
     private = models.BooleanField(default=False)
     discount_code = models.SlugField(help_text='This will be the code given to'
                                      ' a customer receiving a discount in the '
-                                     'form of https://workshops.qiime.org/wor'
+                                     'form of https://workshops.qiime2.org/wor'
                                      'kshop_slug/rate=discount_code',
                                      blank=True)
     sales_open = models.BooleanField(default=True)
