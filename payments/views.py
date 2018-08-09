@@ -232,8 +232,8 @@ class SubmitOrder(View):
                 'amount': str(order.order_total),
                 'date_time': str(order.order_datetime),
             }
-            requests.post('https://payment-callback.qiime.org', data=payload)
-            return HttpResponseRedirect('https://workshops.qiime.org/')
+            requests.post('https://payment-callback.qiime2.org', data=payload)
+            return HttpResponseRedirect('https://workshops.qiime2.org/')
 
         # Now that the order is saved, clear the session so that they can't
         # resubmit the order
