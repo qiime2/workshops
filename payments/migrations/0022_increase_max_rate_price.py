@@ -19,6 +19,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='rate',
             name='price',
-            field=models.DecimalField(decimal_places=2, max_digits=8, verbose_name='price (USD)'),
+            field=models.DecimalField(decimal_places=2, max_digits=8,
+                                      verbose_name='price (USD)'),
         ),
     ]

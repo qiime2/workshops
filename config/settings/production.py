@@ -22,16 +22,19 @@ INSTALLED_APPS += ['djangosecure']  # noqa: F405
 SECURE_HSTS_SECONDS = 60
 SECURE_HSTS_INCLUDE_SUBDOMAINS = env.bool(  # noqa: F405
     "DJANGO_SECURE_HSTS_INCLUDE_SUBDOMAINS", default=True)
-SECURE_FRAME_DENY = env.bool("DJANGO_SECURE_FRAME_DENY", default=True)  # noqa: F405
+SECURE_FRAME_DENY = env.bool("DJANGO_SECURE_FRAME_DENY",
+                             default=True)  # noqa: F405
 SECURE_CONTENT_TYPE_NOSNIFF = env.bool(  # noqa: F405
     "DJANGO_SECURE_CONTENT_TYPE_NOSNIFF", default=True)
 SECURE_BROWSER_XSS_FILTER = True
 SESSION_COOKIE_SECURE = False
 SESSION_COOKIE_HTTPONLY = True
-SECURE_SSL_REDIRECT = env.bool("DJANGO_SECURE_SSL_REDIRECT", default=True)  # noqa: F405
+SECURE_SSL_REDIRECT = env.bool("DJANGO_SECURE_SSL_REDIRECT",
+                               default=True)  # noqa: F405
 
 
-ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=['workshops.qiime2.org'])  # noqa: F405
+ALLOWED_HOSTS = env.list(
+    'DJANGO_ALLOWED_HOSTS', default=['workshops.qiime2.org'])  # noqa: F405
 
 
 TEMPLATES[0]['OPTIONS']['loaders'] = [  # noqa: F405
@@ -49,8 +52,10 @@ DEFAULT_FROM_EMAIL = env('DJANGO_DEFAULT_FROM_EMAIL',  # noqa: F405
                          '<noreply@qiime2.org>')
 EMAIL_BACKEND = 'anymail.backends.sparkpost.EmailBackend'
 SPARKPOST_API_KEY = env('SPARKPOST_API_KEY')  # noqa: F405
-EMAIL_SUBJECT_PREFIX = env("DJANGO_EMAIL_SUBJECT_PREFIX", default='[qiime workshops] ')  # noqa: F405
-SERVER_EMAIL = env('DJANGO_SERVER_EMAIL', default=DEFAULT_FROM_EMAIL)  # noqa: F405
+EMAIL_SUBJECT_PREFIX = env(
+    "DJANGO_EMAIL_SUBJECT_PREFIX", default='[qiime workshops] ')  # noqa: F405
+SERVER_EMAIL = env(
+    'DJANGO_SERVER_EMAIL', default=DEFAULT_FROM_EMAIL)  # noqa: F405
 
 
 LOGGING = {

@@ -24,7 +24,8 @@ EMAIL_HOST = 'localhost'
 EMAIL_PORT = 1025
 
 INSTALLED_APPS += ['debug_toolbar']  # noqa: F405
-MIDDLEWARE += ['payments.middleware.PatchedDebugToolbarMiddleware']  # noqa: F405
+MIDDLEWARE += [
+    'payments.middleware.PatchedDebugToolbarMiddleware']  # noqa: F405
 DEBUG_TOOLBAR_PATCH_SETTINGS = False
 
 ALLOWED_HOSTS = '*'

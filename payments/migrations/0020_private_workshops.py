@@ -26,16 +26,26 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='workshop',
             name='private_code',
-            field=models.SlugField(default=uuid.uuid4, help_text='This will be the unlock code for your private workshop: https://workshops.qiime.org/?code=<span id="pcode"></span>', max_length=300),
+            field=models.SlugField(
+                default=uuid.uuid4,
+                help_text=('This will be the unlock code for your private '
+                           'workshop: https://workshops.qiime.org/?code=<span'
+                           ' id="pcode"></span>'),
+                max_length=300),
         ),
         migrations.RunPython(migrate, reverse_code=migrations.RunPython.noop),
         migrations.AddField(
             model_name='workshop',
             name='public',
-            field=models.BooleanField(default=True, help_text='Private workshops will require a custom URL and will not be visible on the default Workshop List'),
+            field=models.BooleanField(
+                default=True,
+                help_text=('Private workshops will require a custom URL and '
+                           'will not be visible on the default Workshop '
+                           'List')),
         ),
         migrations.AlterUniqueTogether(
             name='workshop',
-            unique_together=set([('private_code', 'public'), ('title', 'slug')]),
+            unique_together=set([('private_code', 'public'),
+                                 ('title', 'slug')]),
         ),
     ]

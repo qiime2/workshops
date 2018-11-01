@@ -19,7 +19,10 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='order',
             name='billed_total',
-            field=models.CharField(blank=True, default='', help_text='This is the confirmed paid amount from NAU', max_length=300, verbose_name='billed total (USD)'),
+            field=models.CharField(
+                blank=True, default='',
+                help_text='This is the confirmed paid amount from NAU',
+                max_length=300, verbose_name='billed total (USD)'),
             preserve_default=False,
         ),
     ]

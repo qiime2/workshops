@@ -29,13 +29,16 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='orderitem',
             name='email',
-            field=models.EmailField(default='example@example.com', max_length=254),
+            field=models.EmailField(default='example@example.com',
+                                    max_length=254),
             preserve_default=False,
         ),
         migrations.AddField(
             model_name='workshop',
             name='closing_date',
-            field=models.DateField(default=datetime.datetime(2016, 8, 7, 23, 54, 27, 693604, tzinfo=utc)),
+            field=models.DateField(
+                default=datetime.datetime(2016, 8, 7, 23, 54, 27, 693604,
+                                          tzinfo=utc)),
             preserve_default=False,
         ),
         migrations.AlterUniqueTogether(

@@ -19,11 +19,15 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='workshop',
             name='draft',
-            field=models.BooleanField(default=True, help_text='Draft workshops do not show up on the workshop list overview'),
+            field=models.BooleanField(
+                default=True, help_text=('Draft workshops do not show up on '
+                                         'the workshop list overview')),
         ),
         migrations.AlterField(
             model_name='workshop',
             name='sales_open',
-            field=models.BooleanField(default=False, help_text='Closed workshops do not show up on the workshop list overview'),
+            field=models.BooleanField(
+                default=False, help_text=('Closed workshops do not show up on '
+                                          'the workshop list overview')),
         ),
     ]
