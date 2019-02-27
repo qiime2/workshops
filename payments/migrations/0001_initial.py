@@ -25,33 +25,42 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Instructor',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True, primary_key=True,
+                 serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=300)),
             ],
         ),
         migrations.CreateModel(
             name='Order',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True, primary_key=True,
+                                        serialize=False, verbose_name='ID')),
                 ('email', models.EmailField(max_length=254)),
-                ('order_total', models.DecimalField(decimal_places=2, max_digits=7)),
+                ('order_total', models.DecimalField(decimal_places=2,
+                                                    max_digits=7)),
                 ('order_datetime', models.DateTimeField(auto_now_add=True)),
-                ('billed_total', models.DecimalField(decimal_places=2, max_digits=7, null=True)),
+                ('billed_total', models.DecimalField(decimal_places=2,
+                                                     max_digits=7,
+                                                     null=True)),
                 ('billed_datetime', models.DateTimeField(null=True)),
             ],
         ),
         migrations.CreateModel(
             name='OrderItem',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True, primary_key=True,
+                                        serialize=False, verbose_name='ID')),
                 ('quantity', models.PositiveIntegerField()),
-                ('order', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='payments.Order')),
+                ('order', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE,
+                    to='payments.Order')),
             ],
         ),
         migrations.CreateModel(
             name='Rate',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True, primary_key=True,
+                                        serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=300)),
                 ('price', models.DecimalField(decimal_places=2, max_digits=6)),
             ],
@@ -59,7 +68,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Workshop',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True, primary_key=True,
+                                        serialize=False, verbose_name='ID')),
                 ('title', models.CharField(max_length=300)),
                 ('description', models.TextField()),
                 ('start_date', models.DateField()),
@@ -71,16 +81,21 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='rate',
             name='workshop',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='payments.Workshop'),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                to='payments.Workshop'),
         ),
         migrations.AddField(
             model_name='orderitem',
             name='rate',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='payments.Rate'),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                to='payments.Rate'),
         ),
         migrations.AddField(
             model_name='instructor',
             name='workshops',
-            field=models.ManyToManyField(related_name='instructors', to='payments.Workshop'),
+            field=models.ManyToManyField(related_name='instructors',
+                                         to='payments.Workshop'),
         ),
     ]

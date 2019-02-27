@@ -19,6 +19,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='workshop',
             name='url',
-            field=models.URLField(blank=True, max_length=2000, verbose_name='URL'),
+            field=models.URLField(
+                blank=True, max_length=2000, verbose_name='URL'),
         ),
     ]

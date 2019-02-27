@@ -23,7 +23,10 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='workshop',
             name='sales_open',
-            field=models.BooleanField(default=False, help_text='Closed workshops do not show up on the workshop list overview'),
+            field=models.BooleanField(
+                default=False,
+                help_text=('Closed workshops do not show up on the workshop '
+                           'list overview')),
             preserve_default=False,
         ),
     ]

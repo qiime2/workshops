@@ -23,7 +23,8 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='workshop',
             name='location',
-            field=models.CharField(default='Caporaso Lab, Flagstaff, AZ', max_length=300),
+            field=models.CharField(default='Caporaso Lab, Flagstaff, AZ',
+                                   max_length=300),
             preserve_default=False,
         ),
     ]

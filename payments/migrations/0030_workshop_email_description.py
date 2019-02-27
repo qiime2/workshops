@@ -19,6 +19,10 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='workshop',
             name='email_description',
-            field=markdownx.models.MarkdownxField(blank=True, help_text='This is the text that is emailed to all workshop attendees when their payment is processed. Supports Markdown.'),
+            field=markdownx.models.MarkdownxField(
+                blank=True,
+                help_text=('This is the text that is emailed to all workshop '
+                           'attendees when their payment is processed. '
+                           'Supports Markdown.')),
         ),
     ]

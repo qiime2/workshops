@@ -23,6 +23,8 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='instructor',
             name='workshops',
-            field=models.ManyToManyField(blank=True, related_name='instructors', to='payments.Workshop'),
+            field=models.ManyToManyField(blank=True,
+                                         related_name='instructors',
+                                         to='payments.Workshop'),
         ),
     ]

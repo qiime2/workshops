@@ -23,7 +23,9 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='workshop',
             name='draft',
-            field=models.BooleanField(default=True, help_text='Draft workshop does not show up on the workshop list overview'),
+            field=models.BooleanField(
+                default=True, help_text=('Draft workshop does not show up on '
+                                         'the workshop list overview')),
             preserve_default=False,
         ),
     ]

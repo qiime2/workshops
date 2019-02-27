@@ -171,6 +171,7 @@ def list_of_tuples(var):
         out.append(tuple(pair.split(',')))
     return out
 
+
 ADMINS = env('ADMINS', default=list_of_tuples('x,x@x.com;y,y@y.com'),
              cast=list_of_tuples)
 
