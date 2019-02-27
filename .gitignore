@@ -67,3 +67,5 @@ target/
 .*.swp
 
 .DS_Store
+collected_static
+.env
