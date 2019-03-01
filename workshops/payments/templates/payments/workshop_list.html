@@ -1,8 +1,8 @@
 {% extends 'payments/base.html' %}
 {% load workshop_list_filter %}
 
-{% block title %}QIIME 2: Workshops{% endblock %}
-{% block content %}
+{% block 'title' %}QIIME 2: Workshops{% endblock %}
+{% block 'content' %}
 
   {% if messages %}
     <div class="alert alert-warning">
@@ -17,14 +17,14 @@
   <div>
     <p>
       See <a href="https://github.com/biocore/qiime/wiki/Official-QIIME-workshops">here</a>
-      for information on hosting or attending an official QIIME workshop.
+      for information on hosting or attending an official QIIME 2 workshop.
     </p>
   </div>
 
   {% for category in workshop_categories %}
       <h3>{{ category | title }} Workshops</h3>
       {% if workshops|workshop_history:category %}
-        <table class="table">
+        <table class="table is-fullwidth is-hoverable">
           <thead>
             <tr>
               <th>Title</th>

@@ -1,9 +1,9 @@
 {% extends 'payments/base.html' %}
 
-{% block title %}QIIME 2: {{ workshop.title }}{% endblock %}
+{% block 'title' %}QIIME 2: {{ workshop.title }}{% endblock %}
 
-{% block content %}
-  <h1 class="dotted-horizontal">{{ workshop.title }}</h1>
+{% block 'content' %}
+  <h1>{{ workshop.title }}</h1>
   {% include 'payments/_draft_notice.html' %}
 
   <p>
@@ -15,20 +15,20 @@
     email your reciept at time of payment.
   </p><br />
 
-  <dl class="dl-horizontal">
-    <dt>Title</dt>
+  <dl>
+    <dt><strong>Title</strong></dt>
     <dd>{{ workshop.title }}</dd>
 
-    <dt>Dates</dt>
+    <dt><strong>Dates</strong></dt>
     <dd>{{ workshop.start_date }} - {{ workshop.end_date }}</dd>
 
-    <dt>Order Contact Name</dt>
+    <dt><strong>Order Contact Name</strong></dt>
     <dd>{{ order_name }}</dd>
 
-    <dt>Order Contact Email</dt>
+    <dt><strong>Order Contact Email</strong></dt>
     <dd>{{ order_email }}</dd>
 
-    <dt>Order Total</dt>
+    <dt><strong>Order Total</strong></dt>
     <dd>{{ order_total }} USD</dd>
   </dl>
 
@@ -54,6 +54,6 @@
   </table>
   <form method="post" action="{% url 'payments:submit' %}">
     {% csrf_token %}
-    <input type="submit" class="btn btn-primary pull-right" value="Submit Order"/>
+    <input type="submit" class="button" value="Submit Order"/>
   </form>
 {% endblock %}

@@ -1,10 +1,10 @@
 {% extends 'payments/base.html' %}
 {% load form_errors %}
 
-{% block title %}QIIME 2: {{ workshop.title }}{% endblock %}
+{% block 'title' %}QIIME 2: {{ workshop.title }}{% endblock %}
 
-{% block content %}
-<h1 class="dotted-horizontal">{{ workshop.title }}</h1>
+{% block 'content' %}
+<h1>{{ workshop.title }}</h1>
 {% include 'payments/_draft_notice.html' %}
 <p>Each ticket order must have contact info.</p>
 
@@ -20,27 +20,27 @@
       <th>Ticket Rate</th>
     </tr>
     {% for pair in zipped %}
-      <tr class="form-group">
-        <td class="control-group {%if pair.form.name.errors %}has-error{%endif%}">
+      <tr>
+        <td class="field">
           {% if pair.form.name.errors %}
-            <label class="control-label">
+            <label class="help is-danger">
               {{ pair.form.name.errors|join:", " }}
             </label>
           {% endif %}
           {{ pair.form.name }}
         </td>
-        <td class="control-group {%if pair.form.email.errors %}has-error{%endif%}">
+        <td class="field">
           {% if pair.form.email.errors %}
-            <label class="control-label">
+            <label class="help is-danger">
               {{ pair.form.email.errors|join:", " }}
             </label>
           {% endif %}
           {{ pair.form.email }}
         </td>
         {% if pair.form.poster_option %}
-        <td class="control-group {%if pair.form.poster_option.errors %}has-error{%endif%}">
+        <td class="field">
           {% if pair.form.poster_option.errors %}
-            <label class="control-label">
+            <label class="class is-danger">
               {{ pair.form.poster_option.errors|join:", " }}
             </label>
           {% endif %}
@@ -51,6 +51,6 @@
       </tr>
     {% endfor %}
   </table>
-  <input type="submit" class="btn btn-primary pull-right" value="Continue" />
+  <input type="submit" class="button" value="Continue" />
 </form>
 {% endblock %}
