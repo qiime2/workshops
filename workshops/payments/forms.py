@@ -8,11 +8,11 @@ from .models import PosterOption
 class OrderForm(forms.Form):
     name = forms.CharField(
         widget=forms.TextInput(attrs={'placeholder': "Orderer's Name",
-                                      'class': 'form-control'})
+                                      'class': 'input'})
     )
     email = forms.EmailField(
         widget=forms.TextInput(attrs={'placeholder': "Orderer's Email Address",
-                                      'class': 'form-control'})
+                                      'class': 'input'})
     )
 
     def __init__(self, *args, **kwargs):
@@ -26,14 +26,14 @@ class OrderForm(forms.Form):
                 initial=0,
                 min_value=0,
                 max_value=rate.capacity - rate.ticket_count,
-                widget=forms.NumberInput(attrs={'class': 'form-control'})
+                widget=forms.NumberInput(attrs={'class': 'input'})
             )
         for rate in workshop.sold_out_rates.all():
             self.fields[rate.name] = forms.IntegerField(
                 initial=0,
                 min_value=0,
                 disabled=True,
-                widget=forms.NumberInput(attrs={'class': 'form-control'})
+                widget=forms.NumberInput(attrs={'class': 'input'})
             )
 
     def clean(self):
@@ -62,11 +62,11 @@ class OrderDetailForm(forms.Form):
 
     email = forms.EmailField(
         widget=forms.TextInput(attrs={'placeholder': 'Ticketholder\'s Email',
-                                      'class': 'form-control'})
+                                      'class': 'input'})
     )
     name = forms.CharField(
         widget=forms.TextInput(attrs={'placeholder': 'Ticketholder\'s Name',
-                                      'class': 'form-control'})
+                                      'class': 'input'})
     )
     rate = forms.CharField(widget=forms.HiddenInput())
 

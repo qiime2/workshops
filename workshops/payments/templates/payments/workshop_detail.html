@@ -1,10 +1,10 @@
 {% extends 'payments/base.html' %}
 {% load form_errors %}
 
-{% block title %}QIIME 2: {{ workshop.title }}{% endblock %}
+{% block 'title' %}QIIME 2: {{ workshop.title }}{% endblock %}
 
-{% block content %}
-  <h1 class="dotted-horizontal">{{ workshop.title }}</h1>
+{% block 'content' %}
+  <h1>{{ workshop.title }}</h1>
   {% include 'payments/_draft_notice.html' %}
 
   {% if messages %}
@@ -17,19 +17,19 @@
     </div>
   {% endif %}
 
-  <dl class="dl-horizontal">
-    <dt>When</dt>
+  <dl>
+    <dt><strong>When</strong></dt>
     <dd>{{ workshop.start_date }} - {{ workshop.end_date }}</dd>
 
-    <dt>Where</dt>
+    <dt><strong>Where</strong></dt>
     <dd>{{ workshop.location }}</dd>
 
     {% if workshop.url %}
-      <dt>URL</dt>
+      <dt><strong>URL</strong></dt>
       <dd><a href="{{ workshop.url }}">{{ workshop.url }}</a></dd>
     {% endif %}
 
-    <dt>Description</dt>
+    <dt><strong>Description</strong></dt>
     <dd>{{ workshop.description | safe }}</dd>
     {{ workshop.description.media }}
   </dl>
@@ -43,8 +43,18 @@
 
     <form method="POST">
       {% csrf_token %}
-      {{ form.name }} <br />
-      {{ form.email }} <br />
+      <div class="field">
+        <label class="label">{{ form.name.label }}</label>
+        <div class="control">{{ form.name }}</div>
+        <p class="help">{{ form.name.help_text }}</p>
+        {% if form.name.errors %}<p class="help is-danger">{{ form.name.errors.as_text }}</p>{% endif %}
+      </div>
+      <div class="field">
+        <label class="label">{{ form.email.label }}</label>
+        <div class="control">{{ form.email }}</div>
+        <p class="help">{{ form.email.help_text }}</p>
+        {% if form.email.errors %}<p class="help is-danger">{{ form.email.errors.as_text }}</p>{% endif %}
+      </div>
       <p>
         Each ticket purchased as part of an order will need a unique email
         address (these will be collected on the next step).
@@ -52,7 +62,7 @@
       <table class="table">
         <thead>
           <tr>
-            <th class="col-xs-2">Ticket Quantity</th>
+            <th>Ticket Quantity</th>
             <th>Rate Type</th>
             <th>Price</th>
             <th></th>
@@ -69,9 +79,8 @@
           {% endfor %}
         </tbody>
       </table>
-      <div class="col-md-3 col-md-offset-9">
-          <br />
-          <input type="submit" class="btn btn-primary pull-right" value="Continue" />
+      <div>
+        <input type="submit" class="button" value="Continue" />
       </div>
     </form>
   {% endif %}

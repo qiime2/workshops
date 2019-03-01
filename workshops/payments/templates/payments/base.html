@@ -3,12 +3,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>{% block title %}{% endblock %}</title>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-  <link rel="stylesheet" href="{% static 'css/style.css' %}" media="screen" title="no title" charset="utf-8">
-  {% if debug %}
-    <script src="http://localhost:35729/livereload.js" charset="utf-8"></script>
-  {% else %}
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/png" href="{% static 'img/favicon.ico' %}">
+  <title>{% block 'title' %}QIIME 2 Workshops{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/bulma.min.css' %}">
+  {% block 'head' %}{% endblock %}
+  {% if not debug %}
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -21,40 +22,85 @@
   {% endif %}
 </head>
 <body>
-  <div class="container">
-    <div class="row">
-      <div class="col-md-10 col-md-offset-2">
-        <img class="header" src="{% static 'img/q2workshops.svg' %}" alt="QIIME">
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-md-2">
-        <ul class="nav nav-sidebar pull-right text-right">
-          <li>
-            <a href="http://qiime2.org">Home</a>
-          </li>
-          <li>
-            <a href="{% url 'payments:index' %}">Workshops</a>
-          </li>
-        </ul>
+  <nav class="navbar is-light" role="navigation" aria-label="main navigation">
+    <div class="container">
+      <div class="navbar-brand">
+        <a class="navbar-item" href="{% url 'payments:index' %}">
+          <img class="header" src="{% static 'img/q2workshops.svg' %}" alt="QIIME 2" style="max-height: 40px;">
+        </a>
+        <a role="button" class="navbar-burger" data-target="navMenu" aria-label="menu" aria-expanded="false">
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </a>
       </div>
 
-      <div class="col-md-10">
-        <div class="dotted-vertical">
-          {% block content %}{% endblock %}
-          <p>{{ TECHNICAL_CONTACT|safe }}</p>
+      <div class="navbar-menu" id="navMenu">
+        <div class="navbar-start">
+        </div>
+        <div class="navbar-end">
+          <a class="navbar-item {% if request.resolver_match.url_name == 'index' %}is-active{% endif %}" href="{% url 'payments:index' %}">
+            Home
+          </a>
+          <div class="navbar-item has-dropdown is-hoverable">
+            <p class="navbar-link">
+              Resources
+            </p>
+            <div class="navbar-dropdown is-boxed">
+              <a class="navbar-item" target="_blank" href="https://docs.qiime2.org/">
+                Docs
+              </a>
+              <a class="navbar-item" target="_blank" href="https://dev.qiime2.org/">
+                Dev Docs
+              </a>
+              <a class="navbar-item" target="_blank" href="https://forum.qiime2.org/">
+                Forum
+              </a>
+              <a class="navbar-item" target="_blank" href="https://library.qiime2.org/">
+                Library
+              </a>
+              <a class="navbar-item" target="_blank" href="https://qiime2.org/">
+                Main Site
+              </a>
+              <a class="navbar-item" target="_blank" href="https://view.qiime2.org/">
+                View
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </div>
+  </nav>
 
-    <div class="row">
-      <div class="col-md-12">
-        <div class="center-block">
-          <span class="center-block text-center">&copy; Copyright 2016--, QIIME 2 development team.</span>
-        </div>
-      </div>
+  <section class="section">
+    <div class="container content">
+      {% block 'content' %}{% endblock %}
+      <p>{{ TECHNICAL_CONTACT|safe }}</p>
     </div>
-  </div>
+  </section>
+  <footer class="footer" style="padding-bottom: 3rem;">
+    <div class="content has-text-centered">
+      <p>
+      &#169; 2016-2019, <strong>QIIME 2 development team</strong>
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    // https://bulma.io/documentation/components/navbar/#navbarJsExample
+    document.addEventListener('DOMContentLoaded', function() {
+      var burgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+      if (burgers.length > 0) {
+        burgers.forEach(function(burger) {
+          burger.addEventListener('click', function() {
+            var target = burger.dataset.target;
+            var targetEl = document.getElementById(target);
+            burger.classList.toggle('is-active');
+            targetEl.classList.toggle('is-active');
+          });
+        });
+      }
+    });
+  </script>
 </body>
 </html>
