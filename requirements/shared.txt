@@ -1,0 +1,7 @@
+Django>=2.1.7,<2.2a0
+psycopg2-binary>=2.7
+django-environ>=0.4
+whitenoise
+django-markdownx
+requests[security]
+django-extra-views

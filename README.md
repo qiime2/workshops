@@ -1,16 +1,17 @@
-# QIIME Workshops
+# QIIME 2 Workshops
 
-[![Build Status](https://travis-ci.org/qiime2/workshops.qiime2.org.svg?branch=master)](https://travis-ci.org/qiime2/workshops.qiime2.org)
-[![Coverage Status](https://coveralls.io/repos/github/qiime2/qiime-workshops/badge.svg?branch=master)](https://coveralls.io/github/qiime2/qiime-workshops?branch=master)
+[![Build Status](https://travis-ci.org/qiime2/workshops.svg?branch=master)](https://travis-ci.org/qiime2/workshops)
+[![Coverage Status](https://coveralls.io/repos/github/qiime2/workshops/badge.svg?branch=master)](https://coveralls.io/github/qiime2/workshops?branch=master)
 
-Django App for QIIME workshop payments
+Django App for QIIME 2 workshops
 
 ## Development Setup
 
-    $ pyvenv venv
-    $ source venv/bin/activate
+    # Default buildpack runtime is Python 3.6
+    $ conda create -n workshops.qiime2.org python=3.6
+    $ conda activate workshops.qiime2.org
     $ pip install -r requirements/local.txt
-    $ createdb qiime-workshops
+    $ createdb qiime2-workshops
     $ python manage.py migrate
     $ python manage.py runserver
 
@@ -20,38 +21,28 @@ Creating a **superuser account**:
 
     $ python manage.py createsuperuser
 
-## Deploying to Heroku
+## Deploying to Dokku
 
-    heroku create --buildpack https://github.com/heroku/heroku-buildpack-python
+    dokku config:set $APPNAME \
+        ADMIN_URL=`openssl rand -base64 32` \
+        SECRET_KEY=`openssl rand -base64 64` \
+        SETTINGS_MODULE='config.settings.production' \
+        ALLOWED_HOSTS='.qiime2.org,workshops.qiime2.org' \
+        ADMINS='x,x@x.com;y,y@y.com' \
+        LMID=YOUR_LMID \
+        PAYMENT_URL=YOUR_PAYMENT_URL \
+        PAYMENT_TITLE=YOUR_PAYMENT_TITLE \
+        PAYMENT_DESCRIPTION=YOUR_PAYMENT_DESCRIPTION \
+        PAYMENT_CONTACT_INFO=YOUR_PAYMENT_CONTACT_INFO \
+        PSF_SPEEDTYPE=YOUR_PSF_SPEEDTYPE \
+        PSF_ACCT_NUMBER=YOUR_PSF_ACCT_NUMBER \
+        SPARKPOST_API_KEY=YOUR_SPARKPOST_API_KEY
 
-    heroku addons:create heroku-postgresql:hobby-dev
-    heroku pg:backups schedule --at '02:00 America/Phoenix' DATABASE_URL
-    heroku pg:promote DATABASE_URL
+    git push dokku master
+    dokku run python manage.py migrate
+    dokku run python manage.py check --deploy
+    dokku run python manage.py createsuperuser
 
-    heroku config:set DJANGO_ADMIN_URL=`openssl rand -base64 32`
-    heroku config:set DJANGO_SECRET_KEY=`openssl rand -base64 64`
-    heroku config:set DJANGO_SETTINGS_MODULE='config.settings.production'
-    heroku config:set DJANGO_ALLOWED_HOSTS='.herokuapp.com'
-    heroku config:set ADMINS='x,x@x.com;y,y@y.com'
+## NAU Notes
 
-    heroku config:set DJANGO_MAILGUN_SERVER_NAME=YOUR_MALGUN_SERVER
-    heroku config:set DJANGO_MAILGUN_API_KEY=YOUR_MAILGUN_API_KEY
-
-    heroku config:set LMID=YOUR_LMID
-    heroku config:set PAYMENT_URL=YOUR_PAYMENT_URL
-    heroku config:set PAYMENT_TITLE=YOUR_PAYMENT_TITLE
-    heroku config:set PAYMENT_DESCRIPTION=YOUR_PAYMENT_DESCRIPTION
-    heroku config:set PAYMENT_CONTACT_INFO=YOUR_PAYMENT_CONTACT_INFO
-    heroku config:set PAYMENT_CERT_BUNDLE=YOUR_PAYMENT_CERT_BUNDLE
-
-    heroku config:set PSF_SPEEDTYPE=YOUR_PSF_SPEEDTYPE
-    heroku config:set PSF_ACCT_NUMBER=YOUR_PSF_ACCT_NUMBER
-
-    heroku config:set PYTHONHASHSEED=random
-    heroku config:set DJANGO_ADMIN_URL=\^somelocation/
-
-    git push heroku master
-    heroku run python manage.py migrate
-    heroku run python manage.py check --deploy
-    heroku run python manage.py createsuperuser
-    heroku open
+- Test EBusiness server is not accessible outside of NAU - must test locally
