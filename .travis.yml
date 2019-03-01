@@ -1,14 +1,28 @@
-sudo: false
-dist: trusty
+dist: xenial
+sudo: required
 language: python
 python:
   - 3.6
 addons:
-  postgresql: '10.4'
+  postgresql: 10
+env:
+  global:
+    - DJANGO_SETTINGS_MODULE=config.settings.production
+    - DATABASE_URL=postgres://postgres@localhost/testdb
+    - SECRET_KEY='hehehe'
+    - ALLOWED_HOSTS='localhost'
+    - SPARKPOST_API_KEY='peanutthedog'
+    - ADMINS='x,x@x.com'
+    - LMID='0000'
+    - PAYMENT_URL='google.com'
+    - PAYMENT_TITLE='hmm'
+    - PAYMENT_DESCRIPTION='hmmmmm'
+    - PAYMENT_CONTACT_INFO='mmhmm'
+    - PSF_SPEEDTYPE='yep'
+    - PSF_ACCT_NUMBER='sure, whatever'
+    - TECHNICAL_CONTACT='You can reach Greg at his personal cell...'
 before_install:
   - psql -c 'create database testdb;' -U postgres
-  - export DJANGO_SETTINGS_MODULE=config.settings.travis
-  - export DATABASE_URL=postgres://postgres@localhost/testdb
 install:
   - pip install -r requirements/travis.txt
   - pip install -q https://github.com/qiime2/q2lint/archive/master.zip
