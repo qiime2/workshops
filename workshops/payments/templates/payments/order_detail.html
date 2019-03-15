@@ -5,8 +5,8 @@
 
 {% block 'content' %}
 <h1>{{ workshop.title }}</h1>
-{% include 'payments/_draft_notice.html' %}
 <p>Each ticket order must have contact info.</p>
+<div id="instructions"></div>
 
 {% form_errors formset %}
 <form method="post" action="">
@@ -17,6 +17,7 @@
       <th>Name</th>
       <th>Email</th>
       {%if zipped.0.form.poster_option%}<th>Poster Session</th>{%endif%}
+      {%if zipped.0.form.meeting_option%}<th>Interactive Session</th>{%endif%}
       <th>Ticket Rate</th>
     </tr>
     {% for pair in zipped %}
@@ -40,11 +41,21 @@
         {% if pair.form.poster_option %}
         <td class="field">
           {% if pair.form.poster_option.errors %}
-            <label class="class is-danger">
-              {{ pair.form.poster_option.errors|join:", " }}
+            <label class="has-text-danger">
+              {{ pair.form.poster_option.errors|join:", " }}<br>
             </label>
           {% endif %}
           {{ pair.form.poster_option }}
+        </td>
+        {% endif %}
+        {% if pair.form.meeting_option %}
+        <td class="field">
+          {% if pair.form.meeting_option.errors %}
+            <label class="has-text-danger">
+              {{ pair.form.meeting_option.errors|join:", " }}<br>
+            </label>
+          {% endif %}
+          {{ pair.form.meeting_option }}
         </td>
         {% endif %}
         <td>{{ pair.rate }} {{ pair.form.rate }}</td>
@@ -53,4 +64,15 @@
   </table>
   <input type="submit" class="button" value="Continue" />
 </form>
+{% endblock %}
+
+{% block 'footer' %}
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+  var opts = {
+    smartLists: true,
+    sanitize: true,
+  };
+  document.getElementById('instructions').innerHTML = marked('{{ workshop.inline_purchase_instructions|escapejs }}', opts);
+</script>
 {% endblock %}

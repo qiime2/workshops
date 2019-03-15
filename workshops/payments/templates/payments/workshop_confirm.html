@@ -4,15 +4,15 @@
 
 {% block 'content' %}
   <h1>{{ workshop.title }}</h1>
-  {% include 'payments/_draft_notice.html' %}
 
   <p>
     The following is a summary of the order. Please use the 'back'
     functionality of your browser to fix any errors. If this looks okay, press
-    'Submit' to begin the payment process. Note: you will be taken to an
-    off-site location to complete payment (payments are facilitated in part
-    by Northern Arizona University, NAU). You will have the option to print or
-    email your reciept at time of payment.
+    'Submit Order' below to begin the payment process. Note: you will be taken
+    to an off-site location to complete payment (payments are facilitated in
+    part by Northern Arizona University, NAU). You will have the option to
+    print or email your receipt at time of payment. Please do not proceed to
+    next screen until you are ready to provide payment details.
   </p><br />
 
   <dl>
@@ -39,6 +39,9 @@
       {%if workshop.posteroption_set.count %}
         <th>Poster Session Interest</th>
       {%endif%}
+      {%if workshop.meetingoption_set.count %}
+        <th>Interactive Session Interest</th>
+      {%endif%}
       <th>Ticket Rate</th>
     </tr>
     {% for ticket in tickets %}
@@ -47,6 +50,9 @@
         <td>{{ ticket.email }}</td>
         {%if workshop.posteroption_set.count %}
           <td>{{ ticket.poster }}</td>
+        {%endif%}
+        {%if workshop.meetingoption_set.count %}
+          <td>{{ ticket.meeting }}</td>
         {%endif%}
         <td>{{ ticket.rate }}</td>
       </tr>
