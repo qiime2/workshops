@@ -237,7 +237,7 @@ class SubmitOrder(View):
                 'amount': str(order.order_total),
                 'date_time': str(order.order_datetime),
             }
-            requests.post('https://payment-callback.qiime2.org', data=payload)
+            requests.post('https://workshops.qiime2.org/confirm/', data=payload)
             return HttpResponseRedirect('https://workshops.qiime2.org/')
 
         # Now that the order is saved, clear the session so that they can't
