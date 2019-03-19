@@ -1,5 +1,4 @@
 {% extends 'payments/base.html' %}
-{% load workshop_list_filter %}
 
 {% block 'title' %}QIIME 2: Workshops{% endblock %}
 {% block 'content' %}
@@ -21,9 +20,9 @@
     </p>
   </div>
 
-  {% for category in workshop_categories %}
+  {% for category, workshops in workshop_categories.items %}
       <h3>{{ category | title }} Workshops</h3>
-      {% if workshops|workshop_history:category %}
+      {% if workshops %}
         <table class="table is-fullwidth is-hoverable">
           <thead>
             <tr>
@@ -33,7 +32,7 @@
             </tr>
           </thead>
           <tbody>
-            {% for workshop in workshops|workshop_history:category %}
+            {% for workshop in workshops %}
               <tr>
                 <td><a href="{% url 'payments:details' workshop.slug %}">{{ workshop.title }}</a></td>
                 <td>{{ workshop.location }}</td>

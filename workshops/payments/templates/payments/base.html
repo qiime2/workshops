@@ -74,6 +74,7 @@
 
   <section class="section">
     <div class="container content">
+      {% include 'payments/_draft_notice.html' %}
       {% block 'content' %}{% endblock %}
       <p>{{ TECHNICAL_CONTACT|safe }}</p>
     </div>
@@ -86,6 +87,7 @@
     </div>
   </footer>
 
+  {% block 'footer' %}{% endblock %}
   <script>
     // https://bulma.io/documentation/components/navbar/#navbarJsExample
     document.addEventListener('DOMContentLoaded', function() {

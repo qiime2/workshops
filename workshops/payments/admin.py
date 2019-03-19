@@ -8,7 +8,8 @@ from .admin_filters import (OrderPaidListFilter, OrderWorkshopListFilter,
                             OrderItemWorkshopListFilter,
                             OrderRefundedListFilter,
                             OrderItemRefundedListFilter)
-from .models import Workshop, Instructor, Rate, Order, OrderItem, PosterOption
+from .models import (
+    Workshop, Instructor, Rate, Order, OrderItem, PosterOption, MeetingOption)
 
 
 class InstructorInline(admin.TabularInline):
@@ -39,8 +40,13 @@ class PosterOptionInline(admin.TabularInline):
     extra = 1
 
 
+class MeetingOptionInline(admin.TabularInline):
+    model = MeetingOption
+    extra = 1
+
+
 class WorkshopAdmin(markdownx.admin.MarkdownxModelAdmin):
-    inlines = [RateInline, PosterOptionInline, InstructorInline]
+    inlines = [RateInline, MeetingOptionInline, PosterOptionInline, InstructorInline]
     prepopulated_fields = {'slug': ('title', 'start_date')}
     list_display = ('dedicated_qiime2', 'title', 'start_date', 'end_date',
                     'live', 'is_open', 'total_tickets_sold',
@@ -121,9 +127,6 @@ class OrderAdmin(admin.ModelAdmin):
     def has_add_permission(self, request):
         return False
 
-    def has_delete_permission(self, request, obj=None):
-        return False
-
 
 class OrderItemAdmin(admin.ModelAdmin):
     list_display = ('name', 'email', 'workshop', 'rate', 'poster', 'paid',
@@ -151,9 +154,6 @@ class OrderItemAdmin(admin.ModelAdmin):
     refunded.boolean = True
 
     def has_add_permission(self, request):
-        return False
-
-    def has_delete_permission(self, request, obj=None):
         return False
 
 

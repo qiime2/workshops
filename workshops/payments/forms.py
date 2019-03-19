@@ -2,7 +2,7 @@ import functools
 
 from django import forms
 
-from .models import PosterOption
+from .models import PosterOption, MeetingOption
 
 
 class OrderForm(forms.Form):
@@ -55,10 +55,15 @@ class OrderDetailForm(forms.Form):
     def __init__(self, *args, **kwargs):
         workshop = kwargs.pop('workshop')
         super().__init__(*args, **kwargs)
-        qs = PosterOption.objects.filter(workshop__slug=workshop)
-        if qs.count() != 0:
+        poster_qs = PosterOption.objects.filter(workshop__slug=workshop)
+        if poster_qs.count() != 0:
             self.fields['poster_option'] = forms.ModelChoiceField(
-                queryset=qs)
+                queryset=poster_qs)
+
+        meeting_qs = MeetingOption.objects.filter(workshop__slug=workshop)
+        if meeting_qs.count() != 0:
+            self.fields['meeting_option'] = forms.ModelChoiceField(
+                queryset=meeting_qs)
 
     email = forms.EmailField(
         widget=forms.TextInput(attrs={'placeholder': 'Ticketholder\'s Email',

@@ -26,6 +26,13 @@ class Workshop(models.Model):
                             'URL (i.e. title-YYYY-MM-DD)')
     draft = models.BooleanField(help_text='Draft workshops do not show up on '
                                 'the workshop list overview', default=True)
+    inline_purchase_instructions = MarkdownxField(help_text='This is the text '
+                                                  'that is rendered on the '
+                                                  'per-ticket sale page. Use '
+                                                  'this field to provide '
+                                                  'additional instructions. '
+                                                  'Supports Markdown.',
+                                                  blank=True)
 
     @property
     def total_tickets_sold(self):
@@ -72,7 +79,7 @@ class Workshop(models.Model):
         if rate_code is None or len(rate_set) == 0:
             rate_set = self.rate_set.filter(
                 private=False, sales_open=True).order_by('price')
-        return rate_set
+        return rate_set.all()
 
 
 class Instructor(models.Model):
@@ -121,6 +128,20 @@ class PosterOption(models.Model):
     sort_order = models.IntegerField(help_text='This value is used to sort '
                                      'the display order of the poster '
                                      'presentation options')
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        ordering = ('sort_order',)
+
+
+class MeetingOption(models.Model):
+    workshop = models.ForeignKey(Workshop, on_delete=models.CASCADE)
+    name = models.CharField(max_length=300)
+    sort_order = models.IntegerField(help_text='This value is used to sort '
+                                     'the display order of the BYOD '
+                                     'meeting options')
 
     def __str__(self):
         return self.name
@@ -193,6 +214,7 @@ class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     rate = models.ForeignKey(Rate, on_delete=models.CASCADE)
     poster = models.ForeignKey(PosterOption, null=True, on_delete=models.CASCADE)
+    meeting = models.ForeignKey(MeetingOption, null=True, on_delete=models.CASCADE)
     email = models.EmailField()
     name = models.CharField(max_length=500)
 

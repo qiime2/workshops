@@ -7,16 +7,17 @@ from django.urls import reverse
 from django.core.mail import EmailMultiAlternatives
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
-from django.views.generic import ListView, DetailView, TemplateView, View
+from django.views.generic import DetailView, TemplateView, View
 from django.views.generic.edit import FormMixin
 from django.conf import settings
 from django.contrib import messages
+from django.utils import timezone
 
 import requests
 from extra_views import FormSetView
 from markdownx.utils import markdownify
 
-from .models import Workshop, Order, OrderItem, Rate, PosterOption
+from .models import Workshop, Order, OrderItem, Rate, PosterOption, MeetingOption
 from .forms import OrderForm, OrderDetailForm, OrderDetailFormSet
 
 logger = logging.getLogger(__name__)
@@ -31,13 +32,19 @@ class SessionConfirmMixin(object):
         return super().get(request, *args, **kwargs)
 
 
-class WorkshopList(ListView):
-    queryset = Workshop.objects.filter(draft=False)
-    context_object_name = 'workshops'
+class WorkshopList(TemplateView):
+    template_name = 'payments/workshop_list.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['workshop_categories'] = ['upcoming', 'past']
+        all_workshops_qs = Workshop.objects.filter(draft=False)
+        now = timezone.now()
+        context['workshop_categories'] = {
+            'upcoming': all_workshops_qs.filter(
+                start_date__gte=now).order_by('start_date').all(),
+            'past': all_workshops_qs.filter(
+                start_date__lt=now).order_by('-start_date').all()
+        }
         return context
 
 
@@ -62,7 +69,6 @@ class WorkshopDetail(FormMixin, DetailView):
     def get_context_data(self, **kwargs):
         discount_code = self.request.session.get('discount_code')
         context = super().get_context_data(**kwargs)
-        context['form'] = self.get_form()
 
         rates = []
         for rate in self.object.filter_rates(discount_code):
@@ -151,6 +157,8 @@ class OrderDetail(SessionConfirmMixin, FormSetView):
             ticket = {'rate': rate, 'email': email, 'name': name}
             p_attr = 'form-%s-poster_option' % i
             ticket['poster'] = suborder[p_attr] if p_attr in suborder else None
+            m_attr = 'form-%s-meeting_option' % i
+            ticket['meeting'] = suborder[m_attr] if m_attr in suborder else None
             tickets.append(ticket)
         order['tickets'] = tickets
         self.request.session['order'] = order
@@ -171,10 +179,12 @@ class ConfirmOrder(SessionConfirmMixin, TemplateView):
         for ticket in order['tickets']:
             t = {'name': ticket['name'], 'email': ticket['email'],
                  'rate': Rate.objects.get(pk=ticket['rate'])}
+            t['poster'] = None
             if ticket['poster']:
                 t['poster'] = PosterOption.objects.get(id=ticket['poster'])
-            else:
-                t['poster'] = None
+            t['meeting'] = None
+            if ticket['meeting']:
+                t['meeting'] = MeetingOption.objects.get(id=ticket['meeting'])
             tickets.append(t)
         context['tickets'] = tickets
         context['order_name'] = order['name']
