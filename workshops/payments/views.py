@@ -290,9 +290,9 @@ class OrderCallback(View):
             workshop = all_orders[0].rate.workshop
             subject = 'Confirmation of payment - %s' % workshop.title
             plaintext_msg = 'Please enable HTML viewing'
-            contact = '%s <%s>' % (order.contact_name, order.contact_email)
-            attendees = ['%s <%s>' % (i.name, i.email) for i in all_orders]
-            admins = ['%s <%s>' % (i[0], i[1]) for i in settings.ADMINS]
+            contact = '%s <%s>' % (qp(order.contact_name), order.contact_email)
+            attendees = ['%s <%s>' % (qp(i.name), i.email) for i in all_orders]
+            admins = ['%s <%s>' % (qp(i[0]), i[1]) for i in settings.ADMINS]
 
             body = '<html><h1>%s</h1>' % workshop.title
             body += '<h2>Workshop Details</h2>'
