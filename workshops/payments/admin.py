@@ -28,8 +28,8 @@ class OrderItemInline(admin.TabularInline):
     can_delete = False
     model = OrderItem
     extra = 0
-    readonly_fields = ('rate', 'name', 'poster')
-    fields = ('rate', 'name', 'poster')
+    readonly_fields = ('rate', 'name', 'poster', 'meeting')
+    fields = ('rate', 'name', 'poster', 'meeting')
 
     def has_add_permission(self, request):
         return False
@@ -129,11 +129,11 @@ class OrderAdmin(admin.ModelAdmin):
 
 
 class OrderItemAdmin(admin.ModelAdmin):
-    list_display = ('name', 'email', 'workshop', 'rate', 'poster', 'paid',
-                    'refunded', 'order_transaction_id')
+    list_display = ('name', 'email', 'workshop', 'rate', 'poster', 'meeting',
+                    'paid', 'refunded', 'order_transaction_id')
     list_filter = (OrderItemWorkshopListFilter, OrderItemPaidListFilter,
                    OrderItemRefundedListFilter)
-    readonly_fields = ('order', 'rate', 'poster', 'name', 'email')
+    readonly_fields = ('order', 'rate', 'poster', 'meeting', 'name', 'email')
 
     def order_transaction_id(self, obj):
         return obj.order.transaction_id
