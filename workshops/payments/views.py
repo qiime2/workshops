@@ -227,7 +227,8 @@ class SubmitOrder(View):
         for ticket in order_data['tickets']:
             items.append(OrderItem(order=order, rate_id=ticket['rate'],
                          email=ticket['email'], name=ticket['name'],
-                         poster_id=ticket['poster']))
+                         poster_id=ticket['poster'],
+                         meeting_id=ticket['meeting']))
         # Hit the database only once and create all of the OrderItems generated
         OrderItem.objects.bulk_create(items)
 
