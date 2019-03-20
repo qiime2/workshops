@@ -107,8 +107,6 @@ class WorkshopAdmin(markdownx.admin.MarkdownxModelAdmin):
 
 class OrderAdmin(admin.ModelAdmin):
     inlines = [OrderItemInline]
-    readonly_fields = ('contact_name', 'contact_email', 'order_total',
-                       'transaction_id')
     list_display = ('contact_name', 'contact_email', 'tickets', 'order_total',
                     'paid', 'refunded', 'order_datetime', 'billed_datetime',
                     'transaction_id')
@@ -133,7 +131,6 @@ class OrderItemAdmin(admin.ModelAdmin):
                     'paid', 'refunded', 'order_transaction_id')
     list_filter = (OrderItemWorkshopListFilter, OrderItemPaidListFilter,
                    OrderItemRefundedListFilter)
-    readonly_fields = ('order', 'rate', 'poster', 'meeting', 'name', 'email')
 
     def order_transaction_id(self, obj):
         return obj.order.transaction_id
