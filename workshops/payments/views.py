@@ -242,7 +242,7 @@ class SubmitOrder(View):
 
         # Now that the order is saved, clear the session so that they can't
         # resubmit the order
-        del request.session['order']
+        request.session.flush()
 
         name = order.contact_name.split(' ')
 
