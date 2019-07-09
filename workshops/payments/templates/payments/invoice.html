@@ -37,15 +37,25 @@
             border-right: 1px solid #000;
             text-align: center;
         }
+        .list dt
+        {
+            font-weight: bold;
+        }
+        .list dd
+        {
+            padding-left: 15px
+        }
     </style>
 </head>
 <body>
 <img src="../static/img/q2logo.png" alt="Logo" height="77" width="170">
-<p>Norther Arizona University<br>
-The Pathogen and Microbiome Institute (PMI)<br>
-PO Box 4073<br>
-Flagstaff, AZ 86011<br>
-T: (928) 523-0688 | F: (928) 523-4015 | www.qiime2.org | pmi@nau.edu</p>
+<p>
+    Northern Arizona University<br>
+    The Pathogen and Microbiome Institute (PMI)<br>
+    PO Box 4073<br>
+    Flagstaff, AZ 86011<br>
+    T: (928) 523-0688 | F: (928) 523-4015 | www.qiime2.org | pmi@nau.edu
+</p>
 <!-- The last two columns of this first table can probably go right? -->
 <div>
     <table class="table">
@@ -86,49 +96,45 @@ T: (928) 523-0688 | F: (928) 523-4015 | www.qiime2.org | pmi@nau.edu</p>
            <tr>
                <td>{{ quantity.0 }}</td>
                <td>{{ rate.name }}</td>
-               <!-- I tried to left justify the $ while right justifying the
-                    actual amount like in Alyssa's documents, but even though
-                    I got it to work in html it didn't work once it was
-                    converted to a pdf -->
+               <!-- I tried to left align the $ while right align the actual
+                    amount like in Alyssa's documents, but even though I got it
+                    to work in html it didn't work once it was converted to a
+                    pdf -->
                <td>${{ rate.price }}</td>
-               <td>N/A</td>
+               <td>0.0%</td>
                <td>${{ quantity.1 }}</td>
            </tr>
            {% endfor %}
        </tbody>
    </table>
 </div>
-<h2 style="text-align:right; white-space:pre;">Total:{{ total }}</h2>
+<h2 style="text-align:right; white-space:pre;">Total{{ total }}</h2>
 <div>
-    <h2 style="color:#F00;">WIRE TRANSFER PAYMENTS<h2>
-    <table class="table">
-        <tr>
-            <th>Wire Routing Transit # (RTN/ABA):</th>
-            <td>121000248</td>
-        </tr>
-        <tr>
-            <th>Bank Name:</th>
-            <td>Wells Fargo Bank, N.A.<br>
+    <h2 style="color:#F00;">WIRE TRANSFER PAYMENTS</h2>
+    <dl class="list">
+        <dt>Wire Routing Transit # (RTN/ABA):</dt>
+        <dd>121000248</dd>
+
+        <dt>Bank Name:</dt>
+        <dd>
+            Wells Fargo Bank, N.A.<br>
             420 Montgomery<br>
-            San Francisco, CA 94104</td>
-        </tr>
-        <tr>
-            <th>Beneficiary Account #:</th>
-            <td>4126665298</td>
-        </tr>
-        <tr>
-            <th>Beneficiary:</th>
-            <td>Northern Arizona University, Non Repetitive Wires/1910040F25</td>
-        </tr>
-        <tr>
-            <th>SWIFT/BIC:</th>
-            <td>WFBIUS6S</td>
-        </tr>
-        <tr>
-            <th>CHIPS Participant:</th>
-            <td>ABA 0407</td>
-        </tr>
-    </table>
+            San Francisco, CA 94104
+        </dd>
+
+        <dt>Beneficiary Account #:</dt>
+        <dd>4126665298</dd>
+
+
+        <dt>Beneficiary:</dt>
+        <dd>Northern Arizona University, Non Repetitive Wires/1910040F25</dd>
+
+        <dt>SWIFT/BIC:</dt>
+        <dd>WFBIUS6S</dd>
+
+        <dt>CHIPS Participant:</dt>
+        <dd>ABA 0407</dd>
+    </dl>
 </div>
 <div>
     <h2 style="color:#F00;">CHECK PAYMENTS</h2>

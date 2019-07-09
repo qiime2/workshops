@@ -227,11 +227,10 @@ class SubmitOrder(View):
                                      order_total=order_data['order_total'])
         path = '/home/anthony/Desktop/src/Qiime2/workshops/workshops/payments/templates/payments/invoice.html'
         today = timezone.now()
-        total = 0
         for rate in rates:
             rates[rate] = [rates[rate], rate.price * rates[rate]]
-            total += rates[rate][1]
-        total = '$' + str(total)
+        # I want the formatted total without messing with the actual order object's attribute
+        total = '$' + str(order.order_total)
         total = ((24 - len(total)) * ' ') + total
         params = {
             'today': today,
@@ -239,7 +238,7 @@ class SubmitOrder(View):
             'order': order,
             'rates': rates,
             'total': total,
-            'request': request
+            'request': request,
         }
         return render(path, params)
 
@@ -334,4 +333,4 @@ class OrderCallback(View):
         except (Order.DoesNotExist, KeyError) as e:
             logger.error('%s: %s' % (e, request.body))
             return HttpResponse(status=400)
-        return HttpResponse
+        return HttpResponse()
