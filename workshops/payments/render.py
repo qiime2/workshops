@@ -8,6 +8,7 @@ import xhtml2pdf.pisa as pisa
 def render(path: str, params: dict):
     template = get_template(path)
     html = template.render(params)
+    #return HttpResponse(html)
     response = BytesIO()
     pdf = pisa.pisaDocument(BytesIO(html.encode("UTF-8")), response, link_callback=fetch_resources)
     if not pdf.err:

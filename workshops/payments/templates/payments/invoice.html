@@ -31,6 +31,28 @@
         {
             background-color: #F2F2F2;
         }
+        #top_left
+        {
+            text-align: left;
+            vertical-align: bottom;
+            padding-top: 4px;
+        }
+        #top_right
+        {
+            text-align: right;
+            vertical-align: bottom;
+            padding-top: 4px;
+        }
+        #left
+        {
+            text-align: left;
+            vertical-align: bottom;
+        }
+        #right
+        {
+            text-align: right;
+            vertical-align: bottom;
+        }
         .list dt
         {
             font-weight: bold;
@@ -75,34 +97,68 @@
 </div>
 <div><br></div>
 <div>
-   <table class="table">
-       <thead>
-       <tr>
-           <th>QUANTITY</th>
-           <th>DESCRIPTION</th>
-           <th>UNIT PRICE</th>
-           <th>Administrative Processing Tax</th>
-           <th>Amount</th>
-       </tr>
-       </thead>
-       <tbody>
-           {% for rate, quantity in rates.items %}
-           <tr>
-               <td>{{ quantity.0 }}</td>
-               <td>{{ rate.name }}</td>
-               <!-- I tried to left align the $ while right align the actual
-                    amount like in Alyssa's documents, but even though I got it
-                    to work in html it didn't work once it was converted to a
-                    pdf -->
-               <td>${{ rate.price }}</td>
-               <td>0.0%</td>
-               <td>${{ quantity.1 }}</td>
-           </tr>
-           {% endfor %}
-       </tbody>
-   </table>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>QUANTITY</th>
+            <th>DESCRIPTION</th>
+            <th>UNIT PRICE</th>
+            <th>Administrative Processing Tax</th>
+            <th>Amount</th>
+        </tr>
+        </thead>
+        <tbody>
+            {% for rate, quantity in rates.items %}
+            <tr>
+                <td>{{ quantity.0 }}</td>
+                <td>{{ rate.name }}</td>
+                <td>${{ rate.price }}</td>
+                <td>0.0%</td>
+                <td>${{ quantity.1 }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
-<h2 style="text-align:right; white-space:pre;">Total{{ total }}</h2>
+<div>
+    <table>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td id="top_left">SUBTOTAL</td>
+            <td id="top_right">{{ total }}</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td id="left">ADMIN TAX RATE</td>
+            <td id="right">0.0%</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td id="left">ADMIN TAX</td>
+            <td id="right">$0.00</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td id="left">LESS PAID ONLINE</td>
+            <td id="right">$0.00</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td id="left">TOTAL DUE</td>
+            <td id="right">{{ total }}</td>
+        </tr>
+    </table>
+</div>
 <div>
     <h2 style="color:#F00;">WIRE TRANSFER PAYMENTS</h2>
     <dl class="list">
