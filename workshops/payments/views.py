@@ -16,6 +16,7 @@ from django.utils import timezone
 import requests
 from extra_views import FormSetView
 from markdownx.utils import markdownify
+from .render import render
 
 from .models import Workshop, Order, OrderItem, Rate, PosterOption, MeetingOption
 from .forms import OrderForm, OrderDetailForm, OrderDetailFormSet
@@ -220,9 +221,28 @@ class SubmitOrder(View):
                     })
                 )
 
+        workshop = Workshop.objects.get(slug=order_data['workshop'])
         order = Order.objects.create(contact_email=order_data['email'],
                                      contact_name=order_data['name'],
                                      order_total=order_data['order_total'])
+        path = '/home/anthony/Desktop/src/Qiime2/workshops/workshops/payments/templates/payments/invoice.html'
+        today = timezone.now()
+        total = 0
+        for rate in rates:
+            rates[rate] = [rates[rate], rate.price * rates[rate]]
+            total += rates[rate][1]
+        total = '$' + str(total)
+        total = ((24 - len(total)) * ' ') + total
+        params = {
+            'today': today,
+            'workshop': workshop,
+            'order': order,
+            'rates': rates,
+            'total': total,
+            'request': request
+        }
+        return render(path, params)
+
         items = []
         for ticket in order_data['tickets']:
             items.append(OrderItem(order=order, rate_id=ticket['rate'],
@@ -314,4 +334,4 @@ class OrderCallback(View):
         except (Order.DoesNotExist, KeyError) as e:
             logger.error('%s: %s' % (e, request.body))
             return HttpResponse(status=400)
-        return HttpResponse()
+        return HttpResponse
