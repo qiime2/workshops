@@ -13,29 +13,23 @@
             size: A4;
             margin: 1cm;
         }
-        .table th
+        .table
         {
             /* The weird padding is due to the text not wanting to center
                properly using vertical-align, it looks mostly centered with
                this padding */
             padding-top: 2px;
             padding-bottom: -2px;
-            background-color: #F2F2F2;
             border-top: 1px solid #000;
             border-bottom: 1px solid #000;
             border-left: 1px solid #000;
             border-right: 1px solid #000;
             text-align: center;
+            border-collapse: collapse;
         }
-        .table td
+        .table th
         {
-            padding-top: 2px;
-            padding-bottom: -2px;
-            border-top: 1px solid #000;
-            border-bottom: 1px solid #000;
-            border-left: 1px solid #000;
-            border-right: 1px solid #000;
-            text-align: center;
+            background-color: #F2F2F2;
         }
         .list dt
         {
