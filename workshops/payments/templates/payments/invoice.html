@@ -1,9 +1,5 @@
 <!doctype html>
 <html>
-<!-- Table css needs to be changed to prevent doubled up borders, but because we
-     have vertical and horizontal tables we can't just do that here, also the
-     css is not in a separate document because it didn't link properly when I
-     tried -->
 <head>
     <meta charset="utf-8">
     <title>Invoice</title>
@@ -33,20 +29,18 @@
         }
         #top_left
         {
-            text-align: left;
-            vertical-align: bottom;
             padding-top: 4px;
+            font-weight: bold;
+        }
+        #left
+        {
+            font-weight: bold;
         }
         #top_right
         {
             text-align: right;
             vertical-align: bottom;
             padding-top: 4px;
-        }
-        #left
-        {
-            text-align: left;
-            vertical-align: bottom;
         }
         #right
         {
@@ -126,41 +120,41 @@
             <td></td>
             <td></td>
             <td></td>
-            <td id="top_left">SUBTOTAL</td>
+            <td id="top_left">SUBTOTAL:</td>
             <td id="top_right">{{ total }}</td>
         </tr>
         <tr>
             <td></td>
             <td></td>
             <td></td>
-            <td id="left">ADMIN TAX RATE</td>
+            <td id="left">ADMIN TAX RATE:</td>
             <td id="right">0.0%</td>
         </tr>
         <tr>
             <td></td>
             <td></td>
             <td></td>
-            <td id="left">ADMIN TAX</td>
+            <td id="left">ADMIN TAX:</td>
             <td id="right">$0.00</td>
         </tr>
         <tr>
             <td></td>
             <td></td>
             <td></td>
-            <td id="left">LESS PAID ONLINE</td>
+            <td id="left">LESS PAID ONLINE:</td>
             <td id="right">$0.00</td>
         </tr>
         <tr>
             <td></td>
             <td></td>
             <td></td>
-            <td id="left">TOTAL DUE</td>
+            <td id="left">TOTAL DUE:</td>
             <td id="right">{{ total }}</td>
         </tr>
     </table>
 </div>
 <div>
-    <h2 style="color:#F00;">WIRE TRANSFER PAYMENTS</h2>
+    <h2 style="color:#F00; padding-bottom:-15px">WIRE TRANSFER PAYMENTS</h2>
     <dl class="list">
         <dt>Wire Routing Transit # (RTN/ABA):</dt>
         <dd>121000248</dd>
@@ -187,14 +181,16 @@
     </dl>
 </div>
 <div>
-    <h2 style="color:#F00;">CHECK PAYMENTS</h2>
-    <h3>Checks should be made out to Northern Arizona University and mailed to the following address:</h3>
-    <p>
-       Northern Arizona University<br>
-       The Pathogen and Microbiome Institute<br>
-       PO Box 4073<br>
-       Flagstaff, AZ 86011 USA
-   </p>
+    <h2 style="color:#F00; padding-bottom:-15px">CHECK PAYMENTS</h2>
+    <dl>
+        <dt style="font-weight:bold">Checks should be made out to Northern Arizona University and mailed to the following address:</dt>
+        <dd>
+            Northern Arizona University<br>
+            The Pathogen and Microbiome Institute<br>
+            PO Box 4073<br>
+            Flagstaff, AZ 86011 USA
+        <dd>
+    </dl>
 </div>
 </body>
 </html>
