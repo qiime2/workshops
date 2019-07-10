@@ -229,10 +229,7 @@ class SubmitOrder(View):
         today = timezone.now()
         for rate in rates:
             rates[rate] = [rates[rate], rate.price * rates[rate]]
-        # I want the formatted total without messing with the actual order object's attribute
-        # This part needs some work
         total = '$' + str(order.order_total)
-        total = ((24 - len(total)) * ' ') + total
         params = {
             'today': today,
             'workshop': workshop,
