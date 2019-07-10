@@ -8,7 +8,6 @@ import xhtml2pdf.pisa as pisa
 def render(path: str, params: dict):
     template = get_template(path)
     html = template.render(params)
-    #return HttpResponse(html)
     response = BytesIO()
     pdf = pisa.pisaDocument(BytesIO(html.encode("UTF-8")), response, link_callback=fetch_resources)
     if not pdf.err:
@@ -27,7 +26,7 @@ def fetch_resources(uri, rel):
     uri = uri.replace('../', '')
     # use short variable names
     sUrl = 'static/'
-    sRoot = '/home/anthony/Desktop/src/Qiime2/workshops/workshops/'
+    sRoot = '../workshops/workshops/'
 
     if uri.startswith(sUrl):
         path = os.path.join(sRoot, uri)

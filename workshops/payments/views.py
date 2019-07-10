@@ -225,7 +225,7 @@ class SubmitOrder(View):
         order = Order.objects.create(contact_email=order_data['email'],
                                      contact_name=order_data['name'],
                                      order_total=order_data['order_total'])
-        path = '/home/anthony/Desktop/src/Qiime2/workshops/workshops/payments/templates/payments/invoice.html'
+        path = '../templates/payments/invoice.html'
         today = timezone.now()
         for rate in rates:
             rates[rate] = [rates[rate], rate.price * rates[rate]]
