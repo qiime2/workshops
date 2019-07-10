@@ -8,7 +8,7 @@ def render(path: str, params: dict):
     template = get_template(path)
     html = template.render(params)
     response = BytesIO()
-    pdf = pisa.pisaDocument(BytesIO(html.encode("UTF-8")), response, link_callback=fetch_resources)
+    pisa.pisaDocument(BytesIO(html.encode("UTF-8")), response, link_callback=fetch_resources)
     return response.getvalue()
 
 

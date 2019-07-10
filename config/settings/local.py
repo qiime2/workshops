@@ -73,6 +73,7 @@ __all__ = [
     'PAYMENT_URL',
     'PAYMENT_TITLE',
     'PAYMENT_DESCRIPTION',
+    'PAYMENT_CONTACT_INFO',
     'PSF_SPEEDTYPE',
     'PSF_ACCT_NUMBER',
     'TECHNICAL_CONTACT',
@@ -84,4 +85,3 @@ MIDDLEWARE.extend([
 ])
 INTERNAL_IPS = ['127.0.0.1', 'localhost']
 INSTALLED_APPS = ['whitenoise.runserver_nostatic', *INSTALLED_APPS, 'debug_toolbar']
-'PAYMENT_CONTACT_INFO',
