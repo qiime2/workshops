@@ -221,24 +221,9 @@ class SubmitOrder(View):
                     })
                 )
 
-        workshop = Workshop.objects.get(slug=order_data['workshop'])
         order = Order.objects.create(contact_email=order_data['email'],
                                      contact_name=order_data['name'],
                                      order_total=order_data['order_total'])
-        path = '../templates/payments/invoice.html'
-        today = timezone.now()
-        for rate in rates:
-            rates[rate] = [rates[rate], rate.price * rates[rate]]
-        total = '$' + str(order.order_total)
-        params = {
-            'today': today,
-            'workshop': workshop,
-            'order': order,
-            'rates': rates,
-            'total': total,
-            'request': request,
-        }
-        return render(path, params)
 
         items = []
         for ticket in order_data['tickets']:
@@ -320,13 +305,31 @@ class OrderCallback(View):
                 body += '<li>%s (%s): %s</li>' % (oi.name, oi.email, oi.rate)
             body += '</ul></div>'
             body += '</html>'
-
+            rates = {}
+            for ticket in all_orders:
+                rate = ticket.rate
+                if rate not in rates:
+                    rates[rate] = 1
+                else:
+                    rates[rate] += 1
+            for rate in rates:
+                rates[rate] = [rates[rate], rate.price * rates[rate]]
+            params = {
+                'today': timezone.now(),
+                'workshop': workshop,
+                'order': order,
+                'rates': rates,
+                'total': '$' + str(order.order_total),
+                'request': request,
+            }
+            invoice = render('../templates/payments/invoice.html', params)
             msg = EmailMultiAlternatives(subject, plaintext_msg,
                                          'noreply@qiime2.org',
                                          to=[order.contact_email],
                                          cc=[i.email for i in all_orders],
                                          bcc=[i[1] for i in settings.ADMINS])
             msg.attach_alternative(body, "text/html")
+            msg.attach('invoice.pdf', invoice, 'application/pdf')
             msg.send()
         except (Order.DoesNotExist, KeyError) as e:
             logger.error('%s: %s' % (e, request.body))
