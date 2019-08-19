@@ -4,15 +4,13 @@ from io import BytesIO
 from xhtml2pdf import pisa
 
 from django.conf import settings
-from django.template.loader import get_template
 from django.template.loader import render_to_string
 
 
 def render_pdf(template_path: str, params: dict):
     params['MAILING_ADDRESS'] = settings.MAILING_ADDRESS
     params['BANK_INFO'] = settings.BANK_INFO
-    template = get_template(template_path)
-    html = template.render(params)
+    html = render_to_string(template_path, params)
     response = BytesIO()
     pisa.pisaDocument(BytesIO(html.encode("UTF-8")), response, link_callback=fetch_resources)
     return response.getvalue()
@@ -21,9 +19,6 @@ def render_pdf(template_path: str, params: dict):
 def display_html(template_path: str, params: dict):
     params['MAILING_ADDRESS'] = settings.MAILING_ADDRESS
     params['BANK_INFO'] = settings.BANK_INFO
-    #template = get_template(template_path)
-    #html = template.render(params)
-    #return html
     return render_to_string(template_path, params)
 
 
