@@ -16,7 +16,7 @@ from django.utils import timezone
 import requests
 from extra_views import FormSetView
 from markdownx.utils import markdownify
-from .render import render
+from .pdfs import render_pdf, display_html
 
 from .models import Workshop, Order, OrderItem, Rate, PosterOption, MeetingOption
 from .forms import OrderForm, OrderDetailForm, OrderDetailFormSet
@@ -195,6 +195,22 @@ class ConfirmOrder(SessionConfirmMixin, TemplateView):
         return context
 
 
+class ViewInvoice(View):
+    def get(self, request, *arg, **kwargs):
+        order = Order.objects.get(transaction_id=kwargs['transaction_id'])
+        all_orders = order.orderitem_set.all()
+        workshop = all_orders[0].rate.workshop
+        params = {
+            'today': timezone.now(),
+            'workshop': workshop,
+            'order': order,
+            'tickets': all_orders,
+            'total': '$' + str(order.order_total),
+            'request': request,
+        }
+        return HttpResponse(display_html('../templates/payments/invoice.html', params))
+
+
 class SubmitOrder(View):
     http_method_names = ['post']
 
@@ -305,24 +321,15 @@ class OrderCallback(View):
                 body += '<li>%s (%s): %s</li>' % (oi.name, oi.email, oi.rate)
             body += '</ul></div>'
             body += '</html>'
-            rates = {}
-            for ticket in all_orders:
-                rate = ticket.rate
-                if rate not in rates:
-                    rates[rate] = 1
-                else:
-                    rates[rate] += 1
-            for rate in rates:
-                rates[rate] = [rates[rate], rate.price * rates[rate]]
             params = {
                 'today': timezone.now(),
                 'workshop': workshop,
                 'order': order,
-                'rates': rates,
+                'tickets': all_orders,
                 'total': '$' + str(order.order_total),
                 'request': request,
             }
-            invoice = render('../templates/payments/invoice.html', params)
+            invoice = render_pdf('../templates/payments/invoice.html', params)
             msg = EmailMultiAlternatives(subject, plaintext_msg,
                                          'noreply@qiime2.org',
                                          to=[order.contact_email],

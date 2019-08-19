@@ -1,13 +1,14 @@
 from django.urls import path, include
 
 from .views import (
-    WorkshopList, SubmitOrder, WorkshopDetail, OrderDetail, ConfirmOrder, OrderCallback)
+    WorkshopList, SubmitOrder, WorkshopDetail, OrderDetail, ConfirmOrder, OrderCallback, ViewInvoice)
 
 app_name = 'payments'
 urlpatterns = [
     path('', WorkshopList.as_view(), name='index'),
     path('confirm/', OrderCallback.as_view(), name='callback'),
     path('submit/', SubmitOrder.as_view(), name='submit'),
+    path('invoice/<str:transaction_id>/', ViewInvoice.as_view(), name='invoice'),
     path('<slug:slug>/', include([
         path('', WorkshopDetail.as_view(), name='details'),
         path('order/', OrderDetail.as_view(), name='order_details'),

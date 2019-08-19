@@ -1,4 +1,4 @@
-<!doctype html>
+<!doctype base.html>
 <html>
 <head>
     <meta charset="utf-8">
@@ -55,12 +55,10 @@
     </style>
 </head>
 <body>
-<img src="../static/img/q2logo.png" alt="Logo" height="77" width="170">
+{% load static %}
+<img src="workshops/static/img/q2logo.png" alt="Logo" height="77" width="170">
 <p>
-    Northern Arizona University<br>
-    The Pathogen and Microbiome Institute (PMI)<br>
-    PO Box 4073<br>
-    Flagstaff, AZ 86011<br>
+    {{ MAILING_ADDRESS|safe }}
     T: (928) 523-0688 | F: (928) 523-4015 | www.qiime2.org | pmi@nau.edu
 </p>
 <div>
@@ -90,7 +88,8 @@
     <table class="table">
         <thead>
         <tr>
-            <th>QUANTITY</th>
+            <th>NAME</th>
+            <th>EMAIL</th>
             <th>DESCRIPTION</th>
             <th>UNIT PRICE</th>
             <th>Administrative Processing Tax</th>
@@ -98,13 +97,14 @@
         </tr>
         </thead>
         <tbody>
-            {% for rate, quantity in rates.items %}
+            {% for ticket in tickets %}
             <tr>
-                <td>{{ quantity.0 }}</td>
-                <td>{{ rate.name }}</td>
-                <td>${{ rate.price }}</td>
+                <td>{{ ticket.name }}</td>
+                <td>{{ ticket.email }}</td>
+                <td>{{ ticket.rate.name }}</td>
+                <td>${{ ticket.rate.price }}</td>
                 <td>0.0%</td>
-                <td>${{ quantity.1 }}</td>
+                <td>${{ ticket.rate.price }}</td>
             </tr>
             {% endfor %}
         </tbody>
@@ -116,10 +116,12 @@
             <td></td>
             <td></td>
             <td></td>
+            <td></td>
             <td id="top_left">SUBTOTAL:</td>
             <td id="top_right">{{ total }}</td>
         </tr>
         <tr>
+            <td></td>
             <td></td>
             <td></td>
             <td></td>
@@ -130,10 +132,12 @@
             <td></td>
             <td></td>
             <td></td>
+            <td></td>
             <td id="left">ADMIN TAX:</td>
             <td id="right">$0.00</td>
         </tr>
         <tr>
+            <td></td>
             <td></td>
             <td></td>
             <td></td>
@@ -144,47 +148,21 @@
             <td></td>
             <td></td>
             <td></td>
+            <td></td>
             <td id="left">TOTAL DUE:</td>
             <td id="right">{{ total }}</td>
         </tr>
     </table>
 </div>
 <div>
-    <h2 style="color:#F00; padding-bottom:-15px">WIRE TRANSFER PAYMENTS</h2>
-    <dl class="list">
-        <dt>Wire Routing Transit # (RTN/ABA):</dt>
-        <dd>121000248</dd>
-
-        <dt>Bank Name:</dt>
-        <dd>
-            Wells Fargo Bank, N.A.<br>
-            420 Montgomery<br>
-            San Francisco, CA 94104
-        </dd>
-
-        <dt>Beneficiary Account #:</dt>
-        <dd>4126665298</dd>
-
-
-        <dt>Beneficiary:</dt>
-        <dd>Northern Arizona University, Non Repetitive Wires/1910040F25</dd>
-
-        <dt>SWIFT/BIC:</dt>
-        <dd>WFBIUS6S</dd>
-
-        <dt>CHIPS Participant:</dt>
-        <dd>ABA 0407</dd>
-    </dl>
+    {{ BANK_INFO|safe }}
 </div>
 <div>
     <h2 style="color:#F00; padding-bottom:-15px">CHECK PAYMENTS</h2>
     <dl>
         <dt style="font-weight:bold">Checks should be made out to Northern Arizona University and mailed to the following address:</dt>
         <dd>
-            Northern Arizona University<br>
-            The Pathogen and Microbiome Institute<br>
-            PO Box 4073<br>
-            Flagstaff, AZ 86011 USA
+            {{ MAILING_ADDRESS|safe }}
         <dd>
     </dl>
 </div>

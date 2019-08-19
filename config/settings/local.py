@@ -37,6 +37,8 @@ from .shared import (
     PSF_SPEEDTYPE,
     PSF_ACCT_NUMBER,
     TECHNICAL_CONTACT,
+    MAILING_ADDRESS,
+    BANK_INFO,
 )
 
 
@@ -77,6 +79,8 @@ __all__ = [
     'PSF_SPEEDTYPE',
     'PSF_ACCT_NUMBER',
     'TECHNICAL_CONTACT',
+    'MAILING_ADDRESS',
+    'BANK_INFO',
 ]
 
 
