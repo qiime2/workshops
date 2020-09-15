@@ -238,8 +238,8 @@ class SubmitOrder(View):
                 'amount': str(order.order_total),
                 'date_time': str(order.order_datetime),
             }
-            requests.post('https://workshops.qiime2.org/confirm/', data=payload)
-            return HttpResponseRedirect('https://workshops.qiime2.org/')
+            requests.post(self.request.build_absolute_uri(reverse('payments:callback')), data=payload)
+            return HttpResponseRedirect(reverse('payments:index'))
 
         # Now that the order is saved, clear the session so that they can't
         # resubmit the order
@@ -301,6 +301,10 @@ class OrderCallback(View):
             body += '<h3>Orders:</h3><ul>'
             for oi in all_orders:
                 body += '<li>%s (%s): %s</li>' % (oi.name, oi.email, oi.rate)
+                if oi.rate.private and oi.rate.parent:
+                    oi.rate.parent.capacity = oi.rate.parent.capacity - 1
+                    oi.rate.parent.save()
+
             body += '</ul></div>'
             body += '</html>'
 
@@ -311,6 +315,17 @@ class OrderCallback(View):
                                          bcc=[i[1] for i in settings.ADMINS])
             msg.attach_alternative(body, "text/html")
             msg.send()
+
+            # Check to see if non-discount code rates are sold out. If they are,
+            # update the DB to mark "sales_open" to False.
+            sold_out_ct = workshop.rate_set.filter(private=False, sold_out=True).count()
+
+            if sold_out_ct != 0:
+                private_rates = workshop.rate_set.filter(private=True, sold_out=False)
+                for rate in private_rates:
+                    rate.sales_open = False
+                    rate.save()
+
         except (Order.DoesNotExist, KeyError) as e:
             logger.error('%s: %s' % (e, request.body))
             return HttpResponse(status=400)

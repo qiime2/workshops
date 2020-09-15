@@ -20,8 +20,8 @@ class InstructorInline(admin.TabularInline):
 class RateInline(admin.TabularInline):
     model = Rate
     extra = 1
-    fields = ('name', 'price', 'capacity', 'sales_open', 'private',
-              'discount_code')
+    fields = ('name', 'price', 'capacity', 'max_order', 'sales_open', 'private',
+              'parent', 'discount_code')
 
 
 class OrderItemInline(admin.TabularInline):
