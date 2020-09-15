@@ -104,14 +104,16 @@ class RateManager(models.Manager):
                         then=0
                     ),
                     models.When(
-                        orderitem__order__order_datetime__lt=stale_age,
+                        orderitem__order__order_datetime__gte=stale_age,
                         then=0
                     ),
                     models.When(
+                        orderitem__order__order_datetime__lt=stale_age,
                         orderitem__order__billed_total='',
                         then=0
                     ),
                     models.When(
+                        orderitem__order__order_datetime__lt=stale_age,
                         orderitem__order__billed_total__isnull=True,
                         then=0
                     ),
