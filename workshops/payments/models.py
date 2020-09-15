@@ -1,3 +1,4 @@
+import datetime
 import uuid
 
 from django.urls import reverse
@@ -94,11 +95,16 @@ class Instructor(models.Model):
 
 class RateManager(models.Manager):
     def get_queryset(self):
+        stale_age = datetime.datetime.utcnow() - datetime.timedelta(minutes=15)
         return super().get_queryset() \
             .annotate(ticket_count=models.Sum(
                 models.Case(
                     models.When(
                         orderitem__order__refunded=True,
+                        then=0
+                    ),
+                    models.When(
+                        orderitem__order__order_datetime__lt=stale_age,
                         then=0
                     ),
                     models.When(
