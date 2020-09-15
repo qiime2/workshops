@@ -25,7 +25,7 @@ class OrderForm(forms.Form):
             self.fields[rate.name] = forms.IntegerField(
                 initial=0,
                 min_value=0,
-                max_value=rate.capacity - rate.ticket_count,
+                max_value=rate.max_order if rate.max_order else rate.capacity - rate.ticket_count,
                 widget=forms.NumberInput(attrs={'class': 'input'})
             )
         for rate in workshop.sold_out_rates.all():

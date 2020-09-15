@@ -1,3 +1,4 @@
+import datetime
 import uuid
 
 from django.urls import reverse
@@ -94,11 +95,16 @@ class Instructor(models.Model):
 
 class RateManager(models.Manager):
     def get_queryset(self):
+        stale_age = datetime.datetime.utcnow() - datetime.timedelta(minutes=15)
         return super().get_queryset() \
             .annotate(ticket_count=models.Sum(
                 models.Case(
                     models.When(
                         orderitem__order__refunded=True,
+                        then=0
+                    ),
+                    models.When(
+                        orderitem__order__order_datetime__lt=stale_age,
                         then=0
                     ),
                     models.When(
@@ -155,6 +161,7 @@ class Rate(models.Model):
     name = models.CharField(max_length=300)
     price = models.DecimalField(max_digits=8, decimal_places=2,
                                 verbose_name='price (USD)')
+    max_order = models.PositiveIntegerField(null=True, default=None, blank=True)
     capacity = models.PositiveIntegerField()
     private = models.BooleanField(default=False)
     discount_code = models.SlugField(help_text='This will be the code given to'
@@ -163,6 +170,9 @@ class Rate(models.Model):
                                      'kshop_slug/rate=discount_code',
                                      blank=True)
     sales_open = models.BooleanField(default=True)
+    parent = models.ForeignKey('self', on_delete=models.CASCADE, default=None,
+                               null=True, blank=True)
+
     objects = RateManager()
 
     def clean(self):
@@ -181,7 +191,7 @@ class Rate(models.Model):
         return super().clean()
 
     def __str__(self):
-        return '%s: $%s' % (self.name, self.price)
+        return '%s %s: %s ($%s)' % (self.workshop.id, self.workshop.title, self.name, self.price)
 
 
 class Order(models.Model):
