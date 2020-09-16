@@ -28,4 +28,5 @@ class Command(BaseCommand):
                 rate.capacity = rate.capacity + tickets_to_add
             else:
                 rate.capacity = max_ticket_capacity
+            rate.sales_open = True
             rate.save()
