@@ -9,11 +9,13 @@ class Command(BaseCommand):
         parser.add_argument('workshop_id', type=int)
         parser.add_argument('rate_id', type=int)
         parser.add_argument('tickets_to_add', type=int)
+        parser.add_argument('max_ticket_capacity', type=int)
 
     def handle(self, *args, **options):
         workshop_id = options['workshop_id']
         rate_id = options['rate_id']
         tickets_to_add = options['tickets_to_add']
+        max_ticket_capacity = options['max_ticket_capacity']
 
         workshop = Workshop.objects.get(id=workshop_id)
         rate = Rate.objects.get(id=rate_id)
@@ -25,5 +27,8 @@ class Command(BaseCommand):
                 private_rate.sales_open = True
                 private_rate.save()
 
-            rate.capacity = rate.capacity + tickets_to_add
+            if rate.capacity + tickets_to_add < max_ticket_capacity:
+                rate.capacity = rate.capacity + tickets_to_add
+            else:
+                rate.capacity = max_ticket_capacity
             rate.save()
