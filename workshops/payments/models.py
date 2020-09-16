@@ -117,6 +117,10 @@ class RateManager(models.Manager):
                         orderitem__order__billed_total__isnull=True,
                         then=0
                     ),
+                    models.When(
+                        orderitem__isnull=True,
+                        then=0
+                    ),
                     default=1,
                     output_field=models.IntegerField(),
                 ))) \
@@ -193,7 +197,7 @@ class Rate(models.Model):
         return super().clean()
 
     def __str__(self):
-        return '%s %s: %s ($%s)' % (self.workshop.id, self.workshop.title, self.name, self.price)
+        return '%s ($%s)' % (self.name, self.price)
 
 
 class Order(models.Model):
