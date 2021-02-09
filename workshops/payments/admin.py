@@ -27,8 +27,10 @@ class RateInline(admin.TabularInline):
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == 'parent':
             resolved = resolve(request.path_info)
-            workshop = self.parent_model.objects.get(pk=resolved.kwargs['object_id'])
-            kwargs['queryset'] = Rate.objects.filter(workshop=workshop, private=False).select_related('workshop')
+            workshop_id = resolved.kwargs.get('object_id')
+            if workshop_id is not None:
+                workshop = self.parent_model.objects.get(pk=workshop_id)
+                kwargs['queryset'] = Rate.objects.filter(workshop=workshop, private=False).select_related('workshop')
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
