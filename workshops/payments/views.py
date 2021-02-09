@@ -41,9 +41,9 @@ class WorkshopList(TemplateView):
         now = timezone.now()
         context['workshop_categories'] = {
             'upcoming': all_workshops_qs.filter(
-                start_date__gte=now).order_by('start_date').all(),
+                end_date__gte=now).order_by('end_date').all(),
             'past': all_workshops_qs.filter(
-                start_date__lt=now).order_by('-start_date').all()
+                end_date__lt=now).order_by('-end_date').all()
         }
         return context
 
