@@ -52,6 +52,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'workshops.payments.context_processors.contact_info',
             ],
         },
     },
@@ -96,4 +97,8 @@ TECHNICAL_CONTACT = env.str('TECHNICAL_CONTACT', 'Problems with '
                             'purchasing a ticket? '
                             '<a href="mailto:test@test.com">'
                             'Contact us.</a>')
+REQUEST_CONTACT = env.str('REQUEST_CONTACT', 'Interested in hosting or '
+                          'attending an official QIIME 2 Workshop? '
+                          '<a href="mailto:test@test.com">'
+                          'Contact us.</a>')
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 5000

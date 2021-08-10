@@ -14,10 +14,7 @@
   {% endif %}
 
   <div>
-    <p>
-      See <a href="https://github.com/biocore/qiime/wiki/Official-QIIME-workshops">here</a>
-      for information on hosting or attending an official QIIME 2 workshop.
-    </p>
+    <p>{{ REQUEST_CONTACT|safe }}</p>
   </div>
 
   {% for category, workshops in workshop_categories.items %}

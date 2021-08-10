@@ -10,4 +10,7 @@ from django.conf import settings
 
 
 def contact_info(request):
-    return {'TECHNICAL_CONTACT': settings.TECHNICAL_CONTACT}
+    return {
+        'REQUEST_CONTACT': settings.REQUEST_CONTACT,
+        'TECHNICAL_CONTACT': settings.TECHNICAL_CONTACT,
+    }
